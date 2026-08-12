@@ -1,0 +1,594 @@
+[
+  {
+    "date": "2021-03-11",
+    "expense": "King-pin, tie-rod, Mirror",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 1176.0
+  },
+  {
+    "date": "2021-03-18",
+    "expense": "ABS sensor",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 203.0
+  },
+  {
+    "date": "2021-03-19",
+    "expense": "Front-end alignment",
+    "place": "Worcester, MA",
+    "odometer_miles": 113264.0,
+    "vendor": "STTC",
+    "cost": 220.0
+  },
+  {
+    "date": "2021-05-28",
+    "expense": "Muffler, shocks",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 1649.0
+  },
+  {
+    "date": "2021-06-05",
+    "expense": "ABS sensor, hub caps",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 296.0
+  },
+  {
+    "date": "2021-08-20",
+    "expense": "Brakes seized",
+    "place": "NH",
+    "odometer_miles": null,
+    "vendor": "Alans Diesel Service",
+    "cost": 55.0
+  },
+  {
+    "date": "2021-09-15",
+    "expense": "Oil change, Driver-diesel module (starting issues)",
+    "place": "Lancaster, MA",
+    "odometer_miles": 114624.0,
+    "vendor": "Certified",
+    "cost": 643.0
+  },
+  {
+    "date": "2021-09-16",
+    "expense": "Starting issue",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 100.0
+  },
+  {
+    "date": "2021-09-17",
+    "expense": "Tow",
+    "place": "",
+    "odometer_miles": 114624.0,
+    "vendor": "Koch Auto",
+    "cost": 375.0
+  },
+  {
+    "date": "2021-09-20",
+    "expense": "Front Calipers",
+    "place": "MA",
+    "odometer_miles": null,
+    "vendor": "Trailer Tech USA",
+    "cost": 1049.0
+  },
+  {
+    "date": "2021-09-21",
+    "expense": "Front Calipers",
+    "place": "MA",
+    "odometer_miles": null,
+    "vendor": "Trailer Tech USA",
+    "cost": 562.0
+  },
+  {
+    "date": "2021-09-30",
+    "expense": "Front brake rotors",
+    "place": "NY",
+    "odometer_miles": 115133.0,
+    "vendor": "Johns Garage",
+    "cost": 796.0
+  },
+  {
+    "date": "2021-10-01",
+    "expense": "Rear Brake lines - Labor",
+    "place": "PA",
+    "odometer_miles": 115294.0,
+    "vendor": "Auto Diesel Electric",
+    "cost": 151.0
+  },
+  {
+    "date": "2021-10-01",
+    "expense": "Rear Brake lines - Parts",
+    "place": "PA",
+    "odometer_miles": 115294.0,
+    "vendor": "Five Star",
+    "cost": 123.0
+  },
+  {
+    "date": "2021-10-27",
+    "expense": "Brake Fluid Caps",
+    "place": "Denver, CO",
+    "odometer_miles": 117808.0,
+    "vendor": "McCandless",
+    "cost": 41.0
+  },
+  {
+    "date": "2021-10-27",
+    "expense": "Brake line, hard start, air dryer",
+    "place": "Denver, CO",
+    "odometer_miles": 117808.0,
+    "vendor": "McCandless",
+    "cost": 1605.0
+  },
+  {
+    "date": "2022-03-10",
+    "expense": "Rear right tires",
+    "place": "Pembroke,GA",
+    "odometer_miles": 123745.0,
+    "vendor": "Butler Tire and Lube",
+    "cost": 706.32
+  },
+  {
+    "date": "2022-05-06",
+    "expense": "Glow PLugs",
+    "place": "Show Low, AZ",
+    "odometer_miles": 126948.0,
+    "vendor": "Williams Brothers Auto Service",
+    "cost": 1368.91
+  },
+  {
+    "date": "2022-06-17",
+    "expense": "Rear right bearings",
+    "place": "Rapid City, SD",
+    "odometer_miles": 128558.0,
+    "vendor": "Floyds truck center",
+    "cost": 1237.0
+  },
+  {
+    "date": "2022-08-06",
+    "expense": "Front Tires",
+    "place": "Mountain Home, ID",
+    "odometer_miles": 131253.0,
+    "vendor": "Tires Les Schwab",
+    "cost": 976.0
+  },
+  {
+    "date": "2022-08-31",
+    "expense": "Oil leak quote",
+    "place": "Colorado Springs, CO",
+    "odometer_miles": 132508.0,
+    "vendor": "Rush",
+    "cost": 185.0
+  },
+  {
+    "date": "2022-09-15",
+    "expense": "Rear left tires",
+    "place": "",
+    "odometer_miles": null,
+    "vendor": "?",
+    "cost": 700.0
+  },
+  {
+    "date": "2022-11-29",
+    "expense": "Tow",
+    "place": "Savanah, GA",
+    "odometer_miles": null,
+    "vendor": "?",
+    "cost": 350.0
+  },
+  {
+    "date": "2022-11-29",
+    "expense": "Starting issue",
+    "place": "Savanah, GA",
+    "odometer_miles": 135613.0,
+    "vendor": "Roberts Truck Center",
+    "cost": 197.0
+  },
+  {
+    "date": "2023-03-01",
+    "expense": "Starting issue",
+    "place": "Savanah, GA",
+    "odometer_miles": 137000.0,
+    "vendor": "Roberts Truck Center",
+    "cost": 1077.0
+  },
+  {
+    "date": "2023-03-07",
+    "expense": "Starting issue",
+    "place": "Savanah, GA",
+    "odometer_miles": 137074.0,
+    "vendor": "Roberts Truck Center",
+    "cost": 463.0
+  },
+  {
+    "date": "2023-03-15",
+    "expense": "Starting issue",
+    "place": "Augustus, GA",
+    "odometer_miles": 137250.0,
+    "vendor": "Rush",
+    "cost": 660.0
+  },
+  {
+    "date": "2023-04-27",
+    "expense": "Starting issue, relay went",
+    "place": "VA",
+    "odometer_miles": 138306.0,
+    "vendor": "Rush",
+    "cost": 225.0
+  },
+  {
+    "date": "2023-04-28",
+    "expense": "Relays for above issue",
+    "place": "MD",
+    "odometer_miles": null,
+    "vendor": "Beltway Internaltional",
+    "cost": 28.0
+  },
+  {
+    "date": "2023-04-28",
+    "expense": "Shock Bolt",
+    "place": "MD",
+    "odometer_miles": null,
+    "vendor": "Beltway Internaltional",
+    "cost": 14.0
+  },
+  {
+    "date": "2023-05-01",
+    "expense": "Shock, re-balance front",
+    "place": "MD",
+    "odometer_miles": 138577.0,
+    "vendor": "STTC",
+    "cost": 363.0
+  },
+  {
+    "date": "2023-06-05",
+    "expense": "Re-built rear end, Brake lights",
+    "place": "Lancaster, MA",
+    "odometer_miles": null,
+    "vendor": "Certified",
+    "cost": 5383.0
+  },
+  {
+    "date": "2023-06-20",
+    "expense": "Rear left bearings",
+    "place": "MA",
+    "odometer_miles": 139425.0,
+    "vendor": "Taylor & Lloyd",
+    "cost": 1639.0
+  },
+  {
+    "date": "2023-09-01",
+    "expense": "Wabco- reset",
+    "place": "Galesburg, IL",
+    "odometer_miles": 141529.0,
+    "vendor": "Nichols Diesel Service",
+    "cost": 57.0
+  },
+  {
+    "date": "2023-09-15",
+    "expense": "Wabco HCU w/ECU",
+    "place": "Colorado Springs, CO",
+    "odometer_miles": 142592.0,
+    "vendor": "McCandless",
+    "cost": 7245.0
+  },
+  {
+    "date": "2023-09-15",
+    "expense": "Install Wabco HCU w/ECU",
+    "place": "Colorado Springs, CO",
+    "odometer_miles": 142592.0,
+    "vendor": "McCandless",
+    "cost": 1438.0
+  },
+  {
+    "date": "2023-11-01",
+    "expense": "Bleed HCU",
+    "place": "Biloxi, MS",
+    "odometer_miles": 144327.0,
+    "vendor": "Mechanic",
+    "cost": 175.0
+  },
+  {
+    "date": "2023-11-03",
+    "expense": "Wabco master cylinder",
+    "place": "Biloxi, MS",
+    "odometer_miles": 144327.0,
+    "vendor": "Johnson Diesel",
+    "cost": 1023.0
+  },
+  {
+    "date": "2023-11-03",
+    "expense": "Install Wabco master cylinder",
+    "place": "Biloxi, MS",
+    "odometer_miles": 144327.0,
+    "vendor": "Mechanic",
+    "cost": 450.0
+  },
+  {
+    "date": "2023-11-04",
+    "expense": "Tow",
+    "place": "Biloxi, MS",
+    "odometer_miles": 144327.0,
+    "vendor": "All American Towing",
+    "cost": 572.0
+  },
+  {
+    "date": "2023-11-07",
+    "expense": "Loose brake line, air in system",
+    "place": "Slidell, LA",
+    "odometer_miles": 144327.0,
+    "vendor": "iTA",
+    "cost": 429.0
+  },
+  {
+    "date": "2023-11-20",
+    "expense": "Brake leaks",
+    "place": "Tuscaloosa, AL",
+    "odometer_miles": 144801.0,
+    "vendor": "Southland International",
+    "cost": 936.81
+  },
+  {
+    "date": "2023-11-21",
+    "expense": "Master cylender went again",
+    "place": "Tuscaloosa, AL",
+    "odometer_miles": 144801.0,
+    "vendor": "Southland International",
+    "cost": 919.81
+  },
+  {
+    "date": "2023-12-06",
+    "expense": "Parts for fuel leak",
+    "place": "Augustus, GA",
+    "odometer_miles": 145403.0,
+    "vendor": "Rush",
+    "cost": 178.09
+  },
+  {
+    "date": "2023-12-08",
+    "expense": "Fuel lines rusted, replacing",
+    "place": "Augustus, GA",
+    "odometer_miles": 145403.0,
+    "vendor": "Rush",
+    "cost": 2820.67
+  },
+  {
+    "date": "2023-12-08",
+    "expense": "Refund for over-charging",
+    "place": "Augustus, GA",
+    "odometer_miles": 145403.0,
+    "vendor": "Rush",
+    "cost": -869.29
+  },
+  {
+    "date": "2024-03-28",
+    "expense": "Oil change/ PM maintance check",
+    "place": "Columbia, SC",
+    "odometer_miles": 147926.0,
+    "vendor": "Carolina International Trucks",
+    "cost": 541.78
+  },
+  {
+    "date": "2024-03-29",
+    "expense": "Brake power line - loss of brakes",
+    "place": "Columbia, SC",
+    "odometer_miles": 147927.0,
+    "vendor": "Carolina International Trucks",
+    "cost": 480.0
+  },
+  {
+    "date": "2024-04-02",
+    "expense": "Wheel seal, Shock, Rear brakes, Fan belt",
+    "place": "Columbia, SC",
+    "odometer_miles": 148000.0,
+    "vendor": "Carolina International Trucks",
+    "cost": 2875.12
+  },
+  {
+    "date": "2024-06-13",
+    "expense": "Oil leak & misc findings",
+    "place": "Manchester, MA",
+    "odometer_miles": 149443.0,
+    "vendor": "Allegiance Trucks",
+    "cost": 2064.24
+  },
+  {
+    "date": "2024-08-19",
+    "expense": "Windshield",
+    "place": "Billings, MT",
+    "odometer_miles": 152495.0,
+    "vendor": "Fixitfast",
+    "cost": 499.0
+  },
+  {
+    "date": "2024-08-20",
+    "expense": "Oil Change/PM, broken shock",
+    "place": "Billings, MT",
+    "odometer_miles": 152495.0,
+    "vendor": "MPE Motor Power",
+    "cost": 972.48
+  },
+  {
+    "date": "2024-09-01",
+    "expense": "Parts starter cable",
+    "place": "",
+    "odometer_miles": 153326.0,
+    "vendor": "NAPA",
+    "cost": 16.2
+  },
+  {
+    "date": "2024-09-10",
+    "expense": "Parts",
+    "place": "Caldwell, ID",
+    "odometer_miles": 153426.0,
+    "vendor": "NAPA",
+    "cost": 30.46
+  },
+  {
+    "date": "2024-09-10",
+    "expense": "Repair starter cable",
+    "place": "Caldwell, ID",
+    "odometer_miles": 153426.0,
+    "vendor": "Careful Auto Repair",
+    "cost": 218.75
+  },
+  {
+    "date": "2024-09-17",
+    "expense": "Try to repair stalling/IDM cable",
+    "place": "Jordan Valley, OR",
+    "odometer_miles": 153486.0,
+    "vendor": "Rush Mobile",
+    "cost": 894.25
+  },
+  {
+    "date": "2024-09-17",
+    "expense": "Tow",
+    "place": "Boise, ID",
+    "odometer_miles": 153486.0,
+    "vendor": "",
+    "cost": 1045.48
+  },
+  {
+    "date": "2024-09-17",
+    "expense": "Taxi",
+    "place": "Boise, ID",
+    "odometer_miles": 153486.0,
+    "vendor": "",
+    "cost": 250.0
+  },
+  {
+    "date": "2024-09-18",
+    "expense": "Diag",
+    "place": "Boise, ID",
+    "odometer_miles": 153486.0,
+    "vendor": "Rush",
+    "cost": 872.67
+  },
+  {
+    "date": "2024-09-25",
+    "expense": "Install Wiaring harness, More Diag",
+    "place": "Boise, ID",
+    "odometer_miles": 153486.0,
+    "vendor": "Rush",
+    "cost": 4013.04
+  },
+  {
+    "date": "2024-09-27",
+    "expense": "Install new IDM, program",
+    "place": "Boise, ID",
+    "odometer_miles": 153486.0,
+    "vendor": "Rush",
+    "cost": 2790.38
+  },
+  {
+    "date": "2025-03-25",
+    "expense": "PM Service, shocks",
+    "place": "Kingman, AZ",
+    "odometer_miles": 157300.0,
+    "vendor": "American Fleet Solutions",
+    "cost": 1093.33
+  },
+  {
+    "date": "2025-06-07",
+    "expense": "Broken negative cable",
+    "place": "Idaho Falls, ID",
+    "odometer_miles": 158212.0,
+    "vendor": "Rush",
+    "cost": 385.75
+  },
+  {
+    "date": "2025-06-30",
+    "expense": "New rear right tires and balance",
+    "place": "Butte, MT",
+    "odometer_miles": 159502.0,
+    "vendor": "Pomps Tire Service",
+    "cost": 1296.48
+  },
+  {
+    "date": "2025-07-21",
+    "expense": "Smoking oil, new engine!",
+    "place": "Missoula, MT",
+    "odometer_miles": 159823.0,
+    "vendor": "Harlows",
+    "cost": 41076.64
+  },
+  {
+    "date": "2025-09-18",
+    "expense": "PM service",
+    "place": "Cheyenne, WY",
+    "odometer_miles": 161001.0,
+    "vendor": "McCandless",
+    "cost": 1126.05
+  },
+  {
+    "date": "2025-09-25",
+    "expense": "New Transmission",
+    "place": "Cheyenne, WY",
+    "odometer_miles": 161031.0,
+    "vendor": "McCandless",
+    "cost": 6155.98
+  },
+  {
+    "date": "2025-10-23",
+    "expense": "New battery cable wire",
+    "place": "Albuquerque, NM",
+    "odometer_miles": 161700.0,
+    "vendor": "Advanced Diesel Performance",
+    "cost": 284.85
+  },
+  {
+    "date": "2025-11-19",
+    "expense": "New tire left rear inner slow leak",
+    "place": "Phoenix, AZ",
+    "odometer_miles": 162496.0,
+    "vendor": "Iconic Tire",
+    "cost": 494.03
+  },
+  {
+    "date": "2026-01-28",
+    "expense": "Diag - shocks, vibration",
+    "place": "Phoenix, AZ",
+    "odometer_miles": null,
+    "vendor": "RWC International, LLC",
+    "cost": 530.89
+  },
+  {
+    "date": "2026-02-06",
+    "expense": "New front tires, fixed vibration",
+    "place": "Deming, NM",
+    "odometer_miles": null,
+    "vendor": "Big O Tires",
+    "cost": 618.25
+  },
+  {
+    "date": "2026-02-12",
+    "expense": "New left front bearings, rear right seal",
+    "place": "Deming, NM",
+    "odometer_miles": null,
+    "vendor": "Boutotte",
+    "cost": 800.0
+  },
+  {
+    "date": "2026-03-15",
+    "expense": "Rear Shocks",
+    "place": "Pembroke, GA",
+    "odometer_miles": 165915.0,
+    "vendor": "Boutotte",
+    "cost": 205.0
+  },
+  {
+    "date": "2026-04-21",
+    "expense": "PM Service",
+    "place": "Hagerstown, MD",
+    "odometer_miles": null,
+    "vendor": "Beltway International, LLC",
+    "cost": 453.82
+  }
+]

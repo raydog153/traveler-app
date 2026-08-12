@@ -1,0 +1,1586 @@
+[
+  {
+    "date": "2021-06-18",
+    "odometer_miles": 113528.0,
+    "gallons": 31.801,
+    "price": 84.56,
+    "notes": "",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2021-08-09",
+    "odometer_miles": 113749.0,
+    "gallons": 32.268,
+    "price": 100.0,
+    "notes": "Not a full fillup",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2021-08-16",
+    "odometer_miles": 114028.0,
+    "gallons": 23.879,
+    "price": 74.0,
+    "notes": "Not a full fillup",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2021-08-20",
+    "odometer_miles": 114121.0,
+    "gallons": 25.702,
+    "price": 79.65,
+    "notes": "",
+    "city": "Northhampton, MA"
+  },
+  {
+    "date": "2021-08-23",
+    "odometer_miles": 114480.0,
+    "gallons": 32.25,
+    "price": 99.94,
+    "notes": "No reciept",
+    "city": "Northhampton, MA"
+  },
+  {
+    "date": "2021-09-17",
+    "odometer_miles": 114624.0,
+    "gallons": 16.649,
+    "price": 54.26,
+    "notes": "",
+    "city": "Northhampton, MA"
+  },
+  {
+    "date": "2021-09-23",
+    "odometer_miles": 114825.0,
+    "gallons": 12.256,
+    "price": 44.11,
+    "notes": "No reciept",
+    "city": "Castleton On Hudson, NY"
+  },
+  {
+    "date": "2021-09-25",
+    "odometer_miles": 115030.0,
+    "gallons": 25.795,
+    "price": 90.0,
+    "notes": "",
+    "city": "Otsiningo Park, NY"
+  },
+  {
+    "date": "2021-10-01",
+    "odometer_miles": 115294.0,
+    "gallons": 33.722,
+    "price": 123.39,
+    "notes": "",
+    "city": "Frackville, PA"
+  },
+  {
+    "date": "2021-10-02",
+    "odometer_miles": 115647.0,
+    "gallons": 35.33,
+    "price": 105.95,
+    "notes": "",
+    "city": "Rocky Mount, VA"
+  },
+  {
+    "date": "2021-10-06",
+    "odometer_miles": 116027.0,
+    "gallons": 35.144,
+    "price": 112.43,
+    "notes": "",
+    "city": "Sandy Ridge, NC"
+  },
+  {
+    "date": "2021-10-07",
+    "odometer_miles": 116303.0,
+    "gallons": 22.184,
+    "price": 73.19,
+    "notes": "",
+    "city": "East Saint Louis, IL"
+  },
+  {
+    "date": "2021-10-08",
+    "odometer_miles": 116536.0,
+    "gallons": 25.721,
+    "price": 81.25,
+    "notes": "",
+    "city": "Blackwater, MO"
+  },
+  {
+    "date": "2021-10-10",
+    "odometer_miles": 116842.0,
+    "gallons": 33.897,
+    "price": 106.74,
+    "notes": "",
+    "city": "Paxico, KS"
+  },
+  {
+    "date": "2021-10-15",
+    "odometer_miles": 117094.0,
+    "gallons": 28.098,
+    "price": 100.0,
+    "notes": "",
+    "city": "Colby, KS"
+  },
+  {
+    "date": "2021-10-18",
+    "odometer_miles": 117427.0,
+    "gallons": 35.536,
+    "price": 120.75,
+    "notes": "",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2021-10-29",
+    "odometer_miles": 117836.0,
+    "gallons": 43.402,
+    "price": 155.2,
+    "notes": "Start back to MA",
+    "city": "Denver, CO"
+  },
+  {
+    "date": "2021-10-29",
+    "odometer_miles": 118272.0,
+    "gallons": 34.256,
+    "price": 125.0,
+    "notes": "",
+    "city": "Salina, KS"
+  },
+  {
+    "date": "2021-10-30",
+    "odometer_miles": 118549.0,
+    "gallons": 30.979,
+    "price": 105.3,
+    "notes": "",
+    "city": "Sweet Springs, MO"
+  },
+  {
+    "date": "2021-10-31",
+    "odometer_miles": 118989.0,
+    "gallons": 41.646,
+    "price": 149.88,
+    "notes": "",
+    "city": "Morgantown, WV"
+  },
+  {
+    "date": "2021-11-05",
+    "odometer_miles": 119360.0,
+    "gallons": 32.903,
+    "price": 125.0,
+    "notes": "",
+    "city": "Owingsville, KY"
+  },
+  {
+    "date": "2021-11-06",
+    "odometer_miles": 119632.0,
+    "gallons": 33.793,
+    "price": 125.0,
+    "notes": "",
+    "city": "Riverside, MD"
+  },
+  {
+    "date": "2021-11-07",
+    "odometer_miles": 119885.0,
+    "gallons": 25.648,
+    "price": 100.0,
+    "notes": "",
+    "city": "Albany, NY"
+  },
+  {
+    "date": "2021-11-07",
+    "odometer_miles": 120234.0,
+    "gallons": 28.58,
+    "price": 100.0,
+    "notes": "Arrive in MA ($1k)",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2021-12-04",
+    "odometer_miles": 120371.0,
+    "gallons": 28.58,
+    "price": 100.0,
+    "notes": "",
+    "city": "Castleton On Hudson, NY"
+  },
+  {
+    "date": "2021-12-04",
+    "odometer_miles": 120753.0,
+    "gallons": 31.574,
+    "price": 125.0,
+    "notes": "",
+    "city": "Richmond, VA"
+  },
+  {
+    "date": "2021-12-05",
+    "odometer_miles": 120999.0,
+    "gallons": 35.724,
+    "price": 125.0,
+    "notes": "",
+    "city": "Durham, NC"
+  },
+  {
+    "date": "2021-12-05",
+    "odometer_miles": 121448.0,
+    "gallons": 37.89,
+    "price": 125.0,
+    "notes": "",
+    "city": "Hardeeville, SC"
+  },
+  {
+    "date": "2021-12-28",
+    "odometer_miles": 121657.0,
+    "gallons": 37.528,
+    "price": 130.82,
+    "notes": "",
+    "city": "Pembroke, GA"
+  },
+  {
+    "date": "2022-01-09",
+    "odometer_miles": 121999.0,
+    "gallons": 33.342,
+    "price": 125.0,
+    "notes": "",
+    "city": "Brunswick, GA"
+  },
+  {
+    "date": "2022-01-21",
+    "odometer_miles": 122351.0,
+    "gallons": 34.732,
+    "price": 125.0,
+    "notes": "Florida",
+    "city": "Jacksonville, FL"
+  },
+  {
+    "date": "2022-01-24",
+    "odometer_miles": 122701.0,
+    "gallons": 40.008,
+    "price": 146.39,
+    "notes": "",
+    "city": "Fort Lauderdale, FL"
+  },
+  {
+    "date": "2022-01-25",
+    "odometer_miles": 123157.0,
+    "gallons": 45.161,
+    "price": 162.53,
+    "notes": "",
+    "city": "Hinesville, GA"
+  },
+  {
+    "date": "2022-02-22",
+    "odometer_miles": 123496.0,
+    "gallons": 37.079,
+    "price": 148.28,
+    "notes": "",
+    "city": "Savannah, GA"
+  },
+  {
+    "date": "2022-03-12",
+    "odometer_miles": 123745.0,
+    "gallons": 30.248,
+    "price": 150.0,
+    "notes": "?",
+    "city": "Pooler, GA"
+  },
+  {
+    "date": "2022-03-20",
+    "odometer_miles": 124137.0,
+    "gallons": 29.65,
+    "price": 150.0,
+    "notes": "Leave GA",
+    "city": "Pike Road"
+  },
+  {
+    "date": "2022-03-27",
+    "odometer_miles": 124455.0,
+    "gallons": 40.576,
+    "price": 200.0,
+    "notes": "",
+    "city": "D'Iberville, MS"
+  },
+  {
+    "date": "2022-03-30",
+    "odometer_miles": 124749.0,
+    "gallons": 37.935,
+    "price": 185.85,
+    "notes": "",
+    "city": "West Monroe"
+  },
+  {
+    "date": "2022-04-06",
+    "odometer_miles": 125228.0,
+    "gallons": 46.719,
+    "price": 219.53,
+    "notes": "",
+    "city": "Round Rock"
+  },
+  {
+    "date": "2022-04-09",
+    "odometer_miles": 125580.0,
+    "gallons": 37.562,
+    "price": 175.0,
+    "notes": "",
+    "city": "Midland - Andrews Park, TX"
+  },
+  {
+    "date": "2022-04-09",
+    "odometer_miles": 126008.0,
+    "gallons": 32.462,
+    "price": 148.0,
+    "notes": "",
+    "city": "Deming, NM"
+  },
+  {
+    "date": "2022-04-23",
+    "odometer_miles": 126304.0,
+    "gallons": 34.421,
+    "price": 164.5,
+    "notes": "Arrive AZ",
+    "city": "Casa Grande, AZ"
+  },
+  {
+    "date": "2022-04-29",
+    "odometer_miles": 126575.0,
+    "gallons": 29.418,
+    "price": 150.0,
+    "notes": "",
+    "city": "Flagstaff - Cherry Hill"
+  },
+  {
+    "date": "2022-05-04",
+    "odometer_miles": 126924.0,
+    "gallons": 24.486,
+    "price": 130.0,
+    "notes": "Oil/Fuel filter change, glow plugs fixed after this",
+    "city": "Show Low, AZ"
+  },
+  {
+    "date": "2022-05-07",
+    "odometer_miles": 127182.0,
+    "gallons": 27.782,
+    "price": 150.0,
+    "notes": "",
+    "city": "Paraje"
+  },
+  {
+    "date": "2022-05-13",
+    "odometer_miles": 127326.0,
+    "gallons": 33.925,
+    "price": 166.2,
+    "notes": "",
+    "city": "Sante Fe, NM"
+  },
+  {
+    "date": "2022-05-28",
+    "odometer_miles": 127662.0,
+    "gallons": 32.711,
+    "price": 170.07,
+    "notes": "80 min off on milage",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2022-05-29",
+    "odometer_miles": 128027.0,
+    "gallons": 37.958,
+    "price": 200.0,
+    "notes": "",
+    "city": "Chadron"
+  },
+  {
+    "date": "2022-06-10",
+    "odometer_miles": 128393.0,
+    "gallons": 33.088,
+    "price": 175.0,
+    "notes": "",
+    "city": "Rapid City, SD"
+  },
+  {
+    "date": "2022-06-21",
+    "odometer_miles": 128681.0,
+    "gallons": 32.116,
+    "price": 175.0,
+    "notes": "",
+    "city": "Rapid City, SD"
+  },
+  {
+    "date": "2022-06-25",
+    "odometer_miles": 128970.0,
+    "gallons": 21.555,
+    "price": 125.0,
+    "notes": "",
+    "city": "Miles City"
+  },
+  {
+    "date": "2022-07-01",
+    "odometer_miles": 129140.0,
+    "gallons": 25.867,
+    "price": 150.0,
+    "notes": "",
+    "city": "Billings, MT"
+  },
+  {
+    "date": "2022-07-06",
+    "odometer_miles": 129388.0,
+    "gallons": 29.971,
+    "price": 175.0,
+    "notes": "",
+    "city": "Boulder, MT"
+  },
+  {
+    "date": "2022-07-11",
+    "odometer_miles": 129682.0,
+    "gallons": 29.666,
+    "price": 175.0,
+    "notes": "",
+    "city": "Kellogg, ID"
+  },
+  {
+    "date": "2022-07-13",
+    "odometer_miles": 129929.0,
+    "gallons": 34.728,
+    "price": 200.0,
+    "notes": "",
+    "city": "George, Washington"
+  },
+  {
+    "date": "2022-07-16",
+    "odometer_miles": 130181.0,
+    "gallons": 30.522,
+    "price": 162.34,
+    "notes": "",
+    "city": "Bow, Washington"
+  },
+  {
+    "date": "2022-07-22",
+    "odometer_miles": 130567.0,
+    "gallons": 35.094,
+    "price": 200.0,
+    "notes": "",
+    "city": "Ellensburg, Washington"
+  },
+  {
+    "date": "2022-07-30",
+    "odometer_miles": 130874.0,
+    "gallons": 32.716,
+    "price": 175.0,
+    "notes": "",
+    "city": "Orofino, ID"
+  },
+  {
+    "date": "2022-08-06",
+    "odometer_miles": 131252.0,
+    "gallons": 27.412,
+    "price": 148.0,
+    "notes": "",
+    "city": "Mountain Home, ID"
+  },
+  {
+    "date": "2022-08-10",
+    "odometer_miles": 131471.0,
+    "gallons": 39.385,
+    "price": 196.89,
+    "notes": "",
+    "city": "Jerome, ID"
+  },
+  {
+    "date": "2022-08-15",
+    "odometer_miles": 131834.0,
+    "gallons": 35.148,
+    "price": 175.0,
+    "notes": "",
+    "city": "Green River, WY"
+  },
+  {
+    "date": "2022-08-20",
+    "odometer_miles": 132094.0,
+    "gallons": 30.55,
+    "price": 142.33,
+    "notes": "",
+    "city": "West Laramie, WY"
+  },
+  {
+    "date": "2022-08-31",
+    "odometer_miles": 132508.0,
+    "gallons": 38.052,
+    "price": 175.0,
+    "notes": "",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2022-09-24",
+    "odometer_miles": 132902.0,
+    "gallons": 40.769,
+    "price": 186.68,
+    "notes": "",
+    "city": "Sante Fe, NM"
+  },
+  {
+    "date": "2022-10-11",
+    "odometer_miles": 133286.0,
+    "gallons": 44.395,
+    "price": 214.83,
+    "notes": "",
+    "city": "Deming, NM"
+  },
+  {
+    "date": "2022-10-17",
+    "odometer_miles": 133615.0,
+    "gallons": 25.005,
+    "price": 125.0,
+    "notes": "329 miles between destinations",
+    "city": "Eunice, NM"
+  },
+  {
+    "date": "2022-10-20",
+    "odometer_miles": 133907.0,
+    "gallons": 41.01,
+    "price": 196.4,
+    "notes": "",
+    "city": "San Angelo, TX"
+  },
+  {
+    "date": "2022-10-26",
+    "odometer_miles": 134191.0,
+    "gallons": 21.744,
+    "price": 100.0,
+    "notes": "",
+    "city": "Georgetown, TX"
+  },
+  {
+    "date": "2022-11-01",
+    "odometer_miles": 134546.0,
+    "gallons": 27.661,
+    "price": 125.0,
+    "notes": "",
+    "city": "Port Arthor, TX"
+  },
+  {
+    "date": "2022-11-04",
+    "odometer_miles": 134821.0,
+    "gallons": 30.239,
+    "price": 150.0,
+    "notes": "275 miles between destinations",
+    "city": "Slidell, LA"
+  },
+  {
+    "date": "2022-11-09",
+    "odometer_miles": 135052.0,
+    "gallons": 30.934,
+    "price": 150.0,
+    "notes": "",
+    "city": "Bay Minette, AL"
+  },
+  {
+    "date": "2022-11-11",
+    "odometer_miles": 135282.0,
+    "gallons": 20.623,
+    "price": 100.0,
+    "notes": "",
+    "city": "Columbus, GA"
+  },
+  {
+    "date": "2022-11-15",
+    "odometer_miles": 135424.0,
+    "gallons": 33.708,
+    "price": 160.08,
+    "notes": "",
+    "city": "Savannah, GA"
+  },
+  {
+    "date": "2022-11-26",
+    "odometer_miles": 135613.0,
+    "gallons": 21.057,
+    "price": 100.0,
+    "notes": "",
+    "city": "Pooler, GA"
+  },
+  {
+    "date": "2022-12-21",
+    "odometer_miles": 135843.0,
+    "gallons": 23.261,
+    "price": 100.0,
+    "notes": "",
+    "city": "Pooler, GA"
+  },
+  {
+    "date": "2022-12-23",
+    "odometer_miles": 136084.0,
+    "gallons": 10.871,
+    "price": 50.0,
+    "notes": "",
+    "city": "Palatka, FL"
+  },
+  {
+    "date": "2022-12-27",
+    "odometer_miles": 136256.0,
+    "gallons": 47.822,
+    "price": 196.02,
+    "notes": "",
+    "city": "Brunswick, GA"
+  },
+  {
+    "date": "2023-02-02",
+    "odometer_miles": 136621.0,
+    "gallons": 37.216,
+    "price": 162.97,
+    "notes": "",
+    "city": "Statesboro, GA"
+  },
+  {
+    "date": "2023-02-17",
+    "odometer_miles": 136899.0,
+    "gallons": 28.806,
+    "price": 112.03,
+    "notes": "",
+    "city": "Statesboro, GA"
+  },
+  {
+    "date": "2023-03-12",
+    "odometer_miles": 137203.0,
+    "gallons": 32.417,
+    "price": 126.39,
+    "notes": "",
+    "city": "Waynesboro, GA"
+  },
+  {
+    "date": "2023-03-27",
+    "odometer_miles": 137431.0,
+    "gallons": 20.839,
+    "price": 75.0,
+    "notes": "",
+    "city": "Orangeburg, SC"
+  },
+  {
+    "date": "2023-04-08",
+    "odometer_miles": 137711.0,
+    "gallons": 31.258,
+    "price": 125.0,
+    "notes": "",
+    "city": "Georgetown, NC (?)"
+  },
+  {
+    "date": "2023-04-13",
+    "odometer_miles": 137941.0,
+    "gallons": 33.8,
+    "price": 118.94,
+    "notes": "",
+    "city": "Hope Mills, NC"
+  },
+  {
+    "date": "2023-04-24",
+    "odometer_miles": 138328.0,
+    "gallons": 35.742,
+    "price": 137.57,
+    "notes": "Est, Relay",
+    "city": "Powhatan, NC"
+  },
+  {
+    "date": "2023-05-02",
+    "odometer_miles": 138715.0,
+    "gallons": 23.48,
+    "price": 100.0,
+    "notes": "Est",
+    "city": "Hamburg, PA"
+  },
+  {
+    "date": "2023-05-04",
+    "odometer_miles": 138880.0,
+    "gallons": 29.488,
+    "price": 125.0,
+    "notes": "",
+    "city": "New Milford, PA"
+  },
+  {
+    "date": "2023-05-20",
+    "odometer_miles": 139189.0,
+    "gallons": 25.006,
+    "price": 100.0,
+    "notes": "",
+    "city": "Lunenburg, MA"
+  },
+  {
+    "date": "2023-06-28",
+    "odometer_miles": 139501.0,
+    "gallons": 24.152,
+    "price": 99.0,
+    "notes": "",
+    "city": "North Leominster, MA"
+  },
+  {
+    "date": "2023-07-15",
+    "odometer_miles": 139647.0,
+    "gallons": 26.059,
+    "price": 99.0,
+    "notes": "",
+    "city": "Leominster, MA"
+  },
+  {
+    "date": "2023-08-16",
+    "odometer_miles": 140028.5,
+    "gallons": 23.815,
+    "price": 100.0,
+    "notes": "Est",
+    "city": "Lunenburg, MA"
+  },
+  {
+    "date": "2023-08-26",
+    "odometer_miles": 140410.0,
+    "gallons": 37.562,
+    "price": 175.0,
+    "notes": "Est",
+    "city": "Hamburg, PA"
+  },
+  {
+    "date": "2023-08-27",
+    "odometer_miles": 140788.0,
+    "gallons": 46.96,
+    "price": 200.0,
+    "notes": "",
+    "city": "Hubbard, PA"
+  },
+  {
+    "date": "2023-08-31",
+    "odometer_miles": 141180.0,
+    "gallons": 29.769,
+    "price": 125.0,
+    "notes": "",
+    "city": "Kalamazoo, MI"
+  },
+  {
+    "date": "2023-09-01",
+    "odometer_miles": 141529.0,
+    "gallons": 44.338,
+    "price": 190.61,
+    "notes": "",
+    "city": "Woodhull, IL"
+  },
+  {
+    "date": "2023-09-03",
+    "odometer_miles": 141903.0,
+    "gallons": 39.076,
+    "price": 146.5,
+    "notes": "",
+    "city": "Omaha, NE"
+  },
+  {
+    "date": "2023-09-09",
+    "odometer_miles": 142234.0,
+    "gallons": 30.644,
+    "price": 125.0,
+    "notes": "",
+    "city": "North Platte, NE"
+  },
+  {
+    "date": "2023-09-15",
+    "odometer_miles": 142587.0,
+    "gallons": 17.213,
+    "price": 74.0,
+    "notes": "Oil change",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2023-09-25",
+    "odometer_miles": 142782.0,
+    "gallons": 23.25581395,
+    "price": 100.0,
+    "notes": "Est",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2023-09-28",
+    "odometer_miles": 142986.0,
+    "gallons": 24.02,
+    "price": 99.18,
+    "notes": "",
+    "city": "Stratford, TX"
+  },
+  {
+    "date": "2023-09-30",
+    "odometer_miles": 143035.0,
+    "gallons": 24.102,
+    "price": 100.0,
+    "notes": "",
+    "city": "Guymon, OK"
+  },
+  {
+    "date": "2023-10-09",
+    "odometer_miles": 143365.0,
+    "gallons": 24.516,
+    "price": 100.0,
+    "notes": "",
+    "city": "Warr Acres, OK"
+  },
+  {
+    "date": "2023-10-14",
+    "odometer_miles": 143633.0,
+    "gallons": 25.006,
+    "price": 100.0,
+    "notes": "",
+    "city": "Hugo, OK"
+  },
+  {
+    "date": "2023-10-19",
+    "odometer_miles": 143839.0,
+    "gallons": 25.006,
+    "price": 100.0,
+    "notes": "",
+    "city": "Springhill, LA"
+  },
+  {
+    "date": "2023-10-21",
+    "odometer_miles": 144180.0,
+    "gallons": 44.996,
+    "price": 171.84,
+    "notes": "",
+    "city": "Purvis, MS"
+  },
+  {
+    "date": "2023-11-11",
+    "odometer_miles": 144449.0,
+    "gallons": 36.484,
+    "price": 138.6,
+    "notes": "",
+    "city": "Bilixi, MS"
+  },
+  {
+    "date": "2023-11-22",
+    "odometer_miles": 144818.0,
+    "gallons": 38.877,
+    "price": 134.09,
+    "notes": "",
+    "city": "Tuscalossa, AL"
+  },
+  {
+    "date": "2023-12-02",
+    "odometer_miles": 145082.0,
+    "gallons": 34.138,
+    "price": 123.55,
+    "notes": "Fuel line fixed after",
+    "city": "Leeds, AL"
+  },
+  {
+    "date": "2023-12-10",
+    "odometer_miles": 145442.0,
+    "gallons": 40.924,
+    "price": 152.2,
+    "notes": "2.0 Gal heating",
+    "city": "Augusta,GA"
+  },
+  {
+    "date": "2023-12-27",
+    "odometer_miles": 145805.0,
+    "gallons": 33.254,
+    "price": 125.0,
+    "notes": "Heating tapped",
+    "city": "Waynesboro, GA"
+  },
+  {
+    "date": "2024-01-10",
+    "odometer_miles": 146025.0,
+    "gallons": 35.851,
+    "price": 133.69,
+    "notes": "Est",
+    "city": "Statesboro, GA"
+  },
+  {
+    "date": "2024-01-21",
+    "odometer_miles": 146248.0,
+    "gallons": 31.914,
+    "price": 118.05,
+    "notes": "",
+    "city": "Pooler, GA"
+  },
+  {
+    "date": "2024-02-10",
+    "odometer_miles": 146561.0,
+    "gallons": 32.903,
+    "price": 125.0,
+    "notes": "",
+    "city": "Millen, GA"
+  },
+  {
+    "date": "2024-02-18",
+    "odometer_miles": 146857.0,
+    "gallons": 29.769,
+    "price": 125.0,
+    "notes": "",
+    "city": "Darien, GA"
+  },
+  {
+    "date": "2024-02-26",
+    "odometer_miles": 147142.0,
+    "gallons": 33.631,
+    "price": 124.4,
+    "notes": "",
+    "city": "Bloomingdale, GA"
+  },
+  {
+    "date": "2024-03-14",
+    "odometer_miles": 147450.0,
+    "gallons": 36.604,
+    "price": 135.4,
+    "notes": "Est",
+    "city": "Waynesboro, GA"
+  },
+  {
+    "date": "2024-03-17",
+    "odometer_miles": 147587.0,
+    "gallons": 16.281,
+    "price": 66.74,
+    "notes": "",
+    "city": "Brooklet, GA"
+  },
+  {
+    "date": "2024-03-25",
+    "odometer_miles": 147831.0,
+    "gallons": 27.377,
+    "price": 95.79,
+    "notes": "Tires Filled next day",
+    "city": "Union, SC"
+  },
+  {
+    "date": "2024-04-15",
+    "odometer_miles": 148219.0,
+    "gallons": 46.986,
+    "price": 164.4,
+    "notes": "Oil Changed",
+    "city": "Granite Falls, NC"
+  },
+  {
+    "date": "2024-04-26",
+    "odometer_miles": 148623.0,
+    "gallons": 10.027,
+    "price": 40.1,
+    "notes": "",
+    "city": "Woodstock, VA"
+  },
+  {
+    "date": "2024-05-01",
+    "odometer_miles": 148726.0,
+    "gallons": 37.907,
+    "price": 151.59,
+    "notes": "",
+    "city": "Antrim Township, PA"
+  },
+  {
+    "date": "2024-05-11",
+    "odometer_miles": 148982.0,
+    "gallons": 27.021,
+    "price": 113.73,
+    "notes": "",
+    "city": "Middle Smithfield Township, PA"
+  },
+  {
+    "date": "2024-05-19",
+    "odometer_miles": 149322.0,
+    "gallons": 37.482,
+    "price": 146.14,
+    "notes": "",
+    "city": "Lunenburg, MA"
+  },
+  {
+    "date": "2024-06-21",
+    "odometer_miles": 149485.0,
+    "gallons": 18.557,
+    "price": 73.1,
+    "notes": "",
+    "city": "Lunenburg, MA"
+  },
+  {
+    "date": "2024-06-24",
+    "odometer_miles": 149857.0,
+    "gallons": 24.278,
+    "price": 100.0,
+    "notes": "",
+    "city": "Butler, NY"
+  },
+  {
+    "date": "2024-06-30",
+    "odometer_miles": 150044.0,
+    "gallons": 32.91,
+    "price": 131.61,
+    "notes": "",
+    "city": "Lackawanna, NY"
+  },
+  {
+    "date": "2024-07-10",
+    "odometer_miles": 150431.0,
+    "gallons": 35.451,
+    "price": 141.77,
+    "notes": "",
+    "city": "Perrysburg, OH"
+  },
+  {
+    "date": "2024-07-15",
+    "odometer_miles": 150731.0,
+    "gallons": 34.008,
+    "price": 124.44,
+    "notes": "",
+    "city": "Michigan City, MI"
+  },
+  {
+    "date": "2024-07-25",
+    "odometer_miles": 151151.0,
+    "gallons": 41.124,
+    "price": 152.12,
+    "notes": "",
+    "city": "Dubuque, IA"
+  },
+  {
+    "date": "2024-07-31",
+    "odometer_miles": 151534.0,
+    "gallons": 43.651,
+    "price": 161.47,
+    "notes": "",
+    "city": "Elk River, MI"
+  },
+  {
+    "date": "2024-08-09",
+    "odometer_miles": 151855.0,
+    "gallons": 22.619,
+    "price": 88.19,
+    "notes": "",
+    "city": "Valley City, ND"
+  },
+  {
+    "date": "2024-08-14",
+    "odometer_miles": 152117.0,
+    "gallons": 39.199,
+    "price": 145.0,
+    "notes": "",
+    "city": "Dickinson, ND"
+  },
+  {
+    "date": "2024-08-20",
+    "odometer_miles": 152501.0,
+    "gallons": 43.415,
+    "price": 159.72,
+    "notes": "Oil Changed",
+    "city": "Billings, MT"
+  },
+  {
+    "date": "2024-08-31",
+    "odometer_miles": 152851.0,
+    "gallons": 27.181,
+    "price": 100.0,
+    "notes": "",
+    "city": "Deer Lodge, MT"
+  },
+  {
+    "date": "2024-09-09",
+    "odometer_miles": 153154.0,
+    "gallons": 34.27,
+    "price": 139.44,
+    "notes": "",
+    "city": "Riggins, IA"
+  },
+  {
+    "date": "2024-09-12",
+    "odometer_miles": 153411.0,
+    "gallons": 27.694,
+    "price": 99.39,
+    "notes": "",
+    "city": "Nappa, IA"
+  },
+  {
+    "date": "2024-09-27",
+    "odometer_miles": 153530.0,
+    "gallons": 18.081,
+    "price": 63.27,
+    "notes": "",
+    "city": "Nappa, IA"
+  },
+  {
+    "date": "2024-10-09",
+    "odometer_miles": 153934.0,
+    "gallons": 41.86,
+    "price": 159.03,
+    "notes": "",
+    "city": "Klamath Falls, OR"
+  },
+  {
+    "date": "2024-10-17",
+    "odometer_miles": 154186.0,
+    "gallons": 27.404,
+    "price": 128.77,
+    "notes": "",
+    "city": "Redding - Magnolia, CA"
+  },
+  {
+    "date": "2024-10-25",
+    "odometer_miles": 154532.0,
+    "gallons": 37.044,
+    "price": 200.0,
+    "notes": "",
+    "city": "Willits, CA"
+  },
+  {
+    "date": "2024-11-01",
+    "odometer_miles": 154913.0,
+    "gallons": 44.652,
+    "price": 200.89,
+    "notes": "",
+    "city": "King City, CA"
+  },
+  {
+    "date": "2024-11-08",
+    "odometer_miles": 155274.0,
+    "gallons": 27.18,
+    "price": 125.0,
+    "notes": "",
+    "city": "North Lancaster, CA"
+  },
+  {
+    "date": "2024-11-16",
+    "odometer_miles": 155520.0,
+    "gallons": 45.009,
+    "price": 193.49,
+    "notes": "",
+    "city": "Dessert Hot Springs, CA"
+  },
+  {
+    "date": "2024-12-01",
+    "odometer_miles": 155800.0,
+    "gallons": 15.009,
+    "price": 46.51,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2024-12-18",
+    "odometer_miles": 156051.0,
+    "gallons": 43.221,
+    "price": 138.26,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2025-01-15",
+    "odometer_miles": 156400.0,
+    "gallons": 41.497,
+    "price": 145.2,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2025-02-16",
+    "odometer_miles": 156725.0,
+    "gallons": 34.54,
+    "price": 125.0,
+    "notes": "",
+    "city": "Vicksburg, AZ"
+  },
+  {
+    "date": "2025-03-02",
+    "odometer_miles": 157023.0,
+    "gallons": 37.338,
+    "price": 130.65,
+    "notes": "Oil Changed",
+    "city": "Buckeye, AZ"
+  },
+  {
+    "date": "2025-03-25",
+    "odometer_miles": 157374.0,
+    "gallons": 33.231,
+    "price": 124.92,
+    "notes": "",
+    "city": "White HIlls, AZ"
+  },
+  {
+    "date": "2025-04-10",
+    "odometer_miles": 157677.0,
+    "gallons": 27.255,
+    "price": 100.0,
+    "notes": "",
+    "city": "Mesquite, NV"
+  },
+  {
+    "date": "2025-04-21",
+    "odometer_miles": 157801.0,
+    "gallons": 34.218,
+    "price": 116.31,
+    "notes": "",
+    "city": "Cedear City, UT"
+  },
+  {
+    "date": "2025-05-01",
+    "odometer_miles": 158033.0,
+    "gallons": 20.524,
+    "price": 73.87,
+    "notes": "",
+    "city": "Hurricane, UT"
+  },
+  {
+    "date": "2025-05-20",
+    "odometer_miles": 158200.0,
+    "gallons": 23.358,
+    "price": 76.12,
+    "notes": "",
+    "city": "Fillmore, UT"
+  },
+  {
+    "date": "2025-06-03",
+    "odometer_miles": 158434.0,
+    "gallons": 26.617,
+    "price": 93.13,
+    "notes": "",
+    "city": "Saratoga Springs, UT"
+  },
+  {
+    "date": "2025-06-10",
+    "odometer_miles": 158815.0,
+    "gallons": 39.306,
+    "price": 137.53,
+    "notes": "",
+    "city": "Rexburg, ID"
+  },
+  {
+    "date": "2025-06-14",
+    "odometer_miles": 159183.0,
+    "gallons": 39.743,
+    "price": 127.14,
+    "notes": "",
+    "city": "Ammon, ID"
+  },
+  {
+    "date": "2025-06-30",
+    "odometer_miles": 159506.0,
+    "gallons": 26.84,
+    "price": 100.35,
+    "notes": "",
+    "city": "Butte, MT"
+  },
+  {
+    "date": "2025-07-11",
+    "odometer_miles": 159725.0,
+    "gallons": 33.914,
+    "price": 120.02,
+    "notes": "",
+    "city": "Missoula, MT"
+  },
+  {
+    "date": "2025-07-20",
+    "odometer_miles": 159816.0,
+    "gallons": 10.117,
+    "price": 37.42,
+    "notes": "",
+    "city": "Missoula, MT"
+  },
+  {
+    "date": "2025-08-16",
+    "odometer_miles": 160074.0,
+    "gallons": 27.33,
+    "price": 100.0,
+    "notes": "New Engine",
+    "city": "Helena, MT"
+  },
+  {
+    "date": "2025-09-01",
+    "odometer_miles": 160264.0,
+    "gallons": 27.392,
+    "price": 96.94,
+    "notes": "",
+    "city": "Belgrade, MT"
+  },
+  {
+    "date": "2025-09-06",
+    "odometer_miles": 160597.0,
+    "gallons": 35.519,
+    "price": 128.19,
+    "notes": "",
+    "city": "Thermopolis, WY"
+  },
+  {
+    "date": "2025-09-16",
+    "odometer_miles": 160946.0,
+    "gallons": 42.458,
+    "price": 138.8,
+    "notes": "",
+    "city": "West Laramie, WY"
+  },
+  {
+    "date": "2025-10-11",
+    "odometer_miles": 161262.0,
+    "gallons": 36.772,
+    "price": 117.63,
+    "notes": "New Transmission",
+    "city": "Colorado Springs, CO"
+  },
+  {
+    "date": "2025-10-22",
+    "odometer_miles": 161578.0,
+    "gallons": 44.953,
+    "price": 147.85,
+    "notes": "",
+    "city": "Las Vegas,NV"
+  },
+  {
+    "date": "2025-10-25",
+    "odometer_miles": 161956.0,
+    "gallons": 31.26,
+    "price": 100.0,
+    "notes": "",
+    "city": "Deming, NM"
+  },
+  {
+    "date": "2025-11-15",
+    "odometer_miles": 162223.0,
+    "gallons": 25.726,
+    "price": 99.02,
+    "notes": "",
+    "city": "Willcox, AZ"
+  },
+  {
+    "date": "2025-11-19",
+    "odometer_miles": 162496.0,
+    "gallons": 39.49,
+    "price": 138.18,
+    "notes": "",
+    "city": "Phoenix, AZ"
+  },
+  {
+    "date": "2025-11-25",
+    "odometer_miles": 162701.0,
+    "gallons": 34.764,
+    "price": 129.98,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2025-12-10",
+    "odometer_miles": 162777.0,
+    "gallons": 34.586,
+    "price": 124.48,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2026-01-09",
+    "odometer_miles": 163048.0,
+    "gallons": 21.77,
+    "price": 76.17,
+    "notes": "",
+    "city": "Yuma, AZ"
+  },
+  {
+    "date": "2026-01-20",
+    "odometer_miles": 163296.0,
+    "gallons": 38.827,
+    "price": 143.62,
+    "notes": "",
+    "city": "Ehrenberg, AZ"
+  },
+  {
+    "date": "2026-02-02",
+    "odometer_miles": 163621.0,
+    "gallons": 40.525,
+    "price": 139.77,
+    "notes": "",
+    "city": "Globe, AZ"
+  },
+  {
+    "date": "2026-02-12",
+    "odometer_miles": 163919.0,
+    "gallons": 32.808,
+    "price": 104.95,
+    "notes": "",
+    "city": "Deming, NM"
+  },
+  {
+    "date": "2026-02-16",
+    "odometer_miles": 164273.0,
+    "gallons": 39.054,
+    "price": 122.59,
+    "notes": "",
+    "city": "Balmorhea, TX"
+  },
+  {
+    "date": "2026-02-21",
+    "odometer_miles": 164667.0,
+    "gallons": 38.0,
+    "price": 125.0,
+    "notes": "Est",
+    "city": "Gearogetown, TX"
+  },
+  {
+    "date": "2026-02-28",
+    "odometer_miles": 165047.0,
+    "gallons": 37.89,
+    "price": 125.0,
+    "notes": "",
+    "city": "Jennings, LA"
+  },
+  {
+    "date": "2026-03-02",
+    "odometer_miles": 165369.0,
+    "gallons": 37.894,
+    "price": 123.12,
+    "notes": "",
+    "city": "Saraland, AL"
+  },
+  {
+    "date": "2026-03-08",
+    "odometer_miles": 165706.0,
+    "gallons": 35.007,
+    "price": 175.0,
+    "notes": "",
+    "city": "Preston, GA"
+  },
+  {
+    "date": "2026-03-17",
+    "odometer_miles": 166060.0,
+    "gallons": 20.1,
+    "price": 100.48,
+    "notes": "",
+    "city": "Waynesboro, GA"
+  },
+  {
+    "date": "2026-03-20",
+    "odometer_miles": 166110.0,
+    "gallons": 20.004,
+    "price": 100.0,
+    "notes": "",
+    "city": "Augusta,GA"
+  },
+  {
+    "date": "2026-03-27",
+    "odometer_miles": 166384.0,
+    "gallons": 18.871,
+    "price": 100.0,
+    "notes": "",
+    "city": "Conway, SC"
+  },
+  {
+    "date": "2026-03-29",
+    "odometer_miles": 166529.0,
+    "gallons": 29.418,
+    "price": 150.0,
+    "notes": "",
+    "city": "Lumberton, NC"
+  },
+  {
+    "date": "2026-04-17",
+    "odometer_miles": 166897.0,
+    "gallons": 31.256,
+    "price": 175.0,
+    "notes": "",
+    "city": "Sandy Hook, VA"
+  },
+  {
+    "date": "2026-04-22",
+    "odometer_miles": 167089.0,
+    "gallons": 31.295,
+    "price": 172.09,
+    "notes": "",
+    "city": "Hagerstown, MD"
+  },
+  {
+    "date": "2026-04-25",
+    "odometer_miles": 167429.0,
+    "gallons": 37.292,
+    "price": 214.76,
+    "notes": "",
+    "city": "Oneonta, NY"
+  },
+  {
+    "date": "2026-05-11",
+    "odometer_miles": 167728.0,
+    "gallons": 21.383,
+    "price": 124.0,
+    "notes": "",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2026-05-14",
+    "odometer_miles": 167891.0,
+    "gallons": 21.951,
+    "price": 124.0,
+    "notes": "",
+    "city": "Leominster, MA"
+  },
+  {
+    "date": "2026-06-11",
+    "odometer_miles": 168073.0,
+    "gallons": 18.003,
+    "price": 99.0,
+    "notes": "",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2026-06-22",
+    "odometer_miles": 168246.0,
+    "gallons": 24.043,
+    "price": 125.0,
+    "notes": "",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2026-07-04",
+    "odometer_miles": 168300.0,
+    "gallons": 25.005,
+    "price": 125.0,
+    "notes": "",
+    "city": "Lancaster, MA"
+  },
+  {
+    "date": "2026-07-10",
+    "odometer_miles": 168629.0,
+    "gallons": 24.515,
+    "price": 125.0,
+    "notes": "",
+    "city": "Rome, NY"
+  },
+  {
+    "date": "2026-07-17",
+    "odometer_miles": 168852.0,
+    "gallons": 23.152,
+    "price": 125.0,
+    "notes": "",
+    "city": "Watkins Glen, NY"
+  },
+  {
+    "date": "2026-07-18",
+    "odometer_miles": 169068.0,
+    "gallons": 23.152,
+    "price": 125.0,
+    "notes": "Est",
+    "city": "Fox Township, PA"
+  },
+  {
+    "date": "2026-07-21",
+    "odometer_miles": 169340.0,
+    "gallons": 20.165,
+    "price": 100.0,
+    "notes": "",
+    "city": "Oberlin, OH"
+  },
+  {
+    "date": "2026-07-23",
+    "odometer_miles": 169506.0,
+    "gallons": 37.743,
+    "price": 200.0,
+    "notes": "",
+    "city": "Adrian, MI"
+  },
+  {
+    "date": "2026-07-29",
+    "odometer_miles": 169790.0,
+    "gallons": 35.007,
+    "price": 175.0,
+    "notes": "",
+    "city": "Prudenville, MI"
+  },
+  {
+    "date": "2026-08-06",
+    "odometer_miles": 170134.0,
+    "gallons": 32.488,
+    "price": 172.15,
+    "notes": "",
+    "city": "Rapid River, MI"
+  },
+  {
+    "date": "2026-08-09",
+    "odometer_miles": 170426.0,
+    "gallons": 35.007,
+    "price": 175.0,
+    "notes": "",
+    "city": "Pleasant Prairie, WI"
+  }
+]

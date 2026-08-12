@@ -1,0 +1,1104 @@
+{
+  "days": [
+    {
+      "day_number": 1,
+      "title": "2021 (first visits)",
+      "locations": [
+        {
+          "name": "Northhampton",
+          "latitude": 42.3250896,
+          "longitude": -72.64120129999999,
+          "arrival_time": "Aug 20",
+          "notes": "Aug 20 (+2 more visits)"
+        },
+        {
+          "name": "Richmond",
+          "latitude": 37.5407246,
+          "longitude": -77.4360481,
+          "arrival_time": "Dec 04",
+          "notes": "Dec 04"
+        },
+        {
+          "name": "Durham",
+          "latitude": 35.995568399999996,
+          "longitude": -78.9002077,
+          "arrival_time": "Dec 05",
+          "notes": "Dec 05"
+        },
+        {
+          "name": "Hardeeville",
+          "latitude": 32.2871413,
+          "longitude": -81.08066649999999,
+          "arrival_time": "Dec 05",
+          "notes": "Dec 05"
+        },
+        {
+          "name": "Pembroke",
+          "latitude": 32.1360332,
+          "longitude": -81.6220565,
+          "arrival_time": "Dec 28",
+          "notes": "Dec 28"
+        },
+        {
+          "name": "Lancaster",
+          "latitude": 42.4534026,
+          "longitude": -71.67345379999999,
+          "arrival_time": "Jun 18",
+          "notes": "Jun 18 (+7 more visits)"
+        },
+        {
+          "name": "Owingsville",
+          "latitude": 38.1448015,
+          "longitude": -83.7640847,
+          "arrival_time": "Nov 05",
+          "notes": "Nov 05"
+        },
+        {
+          "name": "Riverside",
+          "latitude": 39.4737199,
+          "longitude": -76.24134459999999,
+          "arrival_time": "Nov 06",
+          "notes": "Nov 06"
+        },
+        {
+          "name": "Albany",
+          "latitude": 42.651754499999996,
+          "longitude": -73.75507569999999,
+          "arrival_time": "Nov 07",
+          "notes": "Nov 07"
+        },
+        {
+          "name": "Frackville",
+          "latitude": 40.7839774,
+          "longitude": -76.2302211,
+          "arrival_time": "Oct 01",
+          "notes": "Oct 01"
+        },
+        {
+          "name": "Rocky Mount",
+          "latitude": 36.9976403,
+          "longitude": -79.8919774,
+          "arrival_time": "Oct 02",
+          "notes": "Oct 02"
+        },
+        {
+          "name": "Sandy Ridge",
+          "latitude": 36.4990273,
+          "longitude": -80.1042143,
+          "arrival_time": "Oct 06",
+          "notes": "Oct 06"
+        },
+        {
+          "name": "East Saint Louis",
+          "latitude": 38.624514000000005,
+          "longitude": -90.1506465,
+          "arrival_time": "Oct 07",
+          "notes": "Oct 07"
+        },
+        {
+          "name": "Blackwater",
+          "latitude": 38.980299599999995,
+          "longitude": -92.99074999999999,
+          "arrival_time": "Oct 08",
+          "notes": "Oct 08"
+        },
+        {
+          "name": "Paxico",
+          "latitude": 39.069443199999995,
+          "longitude": -96.1663827,
+          "arrival_time": "Oct 10",
+          "notes": "Oct 10"
+        },
+        {
+          "name": "Colby",
+          "latitude": 39.3958369,
+          "longitude": -101.05237729999999,
+          "arrival_time": "Oct 15",
+          "notes": "Oct 15"
+        },
+        {
+          "name": "Colorado Springs",
+          "latitude": 38.8353142,
+          "longitude": -104.82160089999999,
+          "arrival_time": "Oct 18",
+          "notes": "Oct 18 (+5 more visits)"
+        },
+        {
+          "name": "Denver",
+          "latitude": 39.739235799999996,
+          "longitude": -104.99025100000001,
+          "arrival_time": "Oct 29",
+          "notes": "Oct 29"
+        },
+        {
+          "name": "Salina",
+          "latitude": 38.8402805,
+          "longitude": -97.61142369999999,
+          "arrival_time": "Oct 29",
+          "notes": "Oct 29"
+        },
+        {
+          "name": "Sweet Springs",
+          "latitude": 38.9636292,
+          "longitude": -93.4149319,
+          "arrival_time": "Oct 30",
+          "notes": "Oct 30"
+        },
+        {
+          "name": "Morgantown",
+          "latitude": 39.6304078,
+          "longitude": -79.95446799999999,
+          "arrival_time": "Oct 31",
+          "notes": "Oct 31"
+        },
+        {
+          "name": "Castleton On Hudson",
+          "latitude": 42.5331974,
+          "longitude": -73.7462997,
+          "arrival_time": "Sep 23",
+          "notes": "Sep 23 (+1 more visit)"
+        },
+        {
+          "name": "Otsiningo Park",
+          "latitude": 42.1235412,
+          "longitude": -75.90285240000001,
+          "arrival_time": "Sep 25",
+          "notes": "Sep 25"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "title": "2022 (first visits)",
+      "locations": [
+        {
+          "name": "Brunswick",
+          "latitude": 31.151091899999997,
+          "longitude": -81.4878157,
+          "arrival_time": "Jan 09",
+          "notes": "Jan 09 (+1 more visit)"
+        },
+        {
+          "name": "Jacksonville",
+          "latitude": 30.3297566,
+          "longitude": -81.6591529,
+          "arrival_time": "Jan 21",
+          "notes": "Jan 21"
+        },
+        {
+          "name": "Fort Lauderdale",
+          "latitude": 26.1224386,
+          "longitude": -80.13731740000001,
+          "arrival_time": "Jan 24",
+          "notes": "Jan 24"
+        },
+        {
+          "name": "Hinesville",
+          "latitude": 31.8315028,
+          "longitude": -81.6141099,
+          "arrival_time": "Jan 25",
+          "notes": "Jan 25"
+        },
+        {
+          "name": "Savannah",
+          "latitude": 32.0808989,
+          "longitude": -81.091203,
+          "arrival_time": "Feb 22",
+          "notes": "Feb 22 (+1 more visit)"
+        },
+        {
+          "name": "Pooler",
+          "latitude": 32.115480999999996,
+          "longitude": -81.2470574,
+          "arrival_time": "Mar 12",
+          "notes": "Mar 12 (+3 more visits)"
+        },
+        {
+          "name": "Pike Road",
+          "latitude": 32.2751421,
+          "longitude": -86.14545249999999,
+          "arrival_time": "Mar 20",
+          "notes": "Mar 20"
+        },
+        {
+          "name": "D'Iberville",
+          "latitude": 30.426309199999995,
+          "longitude": -88.89086379999999,
+          "arrival_time": "Mar 27",
+          "notes": "Mar 27"
+        },
+        {
+          "name": "West Monroe",
+          "latitude": 32.518477499999996,
+          "longitude": -92.14763529999999,
+          "arrival_time": "Mar 30",
+          "notes": "Mar 30"
+        },
+        {
+          "name": "Round Rock",
+          "latitude": 30.5082551,
+          "longitude": -97.678896,
+          "arrival_time": "Apr 06",
+          "notes": "Apr 06"
+        },
+        {
+          "name": "Midland",
+          "latitude": 31.9995797,
+          "longitude": -102.0756701,
+          "arrival_time": "Apr 09",
+          "notes": "Apr 09"
+        },
+        {
+          "name": "Deming",
+          "latitude": 32.2686981,
+          "longitude": -107.75864039999999,
+          "arrival_time": "Apr 09",
+          "notes": "Apr 09 (+3 more visits)"
+        },
+        {
+          "name": "Casa Grande",
+          "latitude": 32.9110027,
+          "longitude": -111.7733902,
+          "arrival_time": "Apr 23",
+          "notes": "Apr 23"
+        },
+        {
+          "name": "Flagstaff",
+          "latitude": 35.198283599999996,
+          "longitude": -111.651302,
+          "arrival_time": "Apr 29",
+          "notes": "Apr 29"
+        },
+        {
+          "name": "Show Low",
+          "latitude": 34.254208399999996,
+          "longitude": -110.02983270000001,
+          "arrival_time": "May 04",
+          "notes": "May 04"
+        },
+        {
+          "name": "Paraje",
+          "latitude": 35.0553205,
+          "longitude": -107.4756036,
+          "arrival_time": "May 07",
+          "notes": "May 07"
+        },
+        {
+          "name": "Sante Fe",
+          "latitude": 35.689430699999996,
+          "longitude": -105.9381944,
+          "arrival_time": "May 13",
+          "notes": "May 13 (+1 more visit)"
+        },
+        {
+          "name": "Chadron",
+          "latitude": 42.829384499999996,
+          "longitude": -103.000642,
+          "arrival_time": "May 29",
+          "notes": "May 29"
+        },
+        {
+          "name": "Rapid City",
+          "latitude": 44.080543399999996,
+          "longitude": -103.2310149,
+          "arrival_time": "Jun 10",
+          "notes": "Jun 10 (+1 more visit)"
+        },
+        {
+          "name": "Miles City",
+          "latitude": 46.4083362,
+          "longitude": -105.84055819999999,
+          "arrival_time": "Jun 25",
+          "notes": "Jun 25"
+        },
+        {
+          "name": "Billings",
+          "latitude": 45.782776899999995,
+          "longitude": -108.5045938,
+          "arrival_time": "Jul 01",
+          "notes": "Jul 01 (+1 more visit)"
+        },
+        {
+          "name": "Boulder",
+          "latitude": 46.2365947,
+          "longitude": -112.1208336,
+          "arrival_time": "Jul 06",
+          "notes": "Jul 06"
+        },
+        {
+          "name": "Kellogg",
+          "latitude": 47.5361665,
+          "longitude": -116.1281193,
+          "arrival_time": "Jul 11",
+          "notes": "Jul 11"
+        },
+        {
+          "name": "George",
+          "latitude": 47.0790224,
+          "longitude": -119.8558822,
+          "arrival_time": "Jul 13",
+          "notes": "Jul 13"
+        },
+        {
+          "name": "Bow",
+          "latitude": 48.5603051,
+          "longitude": -122.3980367,
+          "arrival_time": "Jul 16",
+          "notes": "Jul 16"
+        },
+        {
+          "name": "Ellensburg",
+          "latitude": 46.996514399999995,
+          "longitude": -120.54784739999998,
+          "arrival_time": "Jul 22",
+          "notes": "Jul 22"
+        },
+        {
+          "name": "Orofino",
+          "latitude": 46.479347,
+          "longitude": -116.2551395,
+          "arrival_time": "Jul 30",
+          "notes": "Jul 30"
+        },
+        {
+          "name": "Mountain Home",
+          "latitude": 43.1329504,
+          "longitude": -115.6911975,
+          "arrival_time": "Aug 06",
+          "notes": "Aug 06"
+        },
+        {
+          "name": "Jerome",
+          "latitude": 42.7240732,
+          "longitude": -114.51865339999999,
+          "arrival_time": "Aug 10",
+          "notes": "Aug 10"
+        },
+        {
+          "name": "Green River",
+          "latitude": 41.5294083,
+          "longitude": -109.46552829999999,
+          "arrival_time": "Aug 15",
+          "notes": "Aug 15"
+        },
+        {
+          "name": "West Laramie",
+          "latitude": 41.3088664,
+          "longitude": -105.6205459,
+          "arrival_time": "Aug 20",
+          "notes": "Aug 20 (+1 more visit)"
+        },
+        {
+          "name": "Eunice",
+          "latitude": 32.437343399999996,
+          "longitude": -103.1590798,
+          "arrival_time": "Oct 17",
+          "notes": "Oct 17"
+        },
+        {
+          "name": "San Angelo",
+          "latitude": 31.4637723,
+          "longitude": -100.4370375,
+          "arrival_time": "Oct 20",
+          "notes": "Oct 20"
+        },
+        {
+          "name": "Georgetown",
+          "latitude": 30.6332618,
+          "longitude": -97.6779842,
+          "arrival_time": "Oct 26",
+          "notes": "Oct 26 (+1 more visit)"
+        },
+        {
+          "name": "Port Arthur",
+          "latitude": 29.8708557,
+          "longitude": -93.93399939999999,
+          "arrival_time": "Nov 01",
+          "notes": "Nov 01"
+        },
+        {
+          "name": "Slidell",
+          "latitude": 30.275194499999998,
+          "longitude": -89.78117449999999,
+          "arrival_time": "Nov 04",
+          "notes": "Nov 04"
+        },
+        {
+          "name": "Bay Minette",
+          "latitude": 30.882962799999998,
+          "longitude": -87.7730474,
+          "arrival_time": "Nov 09",
+          "notes": "Nov 09"
+        },
+        {
+          "name": "Columbus",
+          "latitude": 32.4667107,
+          "longitude": -84.9918962,
+          "arrival_time": "Nov 11",
+          "notes": "Nov 11"
+        },
+        {
+          "name": "Palatka",
+          "latitude": 29.6472272,
+          "longitude": -81.6297111,
+          "arrival_time": "Dec 23",
+          "notes": "Dec 23"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "title": "2023 (first visits)",
+      "locations": [
+        {
+          "name": "Statesboro",
+          "latitude": 32.448787599999996,
+          "longitude": -81.7831674,
+          "arrival_time": "Feb 02",
+          "notes": "Feb 02 (+2 more visits)"
+        },
+        {
+          "name": "Waynesboro",
+          "latitude": 33.0898731,
+          "longitude": -82.0156736,
+          "arrival_time": "Mar 12",
+          "notes": "Mar 12 (+3 more visits)"
+        },
+        {
+          "name": "Orangeburg",
+          "latitude": 33.4918203,
+          "longitude": -80.8556476,
+          "arrival_time": "Mar 27",
+          "notes": "Mar 27"
+        },
+        {
+          "name": "Georgetown",
+          "latitude": 33.376833999999995,
+          "longitude": -79.2944964,
+          "arrival_time": "Apr 08",
+          "notes": "Apr 08"
+        },
+        {
+          "name": "Hope Mills",
+          "latitude": 34.9756761,
+          "longitude": -78.95072619999999,
+          "arrival_time": "Apr 13",
+          "notes": "Apr 13"
+        },
+        {
+          "name": "Powhatan",
+          "latitude": 35.61361,
+          "longitude": -78.4177799,
+          "arrival_time": "Apr 24",
+          "notes": "Apr 24"
+        },
+        {
+          "name": "Hamburg",
+          "latitude": 40.5556484,
+          "longitude": -75.98187720000001,
+          "arrival_time": "May 02",
+          "notes": "May 02 (+1 more visit)"
+        },
+        {
+          "name": "New Milford",
+          "latitude": 41.8725781,
+          "longitude": -75.7271318,
+          "arrival_time": "May 04",
+          "notes": "May 04"
+        },
+        {
+          "name": "Lunenburg",
+          "latitude": 42.5971299,
+          "longitude": -71.7416301,
+          "arrival_time": "May 20",
+          "notes": "May 20 (+3 more visits)"
+        },
+        {
+          "name": "North Leominster",
+          "latitude": 42.541757200000006,
+          "longitude": -71.73701580000001,
+          "arrival_time": "Jun 28",
+          "notes": "Jun 28"
+        },
+        {
+          "name": "Leominster",
+          "latitude": 42.5250906,
+          "longitude": -71.759794,
+          "arrival_time": "Jul 15",
+          "notes": "Jul 15 (+1 more visit)"
+        },
+        {
+          "name": "Hubbard",
+          "latitude": 41.1564463,
+          "longitude": -80.569239,
+          "arrival_time": "Aug 27",
+          "notes": "Aug 27"
+        },
+        {
+          "name": "Kalamazoo",
+          "latitude": 42.2896532,
+          "longitude": -85.5856279,
+          "arrival_time": "Aug 31",
+          "notes": "Aug 31"
+        },
+        {
+          "name": "Woodhull",
+          "latitude": 41.1789256,
+          "longitude": -90.3159582,
+          "arrival_time": "Sep 01",
+          "notes": "Sep 01"
+        },
+        {
+          "name": "Omaha",
+          "latitude": 41.2565369,
+          "longitude": -95.9345034,
+          "arrival_time": "Sep 03",
+          "notes": "Sep 03"
+        },
+        {
+          "name": "North Platte",
+          "latitude": 41.1402759,
+          "longitude": -100.7601454,
+          "arrival_time": "Sep 09",
+          "notes": "Sep 09"
+        },
+        {
+          "name": "Stratford",
+          "latitude": 36.336140199999996,
+          "longitude": -102.0721191,
+          "arrival_time": "Sep 28",
+          "notes": "Sep 28"
+        },
+        {
+          "name": "Guymon",
+          "latitude": 36.6828041,
+          "longitude": -101.4815493,
+          "arrival_time": "Sep 30",
+          "notes": "Sep 30"
+        },
+        {
+          "name": "Warr Acres",
+          "latitude": 35.522305700000004,
+          "longitude": -97.6189809,
+          "arrival_time": "Oct 09",
+          "notes": "Oct 09"
+        },
+        {
+          "name": "Hugo",
+          "latitude": 34.01066,
+          "longitude": -95.50968209999999,
+          "arrival_time": "Oct 14",
+          "notes": "Oct 14"
+        },
+        {
+          "name": "Springhill",
+          "latitude": 33.005969199999996,
+          "longitude": -93.4668396,
+          "arrival_time": "Oct 19",
+          "notes": "Oct 19"
+        },
+        {
+          "name": "Purvis",
+          "latitude": 31.1432351,
+          "longitude": -89.40978659999999,
+          "arrival_time": "Oct 21",
+          "notes": "Oct 21"
+        },
+        {
+          "name": "Biloxi",
+          "latitude": 30.395426900000004,
+          "longitude": -88.88704589999999,
+          "arrival_time": "Nov 11",
+          "notes": "Nov 11"
+        },
+        {
+          "name": "Tuscaloosa",
+          "latitude": 33.21031,
+          "longitude": -87.5658722,
+          "arrival_time": "Nov 22",
+          "notes": "Nov 22"
+        },
+        {
+          "name": "Leeds",
+          "latitude": 33.5481597,
+          "longitude": -86.54442879999999,
+          "arrival_time": "Dec 02",
+          "notes": "Dec 02"
+        },
+        {
+          "name": "Augusta",
+          "latitude": 33.468731399999996,
+          "longitude": -82.0283188,
+          "arrival_time": "Dec 10",
+          "notes": "Dec 10 (+1 more visit)"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "title": "2024 (first visits)",
+      "locations": [
+        {
+          "name": "Millen",
+          "latitude": 32.804051199999996,
+          "longitude": -81.9492812,
+          "arrival_time": "Feb 10",
+          "notes": "Feb 10"
+        },
+        {
+          "name": "Darien",
+          "latitude": 31.370225500000004,
+          "longitude": -81.43399029999999,
+          "arrival_time": "Feb 18",
+          "notes": "Feb 18"
+        },
+        {
+          "name": "Bloomingdale",
+          "latitude": 32.1324248,
+          "longitude": -81.2990018,
+          "arrival_time": "Feb 26",
+          "notes": "Feb 26"
+        },
+        {
+          "name": "Brooklet",
+          "latitude": 32.379629400000006,
+          "longitude": -81.6631659,
+          "arrival_time": "Mar 17",
+          "notes": "Mar 17"
+        },
+        {
+          "name": "Union",
+          "latitude": 34.715412199999996,
+          "longitude": -81.623711,
+          "arrival_time": "Mar 25",
+          "notes": "Mar 25"
+        },
+        {
+          "name": "Granite Falls",
+          "latitude": 35.7965205,
+          "longitude": -81.4306457,
+          "arrival_time": "Apr 15",
+          "notes": "Apr 15"
+        },
+        {
+          "name": "Woodstock",
+          "latitude": 38.8817784,
+          "longitude": -78.50584289999999,
+          "arrival_time": "Apr 26",
+          "notes": "Apr 26"
+        },
+        {
+          "name": "Antrim Township",
+          "latitude": 39.7577955,
+          "longitude": -77.7223162,
+          "arrival_time": "May 01",
+          "notes": "May 01"
+        },
+        {
+          "name": "Middle Smithfield Township",
+          "latitude": 41.0835749,
+          "longitude": -75.0844757,
+          "arrival_time": "May 11",
+          "notes": "May 11"
+        },
+        {
+          "name": "Butler",
+          "latitude": 43.191555,
+          "longitude": -76.7567368,
+          "arrival_time": "Jun 24",
+          "notes": "Jun 24"
+        },
+        {
+          "name": "Lackawanna",
+          "latitude": 42.825614099999996,
+          "longitude": -78.8233664,
+          "arrival_time": "Jun 30",
+          "notes": "Jun 30"
+        },
+        {
+          "name": "Perrysburg",
+          "latitude": 41.556996,
+          "longitude": -83.627157,
+          "arrival_time": "Jul 10",
+          "notes": "Jul 10"
+        },
+        {
+          "name": "Michigan City",
+          "latitude": 41.707539399999995,
+          "longitude": -86.8950297,
+          "arrival_time": "Jul 15",
+          "notes": "Jul 15"
+        },
+        {
+          "name": "Dubuque",
+          "latitude": 42.5063629,
+          "longitude": -90.6677479,
+          "arrival_time": "Jul 25",
+          "notes": "Jul 25"
+        },
+        {
+          "name": "Elk River",
+          "latitude": 44.9016689,
+          "longitude": -85.41368279999999,
+          "arrival_time": "Jul 31",
+          "notes": "Jul 31"
+        },
+        {
+          "name": "Valley City",
+          "latitude": 46.9233129,
+          "longitude": -98.0031547,
+          "arrival_time": "Aug 09",
+          "notes": "Aug 09"
+        },
+        {
+          "name": "Dickinson",
+          "latitude": 46.879175599999996,
+          "longitude": -102.78962419999999,
+          "arrival_time": "Aug 14",
+          "notes": "Aug 14"
+        },
+        {
+          "name": "Deer Lodge",
+          "latitude": 46.3990941,
+          "longitude": -112.73837209999999,
+          "arrival_time": "Aug 31",
+          "notes": "Aug 31"
+        },
+        {
+          "name": "Riggins",
+          "latitude": 45.4200222,
+          "longitude": -116.31631569999999,
+          "arrival_time": "Sep 09",
+          "notes": "Sep 09"
+        },
+        {
+          "name": "Nampa",
+          "latitude": 43.5788175,
+          "longitude": -116.55978,
+          "arrival_time": "Sep 12",
+          "notes": "Sep 12 (+1 more visit)"
+        },
+        {
+          "name": "Klamath Falls",
+          "latitude": 42.224866999999996,
+          "longitude": -121.78167039999998,
+          "arrival_time": "Oct 09",
+          "notes": "Oct 09"
+        },
+        {
+          "name": "Redding",
+          "latitude": 40.575412899999996,
+          "longitude": -122.38361210000001,
+          "arrival_time": "Oct 17",
+          "notes": "Oct 17"
+        },
+        {
+          "name": "Willits",
+          "latitude": 39.4096079,
+          "longitude": -123.35556559999999,
+          "arrival_time": "Oct 25",
+          "notes": "Oct 25"
+        },
+        {
+          "name": "King City",
+          "latitude": 36.2127439,
+          "longitude": -121.1260287,
+          "arrival_time": "Nov 01",
+          "notes": "Nov 01"
+        },
+        {
+          "name": "North Lancaster",
+          "latitude": 34.703947,
+          "longitude": -118.14810159999999,
+          "arrival_time": "Nov 08",
+          "notes": "Nov 08"
+        },
+        {
+          "name": "Desert Hot Springs",
+          "latitude": 33.9615186,
+          "longitude": -116.50137930000001,
+          "arrival_time": "Nov 16",
+          "notes": "Nov 16"
+        },
+        {
+          "name": "Yuma",
+          "latitude": 32.6926512,
+          "longitude": -114.62769159999999,
+          "arrival_time": "Dec 01",
+          "notes": "Dec 01 (+5 more visits)"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "title": "2025 (first visits)",
+      "locations": [
+        {
+          "name": "Vicksburg",
+          "latitude": 33.7444747,
+          "longitude": -113.75215639999999,
+          "arrival_time": "Feb 16",
+          "notes": "Feb 16"
+        },
+        {
+          "name": "Buckeye",
+          "latitude": 33.370319699999996,
+          "longitude": -112.5837766,
+          "arrival_time": "Mar 02",
+          "notes": "Mar 02"
+        },
+        {
+          "name": "White Hills",
+          "latitude": 35.7402825,
+          "longitude": -114.3507557,
+          "arrival_time": "Mar 25",
+          "notes": "Mar 25"
+        },
+        {
+          "name": "Mesquite",
+          "latitude": 36.805530999999995,
+          "longitude": -114.06719,
+          "arrival_time": "Apr 10",
+          "notes": "Apr 10"
+        },
+        {
+          "name": "Cedar City",
+          "latitude": 37.6773637,
+          "longitude": -113.06175959999999,
+          "arrival_time": "Apr 21",
+          "notes": "Apr 21"
+        },
+        {
+          "name": "Hurricane",
+          "latitude": 37.175260699999995,
+          "longitude": -113.2899484,
+          "arrival_time": "May 01",
+          "notes": "May 01"
+        },
+        {
+          "name": "Fillmore",
+          "latitude": 38.9638553,
+          "longitude": -112.3397377,
+          "arrival_time": "May 20",
+          "notes": "May 20"
+        },
+        {
+          "name": "Saratoga Springs",
+          "latitude": 40.3301898,
+          "longitude": -111.90448769999999,
+          "arrival_time": "Jun 03",
+          "notes": "Jun 03"
+        },
+        {
+          "name": "Rexburg",
+          "latitude": 43.823109599999995,
+          "longitude": -111.7924237,
+          "arrival_time": "Jun 10",
+          "notes": "Jun 10"
+        },
+        {
+          "name": "Ammon",
+          "latitude": 43.4696366,
+          "longitude": -111.9666355,
+          "arrival_time": "Jun 14",
+          "notes": "Jun 14"
+        },
+        {
+          "name": "Butte",
+          "latitude": 46.0038232,
+          "longitude": -112.53477760000001,
+          "arrival_time": "Jun 30",
+          "notes": "Jun 30"
+        },
+        {
+          "name": "Missoula",
+          "latitude": 46.8721284,
+          "longitude": -113.9940314,
+          "arrival_time": "Jul 11",
+          "notes": "Jul 11 (+1 more visit)"
+        },
+        {
+          "name": "Helena",
+          "latitude": 46.5891452,
+          "longitude": -112.0391057,
+          "arrival_time": "Aug 16",
+          "notes": "Aug 16"
+        },
+        {
+          "name": "Belgrade",
+          "latitude": 45.7762463,
+          "longitude": -111.1770945,
+          "arrival_time": "Sep 01",
+          "notes": "Sep 01"
+        },
+        {
+          "name": "Thermopolis",
+          "latitude": 43.6460672,
+          "longitude": -108.2120432,
+          "arrival_time": "Sep 06",
+          "notes": "Sep 06"
+        },
+        {
+          "name": "Las Vegas",
+          "latitude": 36.171563,
+          "longitude": -115.1391009,
+          "arrival_time": "Oct 22",
+          "notes": "Oct 22"
+        },
+        {
+          "name": "Willcox",
+          "latitude": 32.252851899999996,
+          "longitude": -109.8320124,
+          "arrival_time": "Nov 15",
+          "notes": "Nov 15"
+        },
+        {
+          "name": "Phoenix",
+          "latitude": 33.4482948,
+          "longitude": -112.07254879999999,
+          "arrival_time": "Nov 19",
+          "notes": "Nov 19"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "title": "2026 (first visits)",
+      "locations": [
+        {
+          "name": "Ehrenberg",
+          "latitude": 33.6041914,
+          "longitude": -114.52523219999999,
+          "arrival_time": "Jan 20",
+          "notes": "Jan 20"
+        },
+        {
+          "name": "Globe",
+          "latitude": 33.394222299999996,
+          "longitude": -110.7864984,
+          "arrival_time": "Feb 02",
+          "notes": "Feb 02"
+        },
+        {
+          "name": "Balmorhea",
+          "latitude": 30.984312300000003,
+          "longitude": -103.7446257,
+          "arrival_time": "Feb 16",
+          "notes": "Feb 16"
+        },
+        {
+          "name": "Jennings",
+          "latitude": 30.222428399999995,
+          "longitude": -92.657085,
+          "arrival_time": "Feb 28",
+          "notes": "Feb 28"
+        },
+        {
+          "name": "Saraland",
+          "latitude": 30.820742,
+          "longitude": -88.07055559999999,
+          "arrival_time": "Mar 02",
+          "notes": "Mar 02"
+        },
+        {
+          "name": "Preston",
+          "latitude": 32.0659918,
+          "longitude": -84.537417,
+          "arrival_time": "Mar 08",
+          "notes": "Mar 08"
+        },
+        {
+          "name": "Conway",
+          "latitude": 33.836003399999996,
+          "longitude": -79.0478143,
+          "arrival_time": "Mar 27",
+          "notes": "Mar 27"
+        },
+        {
+          "name": "Lumberton",
+          "latitude": 34.6182199,
+          "longitude": -79.0086424,
+          "arrival_time": "Mar 29",
+          "notes": "Mar 29"
+        },
+        {
+          "name": "Sandy Hook",
+          "latitude": 37.752645199999996,
+          "longitude": -77.9124958,
+          "arrival_time": "Apr 17",
+          "notes": "Apr 17"
+        },
+        {
+          "name": "Hagerstown",
+          "latitude": 39.641762899999996,
+          "longitude": -77.71999319999999,
+          "arrival_time": "Apr 22",
+          "notes": "Apr 22"
+        },
+        {
+          "name": "Oneonta",
+          "latitude": 42.452857099999996,
+          "longitude": -75.0637746,
+          "arrival_time": "Apr 25",
+          "notes": "Apr 25"
+        },
+        {
+          "name": "Rome",
+          "latitude": 43.2128473,
+          "longitude": -75.4557303,
+          "arrival_time": "Jul 10",
+          "notes": "Jul 10"
+        },
+        {
+          "name": "Watkins Glen",
+          "latitude": 42.380628699999995,
+          "longitude": -76.8732921,
+          "arrival_time": "Jul 17",
+          "notes": "Jul 17"
+        },
+        {
+          "name": "Fox Township",
+          "latitude": 41.3142844,
+          "longitude": -78.6114999,
+          "arrival_time": "Jul 18",
+          "notes": "Jul 18"
+        },
+        {
+          "name": "Oberlin",
+          "latitude": 41.2939386,
+          "longitude": -82.21737859999999,
+          "arrival_time": "Jul 21",
+          "notes": "Jul 21"
+        },
+        {
+          "name": "Adrian",
+          "latitude": 41.8975471,
+          "longitude": -84.03716589999999,
+          "arrival_time": "Jul 23",
+          "notes": "Jul 23"
+        },
+        {
+          "name": "Prudenville",
+          "latitude": 44.298475499999995,
+          "longitude": -84.6520906,
+          "arrival_time": "Jul 29",
+          "notes": "Jul 29"
+        },
+        {
+          "name": "Rapid River",
+          "latitude": 45.9266383,
+          "longitude": -86.9670603,
+          "arrival_time": "Aug 06",
+          "notes": "Aug 06"
+        },
+        {
+          "name": "Pleasant Prairie",
+          "latitude": 42.553075299999996,
+          "longitude": -87.9334118,
+          "arrival_time": "Aug 09",
+          "notes": "Aug 09"
+        }
+      ]
+    }
+  ]
+}
