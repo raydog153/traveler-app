@@ -129,14 +129,18 @@ def to_maintenance_out(m: MaintenanceRecord) -> MaintenanceRecordOut:
     )
 
 
-def yearly_summary(computed: list[ComputedFillup]) -> list[YearlySummary]:
+def yearly_summary(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> list[YearlySummary]:
     by_year: dict[int, list[ComputedFillup]] = defaultdict(list)
     for c in computed:
         by_year[c.fillup.date.year].append(c)
 
+    maintenance_cost_by_year: dict[int, float] = defaultdict(float)
+    for r in records:
+        maintenance_cost_by_year[r.date.year] += float(r.cost)
+
     out = []
-    for year in sorted(by_year):
-        rows = by_year[year]
+    for year in sorted(set(by_year) | set(maintenance_cost_by_year)):
+        rows = by_year.get(year, [])
         cost = sum(float(c.fillup.price) for c in rows)
         gallons = sum(float(c.fillup.gallons) for c in rows)
         miles = sum(c.driven for c in rows if c.driven)
@@ -150,6 +154,7 @@ def yearly_summary(computed: list[ComputedFillup]) -> list[YearlySummary]:
                 gallons=gallons,
                 avg_mpg_clean=avg_mpg,
                 fillups=len(rows),
+                maintenance_cost=maintenance_cost_by_year.get(year, 0.0),
             )
         )
     return out

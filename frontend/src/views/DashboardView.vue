@@ -47,7 +47,7 @@
       <div class="two-col">
         <div class="panel">
           <h2>Annual snapshot</h2>
-          <p class="desc">Gas spend vs. miles driven, per year. Most recent year is partial.</p>
+          <p class="desc">Gas + maintenance spend (stacked) vs. miles driven, per year. Most recent year is partial.</p>
           <YearlyComboChart :yearly="summary.yearly" />
         </div>
         <div class="panel">

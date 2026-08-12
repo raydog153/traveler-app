@@ -31,7 +31,7 @@ def build_dashboard_summary(
     return DashboardSummary(
         subhead=subhead,
         stats=analytics.stat_cards(computed, records),
-        yearly=analytics.yearly_summary(computed),
+        yearly=analytics.yearly_summary(computed, records),
         major_events=analytics.major_events(records),
         narrative=narrative_text(computed),
         price_per_gallon_series=price_series,

@@ -94,7 +94,7 @@ class TestYearlySummary:
             make_fillup(4, "2022-01-01", 101000, 20, 60),
         ]
         computed = analytics.compute_fillups(fillups)
-        summary = {y.year: y for y in analytics.yearly_summary(computed)}
+        summary = {y.year: y for y in analytics.yearly_summary(computed, [])}
 
         assert summary["2021"].fillups == 3
         # miles: 300 (excluded row still counts toward miles) + 400 = 700
@@ -102,6 +102,27 @@ class TestYearlySummary:
         # avg mpg only from the clean 3rd row (400 driven / 20 gal = 20mpg)
         assert summary["2021"].avg_mpg_clean == pytest.approx(20.0)
         assert summary["2022"].fillups == 1
+
+    def test_aggregates_maintenance_cost_per_year(self):
+        fillups = [make_fillup(1, "2021-01-01", 100000, 20, 60)]
+        records = [
+            make_record(1, "2021-03-01", 500),
+            make_record(2, "2021-06-01", 250),
+            make_record(3, "2022-01-01", 1000),
+        ]
+        computed = analytics.compute_fillups(fillups)
+        summary = {y.year: y for y in analytics.yearly_summary(computed, records)}
+
+        assert summary["2021"].maintenance_cost == pytest.approx(750)
+        assert summary["2022"].maintenance_cost == pytest.approx(1000)
+
+    def test_year_with_only_maintenance_and_no_fillups_still_appears(self):
+        records = [make_record(1, "2023-05-01", 300)]
+
+        summary = {y.year: y for y in analytics.yearly_summary([], records)}
+
+        assert summary["2023"].maintenance_cost == pytest.approx(300)
+        assert summary["2023"].fillups == 0
 
 
 class TestMajorEvents:

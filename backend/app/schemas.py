@@ -65,6 +65,7 @@ class YearlySummary(BaseModel):
     gallons: float
     avg_mpg_clean: float | None
     fillups: int
+    maintenance_cost: float
 
 
 class MajorEvent(BaseModel):

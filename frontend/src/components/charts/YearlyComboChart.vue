@@ -26,7 +26,19 @@ const chartData = computed(() => ({
       data: props.yearly.map((y) => y.cost),
       backgroundColor: '#ff8a3d',
       yAxisID: 'y',
+      stack: 'spend',
       borderRadius: 6,
+      order: 2,
+    },
+    {
+      type: 'bar',
+      label: 'Maintenance spend ($)',
+      data: props.yearly.map((y) => y.maintenance_cost),
+      backgroundColor: '#f87171',
+      yAxisID: 'y',
+      stack: 'spend',
+      borderRadius: 6,
+      order: 2,
     },
     {
       type: 'line',
@@ -36,6 +48,9 @@ const chartData = computed(() => ({
       yAxisID: 'y1',
       borderWidth: 2.5,
       tension: 0.2,
+      // Lower order draws on top in Chart.js -- keeps the line visible over
+      // the (taller) stacked bars instead of getting occluded by them.
+      order: 1,
     },
   ],
 }))
@@ -44,7 +59,8 @@ const options = {
   ...baseChartOptions,
   plugins: { legend: legendBoxWidth12 },
   scales: {
-    y: linearScale({ position: 'left', title: { display: true, text: '$ spent' } }),
+    x: { stacked: true },
+    y: linearScale({ position: 'left', stacked: true, title: { display: true, text: '$ spent' } }),
     y1: { position: 'right', grid: { display: false }, title: { display: true, text: 'miles' } },
   },
 }
