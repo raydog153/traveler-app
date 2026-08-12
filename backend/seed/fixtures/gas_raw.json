@@ -285,7 +285,7 @@
     "gallons": 29.65,
     "price": 150.0,
     "notes": "Leave GA",
-    "city": "Pike Road"
+    "city": "Franklin, AL"
   },
   {
     "date": "2022-03-27",
@@ -301,7 +301,7 @@
     "gallons": 37.935,
     "price": 185.85,
     "notes": "",
-    "city": "West Monroe"
+    "city": "West Monroe, LA"
   },
   {
     "date": "2022-04-06",
@@ -309,7 +309,7 @@
     "gallons": 46.719,
     "price": 219.53,
     "notes": "",
-    "city": "Round Rock"
+    "city": "Round Rock, TX"
   },
   {
     "date": "2022-04-09",
@@ -341,7 +341,7 @@
     "gallons": 29.418,
     "price": 150.0,
     "notes": "",
-    "city": "Flagstaff - Cherry Hill"
+    "city": "Flagstaff, AZ"
   },
   {
     "date": "2022-05-04",
@@ -357,7 +357,7 @@
     "gallons": 27.782,
     "price": 150.0,
     "notes": "",
-    "city": "Paraje"
+    "city": "Paraje, NM"
   },
   {
     "date": "2022-05-13",
@@ -381,7 +381,7 @@
     "gallons": 37.958,
     "price": 200.0,
     "notes": "",
-    "city": "Chadron"
+    "city": "Chadron, NE"
   },
   {
     "date": "2022-06-10",
@@ -405,7 +405,7 @@
     "gallons": 21.555,
     "price": 125.0,
     "notes": "",
-    "city": "Miles City"
+    "city": "Miles City, MT"
   },
   {
     "date": "2022-07-01",
@@ -437,7 +437,7 @@
     "gallons": 34.728,
     "price": 200.0,
     "notes": "",
-    "city": "George, Washington"
+    "city": "George, WA"
   },
   {
     "date": "2022-07-16",
@@ -445,7 +445,7 @@
     "gallons": 30.522,
     "price": 162.34,
     "notes": "",
-    "city": "Bow, Washington"
+    "city": "Bow, WA"
   },
   {
     "date": "2022-07-22",
@@ -453,7 +453,7 @@
     "gallons": 35.094,
     "price": 200.0,
     "notes": "",
-    "city": "Ellensburg, Washington"
+    "city": "Ellensburg, WA"
   },
   {
     "date": "2022-07-30",
@@ -1437,7 +1437,7 @@
     "gallons": 20.004,
     "price": 100.0,
     "notes": "",
-    "city": "Augusta,GA"
+    "city": "Augusta, GA"
   },
   {
     "date": "2026-03-27",
