@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import and_, or_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
-from app.models import GasFillup
+from app.models import GasFillup, split_city_state
 from app.schemas import GasFillupIn, GasFillupOut
 from app.services import analytics, geocoding
 
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/gas", tags=["gas"])
 
 @router.get("/fillups", response_model=list[GasFillupOut])
 def list_fillups(db: Session = Depends(get_db)) -> list[GasFillupOut]:
-    fillups = db.execute(select(GasFillup)).scalars().all()
+    fillups = db.execute(select(GasFillup).options(joinedload(GasFillup.location))).scalars().all()
     computed = analytics.compute_fillups(list(fillups))
     return [analytics.to_gas_out(c) for c in computed]
 
@@ -35,16 +35,17 @@ def _find_previous_fillup(db: Session, fillup: GasFillup) -> GasFillup | None:
 
 @router.post("/fillups", response_model=GasFillupOut, status_code=status.HTTP_201_CREATED)
 def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFillupOut:
-    latitude, longitude = geocoding.get_or_geocode(db, payload.city)
+    city, state = split_city_state(payload.city)
+    location = geocoding.get_or_create_location(db, city, state)
     fillup = GasFillup(
         date=payload.date,
         odometer_miles=payload.odometer_miles,
         gallons=payload.gallons,
         price=payload.price,
         notes=payload.notes,
-        city=payload.city,
-        latitude=latitude,
-        longitude=longitude,
+        location=location,
+        latitude=location.lat,
+        longitude=location.long,
     )
     db.add(fillup)
     db.commit()

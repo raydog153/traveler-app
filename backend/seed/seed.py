@@ -8,9 +8,9 @@ mechanically splitting gas_fillups.city on its first comma, which leaves a
 handful of rows with a missing/misspelled/spelled-out-in-full state;
 locations.json instead captures those rows after they were manually
 corrected, so reseeding (or a fresh install) doesn't regress the fixes.
-It's also the sole source of each seeded GasFillup row's own lat/lng --
-looked up by re-applying that same city/state split to gas_raw.json's
-`city` field (see `_split_city_state`).
+It's also the sole source of each seeded GasFillup row's own lat/lng and
+location_id -- both looked up by re-applying that same city/state split to
+gas_raw.json's `city` field (see `app.models.split_city_state`).
 
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
@@ -29,20 +29,13 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
-from app.models import GasFillup, Location, MaintenanceRecord, location_id
+from app.models import GasFillup, Location, MaintenanceRecord, location_id, split_city_state
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
 def _load_fixture(name: str) -> list:
     return json.loads((FIXTURES_DIR / name).read_text())
-
-
-def _split_city_state(raw_city: str) -> tuple[str, str]:
-    """Matches the split used to derive locations.json from gas_fillups.city
-    in the first place, so a gas_raw.json row's city looks up cleanly."""
-    city, _, state = raw_city.partition(",")
-    return city.strip(), state.strip()
 
 
 def seed(db: Session, force: bool = False) -> None:
@@ -61,19 +54,41 @@ def seed(db: Session, force: bool = False) -> None:
     maint_rows = _load_fixture("maint_raw.json")
     location_rows = _load_fixture("locations.json")
 
-    lat_long_by_location_id = {
-        location_id(row["city"], row["state"]): (row["lat"], row["long"]) for row in location_rows
-    }
-    distinct_cities = {row["city"] for row in gas_rows}
-    matched_cities = {c for c in distinct_cities if location_id(*_split_city_state(c)) in lat_long_by_location_id}
+    fixture_locations = {location_id(row["city"], row["state"]): row for row in location_rows}
+
+    # gas_raw.json rows whose city/state don't appear in locations.json --
+    # possible if the fixture drifts out of sync with the live data. Seeded
+    # with null lat/lng, to be geocoded live on the next fill-up there.
+    gas_locations = {}
+    for row in gas_rows:
+        city, state = split_city_state(row["city"])
+        gas_locations.setdefault(location_id(city, state), (city, state))
+    unmatched = {loc_id: cs for loc_id, cs in gas_locations.items() if loc_id not in fixture_locations}
     print(
-        f"lat/lng backfill via locations.json: {len(matched_cities)}/{len(distinct_cities)} "
-        f"cities matched, {len(distinct_cities) - len(matched_cities)} unmatched "
-        f"(will be geocoded live on next fill-up at that city)"
+        f"lat/lng backfill via locations.json: {len(gas_locations) - len(unmatched)}/{len(gas_locations)} "
+        f"locations matched, {len(unmatched)} unmatched"
     )
 
+    for row in location_rows:
+        db.add(
+            Location(
+                id=location_id(row["city"], row["state"]),
+                city=row["city"],
+                state=row["state"],
+                lat=row["lat"],
+                long=row["long"],
+            )
+        )
+    for loc_id, (city, state) in unmatched.items():
+        db.add(Location(id=loc_id, city=city, state=state, lat=None, long=None))
+    db.flush()
+
     for row in gas_rows:
-        lat, lng = lat_long_by_location_id.get(location_id(*_split_city_state(row["city"])), (None, None))
+        city, state = split_city_state(row["city"])
+        loc_id = location_id(city, state)
+        fixture_row = fixture_locations.get(loc_id)
+        lat = fixture_row["lat"] if fixture_row else None
+        lng = fixture_row["long"] if fixture_row else None
         db.add(
             GasFillup(
                 date=datetime.date.fromisoformat(row["date"]),
@@ -81,7 +96,7 @@ def seed(db: Session, force: bool = False) -> None:
                 gallons=row["gallons"],
                 price=row["price"],
                 notes=row["notes"],
-                city=row["city"],
+                location_id=loc_id,
                 latitude=lat,
                 longitude=lng,
             )
@@ -99,21 +114,10 @@ def seed(db: Session, force: bool = False) -> None:
             )
         )
 
-    for row in location_rows:
-        db.add(
-            Location(
-                id=location_id(row["city"], row["state"]),
-                city=row["city"],
-                state=row["state"],
-                lat=row["lat"],
-                long=row["long"],
-            )
-        )
-
     db.commit()
     print(
         f"seeded {len(gas_rows)} gas fill-ups, {len(maint_rows)} maintenance records, "
-        f"and {len(location_rows)} locations"
+        f"and {len(location_rows) + len(unmatched)} locations"
     )
 
 

@@ -1,8 +1,8 @@
 import datetime as dt
 import re
 
-from sqlalchemy import CheckConstraint, Date, DateTime, Index, Numeric, Text, func, text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
 
@@ -17,13 +17,19 @@ def location_id(city: str, state: str) -> str:
     return "_".join(text_.split())
 
 
+def split_city_state(raw: str) -> tuple[str, str]:
+    """Splits a free-text "City, State" string (as typed into the fill-up
+    form, or as stored in gas_raw.json) on its first comma."""
+    city, _, state = raw.partition(",")
+    return city.strip(), state.strip()
+
+
 class GasFillup(Base):
     __tablename__ = "gas_fillups"
     __table_args__ = (
         CheckConstraint("gallons > 0", name="ck_gas_fillups_gallons_positive"),
         CheckConstraint("price >= 0", name="ck_gas_fillups_price_nonnegative"),
         Index("idx_gas_fillups_date", "date"),
-        Index("idx_gas_fillups_city_lower", text("lower(city)")),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -32,12 +38,14 @@ class GasFillup(Base):
     gallons: Mapped[float] = mapped_column(Numeric(8, 3), nullable=False)
     price: Mapped[float] = mapped_column(Numeric(8, 2), nullable=False)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
-    city: Mapped[str] = mapped_column(Text, nullable=False)
+    location_id: Mapped[str] = mapped_column(Text, ForeignKey("locations.id"), nullable=False)
     latitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     longitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     created_at: Mapped[dt.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    location: Mapped["Location"] = relationship()
 
 
 class Location(Base):

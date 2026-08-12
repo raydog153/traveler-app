@@ -48,10 +48,10 @@
     "long": -111.177095
   },
   {
-    "city": "Bilixi",
+    "city": "Biloxi",
     "state": "MS",
-    "lat": null,
-    "long": null
+    "lat": 30.4007626,
+    "long": -88.8893818
   },
   {
     "city": "Billings",
@@ -126,10 +126,10 @@
     "long": -73.7463
   },
   {
-    "city": "Cedear City",
+    "city": "Cedar City",
     "state": "UT",
-    "lat": null,
-    "long": null
+    "lat": 37.6774238,
+    "long": -113.061827
   },
   {
     "city": "Chadron",
@@ -192,10 +192,10 @@
     "long": -104.990251
   },
   {
-    "city": "Dessert Hot Springs",
+    "city": "Desert Hot Springs",
     "state": "CA",
-    "lat": null,
-    "long": null
+    "lat": 33.961124,
+    "long": -116.5016784
   },
   {
     "city": "Dickinson",
@@ -254,8 +254,8 @@
   {
     "city": "Flagstaff",
     "state": "AZ",
-    "lat": null,
-    "long": null
+    "lat": 35.1987522,
+    "long": -111.651822
   },
   {
     "city": "Fort Lauderdale",
@@ -280,12 +280,6 @@
     "state": "AL",
     "lat": 32.275142,
     "long": -86.145453
-  },
-  {
-    "city": "Gearogetown",
-    "state": "TX",
-    "lat": null,
-    "long": null
   },
   {
     "city": "George",
@@ -488,8 +482,8 @@
   {
     "city": "Midland - Andrews Park",
     "state": "TX",
-    "lat": null,
-    "long": null
+    "lat": 31.9973662,
+    "long": -102.077948
   },
   {
     "city": "Miles City",
@@ -522,10 +516,10 @@
     "long": -115.691198
   },
   {
-    "city": "Nappa",
-    "state": "IA",
-    "lat": null,
-    "long": null
+    "city": "Nampa",
+    "state": "ID",
+    "lat": 43.5780381,
+    "long": -116.5616885
   },
   {
     "city": "New Milford",
@@ -648,10 +642,10 @@
     "long": -81.247057
   },
   {
-    "city": "Port Arthor",
+    "city": "Port Arthur",
     "state": "TX",
-    "lat": null,
-    "long": null
+    "lat": 29.8716577,
+    "long": -93.9332302
   },
   {
     "city": "Powhatan",
@@ -692,8 +686,8 @@
   {
     "city": "Redding - Magnolia",
     "state": "CA",
-    "lat": null,
-    "long": null
+    "lat": 40.5863563,
+    "long": -122.391675
   },
   {
     "city": "Rexburg",
@@ -828,10 +822,10 @@
     "long": -108.212043
   },
   {
-    "city": "Tuscalossa",
+    "city": "Tuscaloosa",
     "state": "AL",
-    "lat": null,
-    "long": null
+    "lat": 33.2095614,
+    "long": -87.5675258
   },
   {
     "city": "Union",

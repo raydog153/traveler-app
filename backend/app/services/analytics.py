@@ -13,7 +13,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date
 
-from app.models import GasFillup, MaintenanceRecord
+from app.models import GasFillup, Location, MaintenanceRecord
 from app.schemas import (
     ChartPoint,
     GasFillupOut,
@@ -93,6 +93,10 @@ def clean_mpg_fillups(computed: list[ComputedFillup]) -> list[ComputedFillup]:
     return [c for c in computed if c.mpg is not None and c.is_clean]
 
 
+def display_city(location: Location) -> str:
+    return f"{location.city}, {location.state}" if location.state else location.city
+
+
 def to_gas_out(c: ComputedFillup) -> GasFillupOut:
     f = c.fillup
     return GasFillupOut(
@@ -102,7 +106,7 @@ def to_gas_out(c: ComputedFillup) -> GasFillupOut:
         gallons=float(f.gallons),
         price=float(f.price),
         notes=f.notes,
-        city=f.city,
+        city=display_city(f.location),
         latitude=float(f.latitude) if f.latitude is not None else None,
         longitude=float(f.longitude) if f.longitude is not None else None,
         cost_per_gal=c.cost_per_gal,

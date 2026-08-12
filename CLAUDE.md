@@ -45,18 +45,21 @@ the only automated test command.
 ### Backend (`backend/app`)
 
 Three tables — `GasFillup`, `MaintenanceRecord`, and `Location` (`models.py`).
-`Location` (city, state, lat, long) is a normalized, deduped view of
-`gas_fillups.city` (which packs "City, State" into one free-text field, not
-always consistently -- see `seed/fixtures/locations.json` below); it's not
-yet read by any router/service. Its primary key is a derived natural key, not
-an auto-increment id: `models.location_id(city, state)` lowercases
-`"{city} {state}"`, strips punctuation, and collapses whitespace to
-underscores (e.g. `"D'Iberville"`/`"MS"` -> `"diberville_ms"`). Callers set
-`id` explicitly on insert (see `seed.py`); there's no DB- or ORM-side
-generation, so a row's `id` must be recomputed if its city/state is ever
-corrected after the fact -- a plain `UPDATE` on `state` alone would leave
-the id stale. Beyond that, nothing else is persisted; stats, chart series,
-and map data are all derived at request time in `app/services/`:
+`Location` (city, state, lat, long) is the normalized, deduped store of every
+place a fill-up happened; `GasFillup.location_id` is a required foreign key
+into it (`gas_fillups` has no city text of its own anymore -- see
+`seed/fixtures/locations.json` below for how the historical free-text
+"City, State" field, not always consistent, was reconciled into this table).
+Its primary key is a derived natural key, not an auto-increment id:
+`models.location_id(city, state)` lowercases `"{city} {state}"`, strips
+punctuation, and collapses whitespace to underscores (e.g. `"D'Iberville"`/
+`"MS"` -> `"diberville_ms"`). Callers set `id` explicitly on insert (see
+`seed.py`); there's no DB- or ORM-side generation, so a row's `id` must be
+recomputed if its city/state is ever corrected after the fact -- a plain
+`UPDATE` on `state` alone would leave the id stale (and would need
+`gas_fillups.location_id` updated to match, or the FK breaks). Beyond that,
+nothing else is persisted; stats, chart series, and map data are all derived
+at request time in `app/services/`:
 
 - **`analytics.py`** — dataset-agnostic primitives ported from the original
   HTML dashboards' JS: `is_clean(notes)` decides whether a fill-up counts
@@ -73,13 +76,15 @@ and map data are all derived at request time in `app/services/`:
   payload from `analytics.py` + `narrative.py`. Deliberately sits above both
   so neither has to import the other.
 - **`mapping.py`** — builds route/map data from `gas_fillups`: one point per
-  unique city (its earliest visit), grouped by year. Cities not yet geocoded
-  (`latitude`/`longitude` null) are simply omitted until a later fill-up there
-  gets geocoded.
-- **`geocoding.py`** — on fill-up creation, reuses coordinates from any
-  existing fill-up at the same city (case-insensitive) before calling
-  OpenStreetMap Nominatim, rate-limited to ~1 req/sec. Geocoding failures
-  never block a fill-up create — the row just saves with null lat/lng.
+  unique location (its earliest visit), grouped by year. Locations not yet
+  geocoded (`latitude`/`longitude` null) are simply omitted until a later
+  fill-up there gets geocoded.
+- **`geocoding.py`** — on fill-up creation, `get_or_create_location` looks up
+  the `Location` row by its natural key first (no per-fill-up scan needed,
+  since `locations` is already the deduped store) before calling OpenStreetMap
+  Nominatim on a genuine miss, rate-limited to ~1 req/sec. Geocoding failures
+  never block a fill-up create — the new `Location` row just saves with null
+  lat/lng.
 
 Routers (`app/routers/`) are thin: fetch rows via SQLAlchemy, hand them to a
 service function, return the result. `GET /api/gas/fillups` recomputes

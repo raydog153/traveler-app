@@ -1,7 +1,7 @@
-"""Builds the route/map payload from gas_fillups: for each unique city, plot
-its earliest visit, grouped and colored by the year of that first visit --
-the same derived view bus_route_map.html's `routeData` was, but computed
-live instead of hand-curated. Cities with no lat/lng (not yet geocoded)
+"""Builds the route/map payload from gas_fillups: for each unique location,
+plot its earliest visit, grouped and colored by the year of that first visit
+-- the same derived view bus_route_map.html's `routeData` was, but computed
+live instead of hand-curated. Locations with no lat/lng (not yet geocoded)
 are simply omitted -- they'll appear once a future fill-up there gets
 geocoded.
 """
@@ -10,15 +10,16 @@ from collections import defaultdict
 
 from app.models import GasFillup
 from app.schemas import RouteData, RouteLocation, RouteYear
+from app.services.analytics import display_city
 
 
 def build_route_data(fillups: list[GasFillup]) -> RouteData:
-    by_city: dict[str, list[GasFillup]] = defaultdict(list)
+    by_location: dict[str, list[GasFillup]] = defaultdict(list)
     for f in fillups:
-        by_city[f.city].append(f)
+        by_location[f.location_id].append(f)
 
     by_year: dict[int, list[tuple[GasFillup, int]]] = defaultdict(list)
-    for rows in by_city.values():
+    for rows in by_location.values():
         rows.sort(key=lambda f: f.date)
         first = rows[0]
         if first.latitude is None or first.longitude is None:
@@ -30,7 +31,7 @@ def build_route_data(fillups: list[GasFillup]) -> RouteData:
         entries = sorted(by_year[year], key=lambda e: e[0].date)
         locations = [
             RouteLocation(
-                name=first.city,
+                name=display_city(first.location),
                 latitude=float(first.latitude),
                 longitude=float(first.longitude),
                 arrival_date=first.date,

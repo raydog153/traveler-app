@@ -1,6 +1,7 @@
 import httpx
 import pytest
 
+from app.models import Location, location_id
 from app.services import geocoding
 
 
@@ -18,14 +19,19 @@ class FakeResponse:
 
 
 class FakeSession:
-    """Minimal stand-in for the DB reuse lookup -- no existing coordinates."""
+    """Minimal stand-in for the DB location lookup."""
 
-    def execute(self, *_args, **_kwargs):
-        class _Result:
-            def first(self_inner):
-                return None
+    def __init__(self, existing: Location | None = None):
+        self._existing = existing
+        self.added = []
 
-        return _Result()
+    def get(self, _model, loc_id):
+        if self._existing is not None and self._existing.id == loc_id:
+            return self._existing
+        return None
+
+    def add(self, obj):
+        self.added.append(obj)
 
 
 @pytest.fixture(autouse=True)
@@ -40,16 +46,17 @@ def test_geocode_success(monkeypatch):
 
     monkeypatch.setattr(geocoding.httpx, "get", fake_get)
 
-    lat, lng = geocoding.get_or_geocode(FakeSession(), "Chicago, IL")
-    assert lat == pytest.approx(41.8781)
-    assert lng == pytest.approx(-87.6298)
+    location = geocoding.get_or_create_location(FakeSession(), "Chicago", "IL")
+    assert location.lat == pytest.approx(41.8781)
+    assert location.long == pytest.approx(-87.6298)
+    assert location.id == location_id("Chicago", "IL")
 
 
 def test_geocode_no_results_returns_none(monkeypatch):
     monkeypatch.setattr(geocoding.httpx, "get", lambda *a, **k: FakeResponse([]))
 
-    lat, lng = geocoding.get_or_geocode(FakeSession(), "Nowhereville, XX")
-    assert (lat, lng) == (None, None)
+    location = geocoding.get_or_create_location(FakeSession(), "Nowhereville", "XX")
+    assert (location.lat, location.long) == (None, None)
 
 
 def test_geocode_request_error_does_not_raise(monkeypatch):
@@ -58,15 +65,15 @@ def test_geocode_request_error_does_not_raise(monkeypatch):
 
     monkeypatch.setattr(geocoding.httpx, "get", raise_error)
 
-    lat, lng = geocoding.get_or_geocode(FakeSession(), "Somewhere, YY")
-    assert (lat, lng) == (None, None)
+    location = geocoding.get_or_create_location(FakeSession(), "Somewhere", "YY")
+    assert (location.lat, location.long) == (None, None)
 
 
 def test_geocode_malformed_payload_does_not_raise(monkeypatch):
     monkeypatch.setattr(geocoding.httpx, "get", lambda *a, **k: FakeResponse([{"unexpected": "shape"}]))
 
-    lat, lng = geocoding.get_or_geocode(FakeSession(), "Somewhere, ZZ")
-    assert (lat, lng) == (None, None)
+    location = geocoding.get_or_create_location(FakeSession(), "Somewhere", "ZZ")
+    assert (location.lat, location.long) == (None, None)
 
 
 def test_reuse_from_db_skips_external_call(monkeypatch):
@@ -75,13 +82,6 @@ def test_reuse_from_db_skips_external_call(monkeypatch):
 
     monkeypatch.setattr(geocoding.httpx, "get", fail_if_called)
 
-    class ReuseSession:
-        def execute(self, *_args, **_kwargs):
-            class _Result:
-                def first(self_inner):
-                    return (42.0, -71.0)
-
-            return _Result()
-
-    lat, lng = geocoding.get_or_geocode(ReuseSession(), "Lancaster, MA")
-    assert (lat, lng) == (42.0, -71.0)
+    existing = Location(id=location_id("Lancaster", "MA"), city="Lancaster", state="MA", lat=42.0, long=-71.0)
+    location = geocoding.get_or_create_location(FakeSession(existing=existing), "Lancaster", "MA")
+    assert (location.lat, location.long) == (42.0, -71.0)

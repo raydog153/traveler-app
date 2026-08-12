@@ -11,7 +11,7 @@ from app.services.dashboard_summary import build_dashboard_summary
 FIXTURES_DIR = Path(__file__).parent.parent / "seed" / "fixtures"
 
 
-def make_fillup(id: int, date: str, odometer_miles: float, gallons: float, price: float, notes: str = "", city: str = "Test City") -> GasFillup:
+def make_fillup(id: int, date: str, odometer_miles: float, gallons: float, price: float, notes: str = "") -> GasFillup:
     return GasFillup(
         id=id,
         date=datetime.date.fromisoformat(date),
@@ -19,7 +19,6 @@ def make_fillup(id: int, date: str, odometer_miles: float, gallons: float, price
         gallons=gallons,
         price=price,
         notes=notes,
-        city=city,
     )
 
 
@@ -135,7 +134,7 @@ class TestFixtureRegression:
         gas_raw = json.loads((FIXTURES_DIR / "gas_raw.json").read_text())
         maint_raw = json.loads((FIXTURES_DIR / "maint_raw.json").read_text())
         fillups = [
-            make_fillup(i, r["date"], r["odometer_miles"], r["gallons"], r["price"], r["notes"], r["city"])
+            make_fillup(i, r["date"], r["odometer_miles"], r["gallons"], r["price"], r["notes"])
             for i, r in enumerate(gas_raw, start=1)
         ]
         records = [
