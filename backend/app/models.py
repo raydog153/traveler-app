@@ -1,9 +1,20 @@
 import datetime as dt
+import re
 
 from sqlalchemy import CheckConstraint, Date, DateTime, Index, Numeric, Text, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
+
+_LOCATION_ID_STRIP_RE = re.compile(r"[^a-z0-9\s]")
+
+
+def location_id(city: str, state: str) -> str:
+    """Natural primary key for Location: lowercase "city state", punctuation
+    stripped, whitespace collapsed to single underscores -- e.g.
+    ("D'Iberville", "MS") -> "diberville_ms"."""
+    text_ = _LOCATION_ID_STRIP_RE.sub("", f"{city} {state}".lower())
+    return "_".join(text_.split())
 
 
 class GasFillup(Base):
@@ -31,16 +42,11 @@ class GasFillup(Base):
 
 class Location(Base):
     __tablename__ = "locations"
-    __table_args__ = (
-        Index(
-            "idx_locations_city_state_lower",
-            text("lower(city)"),
-            text("lower(state)"),
-            unique=True,
-        ),
-    )
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    # location_id(city, state) -- callers are responsible for setting this
+    # explicitly on insert (it's derived, not DB- or ORM-generated), and for
+    # recomputing it if a row's city/state is ever corrected after the fact.
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
     city: Mapped[str] = mapped_column(Text, nullable=False)
     state: Mapped[str] = mapped_column(Text, nullable=False, default="")
     lat: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)

@@ -48,9 +48,15 @@ Three tables — `GasFillup`, `MaintenanceRecord`, and `Location` (`models.py`).
 `Location` (city, state, lat, long) is a normalized, deduped view of
 `gas_fillups.city` (which packs "City, State" into one free-text field, not
 always consistently -- see `seed/fixtures/locations.json` below); it's not
-yet read by any router/service. Beyond that, nothing else is persisted;
-stats, chart series, and map data are all derived at request time in
-`app/services/`:
+yet read by any router/service. Its primary key is a derived natural key, not
+an auto-increment id: `models.location_id(city, state)` lowercases
+`"{city} {state}"`, strips punctuation, and collapses whitespace to
+underscores (e.g. `"D'Iberville"`/`"MS"` -> `"diberville_ms"`). Callers set
+`id` explicitly on insert (see `seed.py`); there's no DB- or ORM-side
+generation, so a row's `id` must be recomputed if its city/state is ever
+corrected after the fact -- a plain `UPDATE` on `state` alone would leave
+the id stale. Beyond that, nothing else is persisted; stats, chart series,
+and map data are all derived at request time in `app/services/`:
 
 - **`analytics.py`** — dataset-agnostic primitives ported from the original
   HTML dashboards' JS: `is_clean(notes)` decides whether a fill-up counts

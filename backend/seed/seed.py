@@ -29,7 +29,7 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
-from app.models import GasFillup, Location, MaintenanceRecord
+from app.models import GasFillup, Location, MaintenanceRecord, location_id
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -61,9 +61,11 @@ def seed(db: Session, force: bool = False) -> None:
     maint_rows = _load_fixture("maint_raw.json")
     location_rows = _load_fixture("locations.json")
 
-    lat_long_by_city_state = {(row["city"], row["state"]): (row["lat"], row["long"]) for row in location_rows}
+    lat_long_by_location_id = {
+        location_id(row["city"], row["state"]): (row["lat"], row["long"]) for row in location_rows
+    }
     distinct_cities = {row["city"] for row in gas_rows}
-    matched_cities = {c for c in distinct_cities if _split_city_state(c) in lat_long_by_city_state}
+    matched_cities = {c for c in distinct_cities if location_id(*_split_city_state(c)) in lat_long_by_location_id}
     print(
         f"lat/lng backfill via locations.json: {len(matched_cities)}/{len(distinct_cities)} "
         f"cities matched, {len(distinct_cities) - len(matched_cities)} unmatched "
@@ -71,7 +73,7 @@ def seed(db: Session, force: bool = False) -> None:
     )
 
     for row in gas_rows:
-        lat, lng = lat_long_by_city_state.get(_split_city_state(row["city"]), (None, None))
+        lat, lng = lat_long_by_location_id.get(location_id(*_split_city_state(row["city"])), (None, None))
         db.add(
             GasFillup(
                 date=datetime.date.fromisoformat(row["date"]),
@@ -100,6 +102,7 @@ def seed(db: Session, force: bool = False) -> None:
     for row in location_rows:
         db.add(
             Location(
+                id=location_id(row["city"], row["state"]),
                 city=row["city"],
                 state=row["state"],
                 lat=row["lat"],
