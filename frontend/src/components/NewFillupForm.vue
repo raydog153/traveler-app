@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Add fill-up" :error="error" @close="$emit('close')">
+  <Modal :title="isEdit ? 'Edit fill-up' : 'Add fill-up'" :error="error" @close="$emit('close')">
     <form @submit.prevent="onSubmit">
       <div class="field-row">
         <div class="field">
@@ -32,7 +32,7 @@
       <div class="modal-actions">
         <button type="button" class="btn secondary" @click="$emit('close')">Cancel</button>
         <button type="submit" class="btn" :disabled="submitting">
-          {{ submitting ? 'Saving…' : 'Save fill-up' }}
+          {{ submitting ? 'Saving…' : isEdit ? 'Save changes' : 'Save fill-up' }}
         </button>
       </div>
     </form>
@@ -40,31 +40,49 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useGasStore } from '../stores/gasStore'
 import { useCreateForm } from '../composables/useCreateForm'
 import Modal from './Modal.vue'
 
-const emit = defineEmits(['close', 'created'])
+const props = defineProps({
+  fillup: { type: Object, default: null },
+})
+const emit = defineEmits(['close', 'saved'])
 const gasStore = useGasStore()
 
-const form = reactive({
-  date: new Date().toISOString().slice(0, 10),
-  odometer_miles: null,
-  gallons: null,
-  price: null,
-  city: '',
-  notes: '',
-})
+const isEdit = computed(() => props.fillup != null)
 
-const { submitting, error, submit } = useCreateForm((payload) => gasStore.create(payload))
+const form = reactive(
+  props.fillup
+    ? {
+        date: props.fillup.date,
+        odometer_miles: props.fillup.odometer_miles,
+        gallons: props.fillup.gallons,
+        price: props.fillup.price,
+        city: props.fillup.city,
+        notes: props.fillup.notes,
+      }
+    : {
+        date: new Date().toISOString().slice(0, 10),
+        odometer_miles: null,
+        gallons: null,
+        price: null,
+        city: '',
+        notes: '',
+      },
+)
+
+const { submitting, error, submit } = useCreateForm((payload) =>
+  isEdit.value ? gasStore.update(props.fillup.id, payload) : gasStore.create(payload),
+)
 
 function onSubmit() {
   submit(
     { ...form },
     {
-      onSuccess: (created) => {
-        emit('created', created)
+      onSuccess: (saved) => {
+        emit('saved', saved)
         emit('close')
       },
     },

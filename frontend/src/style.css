@@ -99,6 +99,17 @@ button.btn.secondary:hover {
   color: var(--text);
   border-color: var(--muted);
 }
+button.btn.danger {
+  background: var(--accent3);
+  color: #1a0f0f;
+}
+button.btn.danger:hover {
+  filter: brightness(1.08);
+}
+button.btn.danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .modal-overlay {
   position: fixed;

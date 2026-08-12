@@ -5,4 +5,6 @@ export const useMaintenanceStore = createResourceStore('maintenance', {
   stateKey: 'records',
   fetchFn: api.listMaintenance,
   createFn: api.createMaintenance,
+  updateFn: api.updateMaintenance,
+  deleteFn: api.deleteMaintenance,
 })

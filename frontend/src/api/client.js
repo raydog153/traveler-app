@@ -16,10 +16,15 @@ async function request(path, options = {}) {
 export const api = {
   listFillups: () => request('/gas/fillups'),
   createFillup: (payload) => request('/gas/fillups', { method: 'POST', body: JSON.stringify(payload) }),
+  updateFillup: (id, payload) => request(`/gas/fillups/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteFillup: (id) => request(`/gas/fillups/${id}`, { method: 'DELETE' }),
 
   listMaintenance: () => request('/maintenance/records'),
   createMaintenance: (payload) =>
     request('/maintenance/records', { method: 'POST', body: JSON.stringify(payload) }),
+  updateMaintenance: (id, payload) =>
+    request(`/maintenance/records/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteMaintenance: (id) => request(`/maintenance/records/${id}`, { method: 'DELETE' }),
 
   dashboardSummary: () => request('/dashboard/summary'),
   mapRoutes: () => request('/map/routes'),

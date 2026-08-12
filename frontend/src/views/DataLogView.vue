@@ -9,7 +9,7 @@
       <label v-if="tab === 'gas'" class="checkbox-label">
         <input type="checkbox" v-model="hideExcludedFillups" /> Hide excluded fill-ups
       </label>
-      <button class="btn add-btn" @click="showForm = true">
+      <button class="btn add-btn" @click="openAddForm">
         + Add {{ tab === 'gas' ? 'Fill-up' : 'Maintenance' }}
       </button>
     </div>
@@ -20,14 +20,40 @@
       :rows="visibleFillups"
       :excluded-predicate="(r) => !r.is_clean"
       default-sort-key="date"
+      editable
+      @edit="editingFillup = $event"
+      @delete="pendingDelete = { kind: 'gas', row: $event }"
     />
-    <DataTable v-else :columns="maintColumns" :rows="maintenanceStore.records" default-sort-key="date" />
+    <DataTable
+      v-else
+      :columns="maintColumns"
+      :rows="maintenanceStore.records"
+      default-sort-key="date"
+      editable
+      @edit="editingRecord = $event"
+      @delete="pendingDelete = { kind: 'maint', row: $event }"
+    />
 
-    <NewFillupForm v-if="showForm && tab === 'gas'" @close="showForm = false" @created="onFillupCreated" />
+    <NewFillupForm
+      v-if="(showForm && tab === 'gas') || editingFillup"
+      :fillup="editingFillup"
+      @close="closeFillupForm"
+      @saved="onFillupSaved"
+    />
     <NewMaintenanceForm
-      v-if="showForm && tab === 'maint'"
-      @close="showForm = false"
-      @created="onMaintenanceCreated"
+      v-if="(showForm && tab === 'maint') || editingRecord"
+      :record="editingRecord"
+      @close="closeMaintenanceForm"
+      @saved="onMaintenanceSaved"
+    />
+
+    <ConfirmDialog
+      v-if="pendingDelete"
+      :message="deleteMessage"
+      :busy="deleting"
+      :error="deleteError"
+      @cancel="pendingDelete = null"
+      @confirm="confirmDelete"
     />
   </div>
 </template>
@@ -41,6 +67,7 @@ import { useMapStore } from '../stores/mapStore'
 import DataTable from '../components/DataTable.vue'
 import NewFillupForm from '../components/NewFillupForm.vue'
 import NewMaintenanceForm from '../components/NewMaintenanceForm.vue'
+import ConfirmDialog from '../components/ConfirmDialog.vue'
 import { formatCurrency, formatMiles, formatMpg } from '../utils/format'
 
 const gasStore = useGasStore()
@@ -51,6 +78,11 @@ const mapStore = useMapStore()
 const tab = ref('gas')
 const showForm = ref(false)
 const hideExcludedFillups = ref(false)
+const editingFillup = ref(null)
+const editingRecord = ref(null)
+const pendingDelete = ref(null)
+const deleting = ref(false)
+const deleteError = ref('')
 
 const visibleFillups = computed(() =>
   hideExcludedFillups.value ? gasStore.fillups.filter((r) => r.is_clean) : gasStore.fillups,
@@ -72,7 +104,23 @@ const subhead = computed(() => {
   return `${total} maintenance line items, ${formatCurrency(totalCost, { decimals: 0 })} total — sortable, searchable.`
 })
 
-function onFillupCreated() {
+function openAddForm() {
+  editingFillup.value = null
+  editingRecord.value = null
+  showForm.value = true
+}
+
+function closeFillupForm() {
+  showForm.value = false
+  editingFillup.value = null
+}
+
+function closeMaintenanceForm() {
+  showForm.value = false
+  editingRecord.value = null
+}
+
+function onFillupSaved() {
   // Dashboard/map stats are server-computed off the full dataset -- mark
   // them stale so they refetch next time those views are visited, rather
   // than trying to patch their cached summaries client-side.
@@ -80,8 +128,37 @@ function onFillupCreated() {
   mapStore.invalidate()
 }
 
-function onMaintenanceCreated() {
+function onMaintenanceSaved() {
   dashboardStore.invalidate()
+}
+
+const deleteMessage = computed(() => {
+  if (!pendingDelete.value) return ''
+  const { kind, row } = pendingDelete.value
+  return kind === 'gas'
+    ? `Delete the ${row.date} fill-up in ${row.city}? This can't be undone.`
+    : `Delete the ${row.date} "${row.expense}" record? This can't be undone.`
+})
+
+async function confirmDelete() {
+  if (!pendingDelete.value) return
+  const { kind, row } = pendingDelete.value
+  deleting.value = true
+  deleteError.value = ''
+  try {
+    if (kind === 'gas') {
+      await gasStore.remove(row.id)
+      mapStore.invalidate()
+    } else {
+      await maintenanceStore.remove(row.id)
+    }
+    dashboardStore.invalidate()
+    pendingDelete.value = null
+  } catch (err) {
+    deleteError.value = err.message
+  } finally {
+    deleting.value = false
+  }
 }
 
 const gasColumns = [

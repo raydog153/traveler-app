@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session, joinedload
 
@@ -8,6 +8,13 @@ from app.schemas import GasFillupIn, GasFillupOut
 from app.services import analytics, geocoding
 
 router = APIRouter(prefix="/api/gas", tags=["gas"])
+
+
+def _get_fillup_or_404(db: Session, fillup_id: int) -> GasFillup:
+    fillup = db.get(GasFillup, fillup_id)
+    if fillup is None:
+        raise HTTPException(status_code=404, detail="Fill-up not found")
+    return fillup
 
 
 @router.get("/fillups", response_model=list[GasFillupOut])
@@ -58,3 +65,34 @@ def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFil
     prev_odometer = float(previous.odometer_miles) if previous else None
     computed = analytics.compute_from_previous(fillup, prev_odometer)
     return analytics.to_gas_out(computed)
+
+
+@router.put("/fillups/{fillup_id}", response_model=GasFillupOut)
+def update_fillup(fillup_id: int, payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFillupOut:
+    fillup = _get_fillup_or_404(db, fillup_id)
+    city, state = split_city_state(payload.city)
+    location = geocoding.get_or_create_location(db, city, state)
+    fillup.date = payload.date
+    fillup.odometer_miles = payload.odometer_miles
+    fillup.gallons = payload.gallons
+    fillup.price = payload.price
+    fillup.notes = payload.notes
+    fillup.location = location
+    db.commit()
+    db.refresh(fillup)
+
+    # Same reasoning as create: only the immediately preceding fill-up is
+    # needed to compute *this* row's driven/mpg for the response. A later
+    # row's derived values may now be stale, but GET /fillups recomputes
+    # every row from scratch on every read, so nothing is left inconsistent.
+    previous = _find_previous_fillup(db, fillup)
+    prev_odometer = float(previous.odometer_miles) if previous else None
+    computed = analytics.compute_from_previous(fillup, prev_odometer)
+    return analytics.to_gas_out(computed)
+
+
+@router.delete("/fillups/{fillup_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_fillup(fillup_id: int, db: Session = Depends(get_db)) -> None:
+    fillup = _get_fillup_or_404(db, fillup_id)
+    db.delete(fillup)
+    db.commit()

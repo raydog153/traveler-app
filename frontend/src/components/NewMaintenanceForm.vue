@@ -1,5 +1,5 @@
 <template>
-  <Modal title="Add maintenance record" :error="error" @close="$emit('close')">
+  <Modal :title="isEdit ? 'Edit maintenance record' : 'Add maintenance record'" :error="error" @close="$emit('close')">
     <form @submit.prevent="onSubmit">
       <div class="field-row">
         <div class="field">
@@ -32,7 +32,7 @@
       <div class="modal-actions">
         <button type="button" class="btn secondary" @click="$emit('close')">Cancel</button>
         <button type="submit" class="btn" :disabled="submitting">
-          {{ submitting ? 'Saving…' : 'Save record' }}
+          {{ submitting ? 'Saving…' : isEdit ? 'Save changes' : 'Save record' }}
         </button>
       </div>
     </form>
@@ -40,31 +40,49 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useMaintenanceStore } from '../stores/maintenanceStore'
 import { useCreateForm } from '../composables/useCreateForm'
 import Modal from './Modal.vue'
 
-const emit = defineEmits(['close', 'created'])
+const props = defineProps({
+  record: { type: Object, default: null },
+})
+const emit = defineEmits(['close', 'saved'])
 const maintenanceStore = useMaintenanceStore()
 
-const form = reactive({
-  date: new Date().toISOString().slice(0, 10),
-  expense: '',
-  place: '',
-  odometer_miles: null,
-  vendor: '',
-  cost: null,
-})
+const isEdit = computed(() => props.record != null)
 
-const { submitting, error, submit } = useCreateForm((payload) => maintenanceStore.create(payload))
+const form = reactive(
+  props.record
+    ? {
+        date: props.record.date,
+        expense: props.record.expense,
+        place: props.record.place,
+        odometer_miles: props.record.odometer_miles,
+        vendor: props.record.vendor,
+        cost: props.record.cost,
+      }
+    : {
+        date: new Date().toISOString().slice(0, 10),
+        expense: '',
+        place: '',
+        odometer_miles: null,
+        vendor: '',
+        cost: null,
+      },
+)
+
+const { submitting, error, submit } = useCreateForm((payload) =>
+  isEdit.value ? maintenanceStore.update(props.record.id, payload) : maintenanceStore.create(payload),
+)
 
 function onSubmit() {
   submit(
     { ...form },
     {
-      onSuccess: (created) => {
-        emit('created', created)
+      onSuccess: (saved) => {
+        emit('saved', saved)
         emit('close')
       },
     },

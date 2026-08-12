@@ -17,6 +17,7 @@
             >
               {{ c.label }}
             </th>
+            <th v-if="editable" class="actions-col"></th>
           </tr>
         </thead>
         <tbody>
@@ -28,6 +29,10 @@
               <template v-else>
                 {{ c.fmt ? c.fmt(row[c.key]) : row[c.key] }}
               </template>
+            </td>
+            <td v-if="editable" class="actions-cell">
+              <button type="button" class="icon-btn" title="Edit" @click="$emit('edit', row)">✎</button>
+              <button type="button" class="icon-btn danger" title="Delete" @click="$emit('delete', row)">🗑</button>
             </td>
           </tr>
         </tbody>
@@ -47,7 +52,11 @@ const props = defineProps({
   // generic table's -- pass already-filtered `rows` for that.
   excludedPredicate: { type: Function, default: null },
   defaultSortKey: { type: String, default: 'date' },
+  // Adds a trailing edit/delete actions column, emitting 'edit'/'delete'
+  // with the row -- the caller owns what those actions actually do.
+  editable: { type: Boolean, default: false },
 })
+defineEmits(['edit', 'delete'])
 
 const search = ref('')
 const sortKey = ref(props.defaultSortKey)
@@ -182,6 +191,30 @@ tbody tr.excluded {
 }
 .badge.major {
   background: rgba(248, 113, 113, 0.18);
+  color: var(--accent3);
+}
+.actions-col {
+  width: 64px;
+}
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 5px;
+  border-radius: 6px;
+  line-height: 1;
+}
+.icon-btn:hover {
+  color: var(--text);
+  background: var(--panel2);
+}
+.icon-btn.danger:hover {
   color: var(--accent3);
 }
 </style>
