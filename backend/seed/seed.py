@@ -16,6 +16,9 @@ parent day's `title` (e.g. "2022 (first visits)") plus its own
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
     python -m seed.seed --force     # truncates both tables first, then reloads
+
+Assumes the schema already exists (`alembic upgrade head` -- run automatically
+on backend container startup, see Dockerfile).
 """
 
 import datetime
@@ -27,7 +30,7 @@ from pathlib import Path
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
-from app.db import Base, SessionLocal, engine
+from app.db import SessionLocal
 from app.models import GasFillup, MaintenanceRecord
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -146,7 +149,6 @@ def seed(db: Session, force: bool = False) -> None:
 
 def main() -> None:
     force = "--force" in sys.argv
-    Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         seed(db, force=force)

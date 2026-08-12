@@ -21,6 +21,10 @@ docker compose run --rm backend pytest                       # run backend tests
 docker compose run --rm backend pytest tests/test_analytics.py::TestIsClean  # single test
 docker compose run --rm backend python -m seed.seed          # load historical data (idempotent)
 docker compose run --rm backend python -m seed.seed --force  # wipe + reseed
+
+# schema changes go through Alembic (backend/alembic/) -- after editing app/models.py:
+docker compose run --rm backend alembic revision --autogenerate -m "describe the change"
+docker compose run --rm backend alembic upgrade head          # applied automatically on container start too
 ```
 
 The database starts empty; seeding pulls from `backend/seed/fixtures/*.json`
@@ -73,6 +77,13 @@ fill-up needed for *its own* driven/mpg — it does not re-walk the whole table.
 
 Config (`app/config.py`) is `pydantic-settings` reading `.env`; `DATABASE_URL`
 is assembled from the compose-level Postgres vars unless overridden.
+
+Schema is owned entirely by Alembic (`alembic/`, `alembic/versions/`) --
+`app/main.py` no longer calls `Base.metadata.create_all`. `alembic/env.py`
+pulls `sqlalchemy.url` from `app.config.settings` (not `alembic.ini`) and
+sets `target_metadata` from `app.db.Base` after importing `app.models`, so
+`alembic revision --autogenerate` picks up model changes. The Dockerfile CMD
+runs `alembic upgrade head` before starting uvicorn.
 
 ### Frontend (`frontend/src`)
 

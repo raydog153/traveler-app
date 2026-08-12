@@ -7,9 +7,9 @@ with a live, editable app.
 
 ## Stack
 
-- **Backend**: FastAPI, SQLAlchemy 2.0, Postgres. Two tables (`gas_fillups`,
-  `maintenance_records`); everything else (yearly stats, major maintenance
-  events, route map data) is computed on read.
+- **Backend**: FastAPI, SQLAlchemy 2.0, Postgres, Alembic migrations. Two
+  tables (`gas_fillups`, `maintenance_records`); everything else (yearly
+  stats, major maintenance events, route map data) is computed on read.
 - **Frontend**: Vue 3 + Vite SPA (Pinia, vue-router, Chart.js, Leaflet).
 - **Geocoding**: new fill-up cities are geocoded automatically via
   OpenStreetMap Nominatim.
@@ -23,6 +23,28 @@ docker compose up --build
 
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8000 (docs at `/docs`)
+
+The backend container runs `alembic upgrade head` on startup, so the schema
+is created/updated automatically -- no manual migration step needed for a
+fresh `docker compose up`.
+
+## Migrations
+
+Schema changes go through Alembic (`backend/alembic/`). After changing a
+model in `app/models.py`:
+
+```bash
+docker compose run --rm backend alembic revision --autogenerate -m "describe the change"
+```
+
+Review the generated file in `backend/alembic/versions/` before committing --
+autogenerate doesn't reliably detect every kind of change (renames, some
+constraint changes). It's applied automatically the next time the backend
+container starts, or immediately with:
+
+```bash
+docker compose run --rm backend alembic upgrade head
+```
 
 ## Seeding historical data
 
