@@ -34,6 +34,7 @@ services:
     command: npm run dev -- --host
     environment:
       BACKEND_URL: http://backend:8000
+      VITE_GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
     volumes:

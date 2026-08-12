@@ -6,6 +6,7 @@
         <RouterLink to="/dashboard">Dashboard</RouterLink>
         <RouterLink to="/log">Data Log</RouterLink>
         <RouterLink to="/map">Map</RouterLink>
+        <RouterLink to="/guide">Guide</RouterLink>
       </nav>
     </header>
     <main class="app-main">

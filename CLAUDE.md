@@ -14,7 +14,7 @@ maintenance events, route map data) is now computed on read from two tables.
 ## Commands
 
 ```bash
-cp .env.example .env            # edit NOMINATIM_CONTACT_EMAIL at minimum
+cp .env.example .env            # edit NOMINATIM_CONTACT_EMAIL at minimum; set GOOGLE_MAPS_API_KEY for the Guide tab
 docker compose up --build       # frontend :5173, backend :8000 (docs at /docs)
 
 docker compose run --rm backend pytest                       # run backend tests
@@ -107,18 +107,31 @@ runs `alembic upgrade head` before starting uvicorn.
 
 ### Frontend (`frontend/src`)
 
-Three routed views (`views/`) — Dashboard, Data Log, Map — backed by four
-Pinia stores (`stores/`), all built from one factory,
+Four routed views (`views/`) — Dashboard, Data Log, Map, Guide — backed by
+four Pinia stores (`stores/`), all built from one factory,
 `createResourceStore()` in `resourceStore.js`: fetch-once-and-cache with
 `loading`/`error` state, `invalidate()` to mark stale without an immediate
-refetch, and an optional `create()` for the two stores (gas, maintenance)
-that support adding rows. Individual store files (`gasStore.js`,
-`dashboardStore.js`, `mapStore.js`, `maintenanceStore.js`) are just this
-factory wired to one `api/client.js` method each.
+refetch, and optional `create()`/`update()`/`remove()` for the two stores
+(gas, maintenance) that support editing rows. Individual store files
+(`gasStore.js`, `dashboardStore.js`, `mapStore.js`, `maintenanceStore.js`)
+are just this factory wired to `api/client.js` methods.
 
 `composables/useCreateForm.js` is the matching shared piece on the form side —
 submitting/error state and a `submit()` wrapper — used by both
-`NewFillupForm.vue` and `NewMaintenanceForm.vue`.
+`NewFillupForm.vue` and `NewMaintenanceForm.vue` (each doubles as its record's
+edit form when passed an existing row via prop). `ConfirmDialog.vue` guards
+deletes with an explicit confirmation step.
+
+`GuideView.vue` (the Guide tab) is a nearby-places finder (dog parks,
+playgrounds, trailheads, etc.) built directly on the Google Maps JavaScript
+API, Places API (New), and Geocoding API — independent of the app's own
+gas/maintenance data. It reads its API key from `VITE_GOOGLE_MAPS_API_KEY`
+(`GOOGLE_MAPS_API_KEY` in `.env`, wired through by `docker-compose.yml`; unset
+renders an inline setup message instead of calling Google). Its map/marker
+objects are kept out of Vue's reactivity (`shallowRef`, plain variables) for
+the same reason `MapView.vue`'s Leaflet objects are — deep-reactifying a
+third-party map SDK instance risks breaking it and causes raw-vs-proxy
+identity mismatches.
 
 Charts (`components/charts/`) are Chart.js via `vue-chartjs`, each chart type
 in its own component wrapping a shared `ChartBox.vue` and `chartDefaults.js`;
