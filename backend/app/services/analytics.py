@@ -121,7 +121,7 @@ def to_maintenance_out(m: MaintenanceRecord) -> MaintenanceRecordOut:
         id=m.id,
         date=m.date,
         expense=m.expense,
-        place=display_city(m.location) if m.location else "",
+        place=display_city(m.location),
         odometer_miles=float(m.odometer_miles) if m.odometer_miles is not None else None,
         vendor=m.vendor,
         cost=float(m.cost),

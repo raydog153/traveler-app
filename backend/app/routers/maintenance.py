@@ -26,10 +26,8 @@ def list_records(db: Session = Depends(get_db)) -> list[MaintenanceRecordOut]:
 
 @router.post("/records", response_model=MaintenanceRecordOut, status_code=status.HTTP_201_CREATED)
 def create_record(payload: MaintenanceRecordIn, db: Session = Depends(get_db)) -> MaintenanceRecordOut:
-    location = None
-    if payload.place.strip():
-        city, state = split_city_state(payload.place)
-        location = geocoding.get_or_create_location(db, city, state)
+    city, state = split_city_state(payload.place)
+    location = geocoding.get_or_create_location(db, city, state)
     record = MaintenanceRecord(
         date=payload.date,
         expense=payload.expense,

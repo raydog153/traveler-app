@@ -50,8 +50,8 @@ place a fill-up or maintenance visit happened. `GasFillup.location_id` is a
 required foreign key into it (`gas_fillups` has no city text of its own
 anymore -- see `seed/fixtures/locations.json` below for how the historical
 free-text "City, State" field, not always consistent, was reconciled into
-this table); `MaintenanceRecord.location_id` is the same FK but nullable,
-since "Place" is an optional field on the maintenance form. Its primary key
+this table); `MaintenanceRecord.location_id` is the same FK, also required --
+"Place" is a required field on the maintenance form. Its primary key
 is a derived natural key, not an auto-increment id:
 `models.location_id(city, state)` lowercases `"{city} {state}"`, strips
 punctuation, and collapses whitespace to underscores (e.g. `"D'Iberville"`/

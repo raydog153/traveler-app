@@ -17,8 +17,8 @@
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Place (optional)</label>
-          <input v-model="form.place" type="text" placeholder="e.g. Lancaster, MA" />
+          <label>Place</label>
+          <input v-model="form.place" type="text" placeholder="e.g. Lancaster, MA" required />
         </div>
         <div class="field">
           <label>Vendor (optional)</label>

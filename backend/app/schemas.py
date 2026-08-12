@@ -34,7 +34,7 @@ class GasFillupOut(BaseModel):
 class MaintenanceRecordIn(BaseModel):
     date: dt.date
     expense: str = Field(min_length=1)
-    place: str = ""
+    place: str = Field(min_length=1)
     odometer_miles: float | None = None
     vendor: str = ""
     cost: float

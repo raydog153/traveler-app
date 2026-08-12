@@ -16,8 +16,8 @@ gas_raw.json's `city` field and maint_raw.json's `place` field (see
 "Bus Living - Our Spot" Google Sheet's maintenance tab -- the version
 previously committed here had several rows with a truncated (state-only or
 blank) place, because the sheet-to-fixture pull only picked up rows the
-short way. `place` is optional on a MaintenanceRecord (unlike GasFillup's
-city), so rows with no place get a null location_id.
+short way. `place` is required on a MaintenanceRecord, same as GasFillup's
+city.
 
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
@@ -72,8 +72,6 @@ def seed(db: Session, force: bool = False) -> None:
         city, state = split_city_state(row["city"])
         referenced_locations.setdefault(location_id(city, state), (city, state))
     for row in maint_rows:
-        if not row["place"].strip():
-            continue
         city, state = split_city_state(row["place"])
         referenced_locations.setdefault(location_id(city, state), (city, state))
     unmatched = {
@@ -112,15 +110,12 @@ def seed(db: Session, force: bool = False) -> None:
         )
 
     for row in maint_rows:
-        loc_id = None
-        if row["place"].strip():
-            city, state = split_city_state(row["place"])
-            loc_id = location_id(city, state)
+        city, state = split_city_state(row["place"])
         db.add(
             MaintenanceRecord(
                 date=datetime.date.fromisoformat(row["date"]),
                 expense=row["expense"],
-                location_id=loc_id,
+                location_id=location_id(city, state),
                 odometer_miles=row["odometer_miles"],
                 vendor=row["vendor"],
                 cost=row["cost"],
