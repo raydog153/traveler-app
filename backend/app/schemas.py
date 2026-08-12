@@ -74,6 +74,15 @@ class MajorEvent(BaseModel):
     label: str
 
 
+class ServiceAlert(BaseModel):
+    level: Literal["ok", "due_soon", "overdue"]
+    miles_since_service: float
+    miles_until_next: float
+    last_service_date: dt.date
+    last_service_odometer: float
+    current_odometer: float
+
+
 class ChartPoint(BaseModel):
     x: dt.date
     y: float
@@ -84,6 +93,7 @@ class DashboardSummary(BaseModel):
     stats: list[StatCard]
     yearly: list[YearlySummary]
     major_events: list[MajorEvent]
+    service_alert: ServiceAlert | None
     narrative: str
     price_per_gallon_series: list[ChartPoint]
     mpg_clean_points: list[ChartPoint]

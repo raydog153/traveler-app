@@ -22,8 +22,12 @@ def make_fillup(id: int, date: str, odometer_miles: float, gallons: float, price
     )
 
 
-def make_record(id: int, date: str, cost: float, expense: str = "Repair") -> MaintenanceRecord:
-    return MaintenanceRecord(id=id, date=datetime.date.fromisoformat(date), expense=expense, cost=cost)
+def make_record(
+    id: int, date: str, cost: float, expense: str = "Repair", odometer_miles: float | None = None
+) -> MaintenanceRecord:
+    return MaintenanceRecord(
+        id=id, date=datetime.date.fromisoformat(date), expense=expense, cost=cost, odometer_miles=odometer_miles
+    )
 
 
 class TestIsClean:
@@ -131,6 +135,77 @@ class TestMajorEvents:
         events = analytics.major_events(records)
         assert len(events) == 1
         assert events[0].cost == 2500
+
+
+class TestIsServiceRecord:
+    def test_matches_oil_change(self):
+        assert analytics.is_service_record("Glow PLugs, oil change") is True
+
+    def test_matches_pm_as_whole_word(self):
+        assert analytics.is_service_record("PM Service, shocks") is True
+        assert analytics.is_service_record("Oil change/ PM maintance check") is True
+
+    def test_does_not_match_pm_as_substring(self):
+        # "pm" must match as a whole word -- e.g. a made-up "Pump replacement"
+        # shouldn't trigger it.
+        assert analytics.is_service_record("Pump replacement") is False
+
+    def test_unrelated_expense_not_a_service(self):
+        assert analytics.is_service_record("New Transmission") is False
+
+
+class TestServiceStatus:
+    def test_ok_when_well_under_the_interval(self):
+        fillups = [make_fillup(1, "2021-06-01", 101500, 20, 60)]
+        records = [make_record(1, "2021-01-01", 100, expense="Oil change", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.level == "ok"
+        assert status.miles_since_service == pytest.approx(1500)
+        assert status.miles_until_next == pytest.approx(3500)
+        assert status.last_service_odometer == pytest.approx(100000)
+        assert status.current_odometer == pytest.approx(101500)
+
+    def test_due_soon_within_1000_miles_of_interval(self):
+        fillups = [make_fillup(1, "2021-06-01", 104200, 20, 60)]
+        records = [make_record(1, "2021-01-01", 100, expense="PM Service", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.level == "due_soon"
+        assert status.miles_until_next == pytest.approx(800)
+
+    def test_overdue_past_the_interval(self):
+        fillups = [make_fillup(1, "2021-06-01", 106000, 20, 60)]
+        records = [make_record(1, "2021-01-01", 100, expense="Oil change", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.level == "overdue"
+        assert status.miles_until_next == pytest.approx(-1000)
+
+    def test_ignores_service_record_with_no_odometer_in_favor_of_an_earlier_one(self):
+        fillups = [make_fillup(1, "2021-06-01", 101500, 20, 60)]
+        records = [
+            make_record(1, "2021-01-01", 100, expense="Oil change", odometer_miles=100000),
+            make_record(2, "2021-05-01", 100, expense="PM Service", odometer_miles=None),
+        ]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        # Anchors to the 2021-01-01 record since the more recent one has no
+        # odometer reading to anchor to.
+        assert status.last_service_date == datetime.date(2021, 1, 1)
+
+    def test_non_service_maintenance_records_are_ignored(self):
+        fillups = [make_fillup(1, "2021-06-01", 101500, 20, 60)]
+        records = [make_record(1, "2021-01-01", 40000, expense="New Transmission", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status is None
+
+    def test_none_when_no_service_records_at_all(self):
+        fillups = [make_fillup(1, "2021-06-01", 101500, 20, 60)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), [])
+
+        assert status is None
 
 
 class TestRollingAvgAndCumulative:

@@ -19,16 +19,20 @@ from app.schemas import (
     GasFillupOut,
     MajorEvent,
     MaintenanceRecordOut,
+    ServiceAlert,
     StatCard,
     YearlySummary,
 )
 
 MAJOR_EVENT_THRESHOLD = 2000.0
 MPG_ROLLING_WINDOW = 7
+SERVICE_INTERVAL_MILES = 5000.0
+SERVICE_DUE_SOON_MILES = 1000.0
 
 _NOT_FULL_FILLUP = "not a full fillup"
 _OFF_ON_MILEAGE = ("off on milage", "off on mileage")
 _EST_WORD_RE = re.compile(r"\best\b")
+_SERVICE_RECORD_RE = re.compile(r"oil change|\bpm\b", re.IGNORECASE)
 
 
 def is_clean(notes: str | None) -> bool:
@@ -164,6 +168,54 @@ def major_events(records: list[MaintenanceRecord]) -> list[MajorEvent]:
     events = [r for r in records if float(r.cost) >= MAJOR_EVENT_THRESHOLD]
     events.sort(key=lambda r: r.date)
     return [MajorEvent(date=r.date, cost=float(r.cost), label=r.expense) for r in events]
+
+
+def is_service_record(expense: str) -> bool:
+    """Matched by substring/regex on the expense field, same approach as
+    `is_clean` -- covers this log's actual wording for oil changes and "PM"
+    (preventive maintenance) service visits, e.g. "Oil change/ PM maintance
+    check" or "PM Service"."""
+    return bool(_SERVICE_RECORD_RE.search(expense))
+
+
+def service_status(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> ServiceAlert | None:
+    """Miles until the next assumed-every-5000-miles service, based on the
+    most recent service-type maintenance record that has an odometer
+    reading. Records with no place aren't possible anymore, but odometer is
+    still optional on a MaintenanceRecord, so a service logged without one
+    can't anchor this calculation and is skipped in favor of an earlier
+    record that has one. Returns None if there's no odometer reading at all,
+    or no service record to anchor to."""
+    odometers = [float(c.fillup.odometer_miles) for c in computed]
+    odometers += [float(r.odometer_miles) for r in records if r.odometer_miles is not None]
+    if not odometers:
+        return None
+
+    service_records = [r for r in records if r.odometer_miles is not None and is_service_record(r.expense)]
+    if not service_records:
+        return None
+    last = max(service_records, key=lambda r: (r.date, r.id))
+
+    current_odometer = max(odometers)
+    last_odometer = float(last.odometer_miles)
+    miles_since = current_odometer - last_odometer
+    miles_until = SERVICE_INTERVAL_MILES - miles_since
+
+    if miles_until <= 0:
+        level = "overdue"
+    elif miles_until <= SERVICE_DUE_SOON_MILES:
+        level = "due_soon"
+    else:
+        level = "ok"
+
+    return ServiceAlert(
+        level=level,
+        miles_since_service=miles_since,
+        miles_until_next=miles_until,
+        last_service_date=last.date,
+        last_service_odometer=last_odometer,
+        current_odometer=current_odometer,
+    )
 
 
 def stat_cards(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> list[StatCard]:

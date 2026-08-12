@@ -33,6 +33,7 @@ def build_dashboard_summary(
         stats=analytics.stat_cards(computed, records),
         yearly=analytics.yearly_summary(computed, records),
         major_events=analytics.major_events(records),
+        service_alert=analytics.service_status(computed, records),
         narrative=narrative_text(computed),
         price_per_gallon_series=price_series,
         mpg_clean_points=clean_pts,

@@ -6,6 +6,8 @@
     <p v-if="store.error" class="error">Failed to load dashboard: {{ store.error }}</p>
 
     <template v-if="summary">
+      <ServiceAlert v-if="summary.service_alert" :alert="summary.service_alert" />
+
       <div class="stats">
         <StatCard
           v-for="s in summary.stats"
@@ -70,6 +72,7 @@
 import { computed, onMounted } from 'vue'
 import { useDashboardStore } from '../stores/dashboardStore'
 import StatCard from '../components/StatCard.vue'
+import ServiceAlert from '../components/ServiceAlert.vue'
 import CostPerGallonChart from '../components/charts/CostPerGallonChart.vue'
 import MpgScatterChart from '../components/charts/MpgScatterChart.vue'
 import CumulativeSpendChart from '../components/charts/CumulativeSpendChart.vue'
