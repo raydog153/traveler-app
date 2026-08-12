@@ -15,6 +15,13 @@
       </div>
     </div>
 
+    <div v-if="years.length" class="type-legend">
+      <span class="type-item"><span class="swatch" :style="{ background: TYPE_COLORS.gas }"></span>Gas fill-up</span>
+      <span class="type-item"
+        ><span class="swatch" :style="{ background: TYPE_COLORS.maintenance }"></span>Maintenance</span
+      >
+    </div>
+
     <div ref="mapEl" class="map"></div>
   </div>
 </template>
@@ -32,6 +39,7 @@ const yearLayers = {}
 const visible = reactive({})
 
 const YEAR_COLORS = ['#facc15', '#ff8a3d', '#3ddcff', '#a78bfa', '#4ade80', '#f87171']
+const TYPE_COLORS = { gas: '#9ca3af', maintenance: '#ef4444' }
 
 function colorFor(year) {
   const years = store.routeData?.years.map((y) => y.year) || []
@@ -42,13 +50,13 @@ function colorFor(year) {
 const years = computed(() => store.routeData?.years || [])
 const subhead = computed(() =>
   store.routeData
-    ? `${store.routeData.total_stops} fill-up cities, plotted where each was first visited, connected in chronological order and colored by year.`
+    ? `${store.routeData.total_stops} stops (fill-ups and maintenance visits), connected in chronological order and colored by year.`
     : 'Loading…',
 )
 
 function popupHtml(loc) {
-  const extra = loc.visit_count > 1 ? ` (+${loc.visit_count - 1} more visit${loc.visit_count > 2 ? 's' : ''})` : ''
-  return `<b>${loc.name}</b><br>${loc.arrival_date}${extra}`
+  const detail = loc.detail ? `<br>${loc.detail}` : ''
+  return `<b>${loc.name}</b><br>${loc.date}${detail}`
 }
 
 function buildMap() {
@@ -71,7 +79,7 @@ function buildMap() {
     y.locations.forEach((loc) => {
       const marker = L.circleMarker([loc.latitude, loc.longitude], {
         radius: 5,
-        fillColor: color,
+        fillColor: TYPE_COLORS[loc.type],
         color: '#0f1720',
         weight: 1,
         fillOpacity: 0.9,
@@ -183,6 +191,18 @@ h1 {
   display: flex;
   gap: 8px;
   margin-left: auto;
+}
+.type-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: -4px 0 12px;
+}
+.type-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .map {
   flex: 1;

@@ -42,7 +42,7 @@
   {
     "date": "2021-08-20",
     "expense": "Brakes seized",
-    "place": "NH",
+    "place": "Lee, NH",
     "odometer_miles": null,
     "vendor": "Alans Diesel Service",
     "cost": 55.0
@@ -66,7 +66,7 @@
   {
     "date": "2021-09-17",
     "expense": "Tow",
-    "place": "",
+    "place": "Goshen, MA",
     "odometer_miles": 114624.0,
     "vendor": "Koch Auto",
     "cost": 375.0
@@ -74,7 +74,7 @@
   {
     "date": "2021-09-20",
     "expense": "Front Calipers",
-    "place": "MA",
+    "place": "Easthampton, MA",
     "odometer_miles": null,
     "vendor": "Trailer Tech USA",
     "cost": 1049.0
@@ -82,7 +82,7 @@
   {
     "date": "2021-09-21",
     "expense": "Front Calipers",
-    "place": "MA",
+    "place": "Easthampton, MA",
     "odometer_miles": null,
     "vendor": "Trailer Tech USA",
     "cost": 562.0
@@ -90,7 +90,7 @@
   {
     "date": "2021-09-30",
     "expense": "Front brake rotors",
-    "place": "NY",
+    "place": "Bainbridge, NY",
     "odometer_miles": 115133.0,
     "vendor": "Johns Garage",
     "cost": 796.0
@@ -98,7 +98,7 @@
   {
     "date": "2021-10-01",
     "expense": "Rear Brake lines - Labor",
-    "place": "PA",
+    "place": "Frackville, PA",
     "odometer_miles": 115294.0,
     "vendor": "Auto Diesel Electric",
     "cost": 151.0
@@ -106,7 +106,7 @@
   {
     "date": "2021-10-01",
     "expense": "Rear Brake lines - Parts",
-    "place": "PA",
+    "place": "Allentown, PA",
     "odometer_miles": 115294.0,
     "vendor": "Five Star",
     "cost": 123.0
@@ -130,14 +130,14 @@
   {
     "date": "2022-03-10",
     "expense": "Rear right tires",
-    "place": "Pembroke,GA",
+    "place": "Pembroke, GA",
     "odometer_miles": 123745.0,
     "vendor": "Butler Tire and Lube",
     "cost": 706.32
   },
   {
     "date": "2022-05-06",
-    "expense": "Glow PLugs",
+    "expense": "Glow PLugs, oil change",
     "place": "Show Low, AZ",
     "odometer_miles": 126948.0,
     "vendor": "Williams Brothers Auto Service",
@@ -170,7 +170,7 @@
   {
     "date": "2022-09-15",
     "expense": "Rear left tires",
-    "place": "",
+    "place": "Sante Fe, NM",
     "odometer_miles": null,
     "vendor": "?",
     "cost": 700.0
@@ -178,7 +178,7 @@
   {
     "date": "2022-11-29",
     "expense": "Tow",
-    "place": "Savanah, GA",
+    "place": "Savannah, GA",
     "odometer_miles": null,
     "vendor": "?",
     "cost": 350.0
@@ -186,15 +186,15 @@
   {
     "date": "2022-11-29",
     "expense": "Starting issue",
-    "place": "Savanah, GA",
+    "place": "Savannah, GA",
     "odometer_miles": 135613.0,
     "vendor": "Roberts Truck Center",
     "cost": 197.0
   },
   {
     "date": "2023-03-01",
-    "expense": "Starting issue",
-    "place": "Savanah, GA",
+    "expense": "Starting issue, oil change",
+    "place": "Savannah, GA",
     "odometer_miles": 137000.0,
     "vendor": "Roberts Truck Center",
     "cost": 1077.0
@@ -202,7 +202,7 @@
   {
     "date": "2023-03-07",
     "expense": "Starting issue",
-    "place": "Savanah, GA",
+    "place": "Savannah, GA",
     "odometer_miles": 137074.0,
     "vendor": "Roberts Truck Center",
     "cost": 463.0
@@ -210,7 +210,7 @@
   {
     "date": "2023-03-15",
     "expense": "Starting issue",
-    "place": "Augustus, GA",
+    "place": "Augusta, GA",
     "odometer_miles": 137250.0,
     "vendor": "Rush",
     "cost": 660.0
@@ -218,7 +218,7 @@
   {
     "date": "2023-04-27",
     "expense": "Starting issue, relay went",
-    "place": "VA",
+    "place": "Richmond, VA",
     "odometer_miles": 138306.0,
     "vendor": "Rush",
     "cost": 225.0
@@ -226,7 +226,7 @@
   {
     "date": "2023-04-28",
     "expense": "Relays for above issue",
-    "place": "MD",
+    "place": "Baltimore, MD",
     "odometer_miles": null,
     "vendor": "Beltway Internaltional",
     "cost": 28.0
@@ -234,7 +234,7 @@
   {
     "date": "2023-04-28",
     "expense": "Shock Bolt",
-    "place": "MD",
+    "place": "Baltimore, MD",
     "odometer_miles": null,
     "vendor": "Beltway Internaltional",
     "cost": 14.0
@@ -242,7 +242,7 @@
   {
     "date": "2023-05-01",
     "expense": "Shock, re-balance front",
-    "place": "MD",
+    "place": "Baltimore, MD",
     "odometer_miles": 138577.0,
     "vendor": "STTC",
     "cost": 363.0
@@ -258,7 +258,7 @@
   {
     "date": "2023-06-20",
     "expense": "Rear left bearings",
-    "place": "MA",
+    "place": "Bedford, MA",
     "odometer_miles": 139425.0,
     "vendor": "Taylor & Lloyd",
     "cost": 1639.0
@@ -281,7 +281,7 @@
   },
   {
     "date": "2023-09-15",
-    "expense": "Install Wabco HCU w/ECU",
+    "expense": "Install Wabco HCU w/ECU, oil change",
     "place": "Colorado Springs, CO",
     "odometer_miles": 142592.0,
     "vendor": "McCandless",
@@ -346,7 +346,7 @@
   {
     "date": "2023-12-06",
     "expense": "Parts for fuel leak",
-    "place": "Augustus, GA",
+    "place": "Augusta, GA",
     "odometer_miles": 145403.0,
     "vendor": "Rush",
     "cost": 178.09
@@ -354,7 +354,7 @@
   {
     "date": "2023-12-08",
     "expense": "Fuel lines rusted, replacing",
-    "place": "Augustus, GA",
+    "place": "Augusta, GA",
     "odometer_miles": 145403.0,
     "vendor": "Rush",
     "cost": 2820.67
@@ -362,7 +362,7 @@
   {
     "date": "2023-12-08",
     "expense": "Refund for over-charging",
-    "place": "Augustus, GA",
+    "place": "Augusta, GA",
     "odometer_miles": 145403.0,
     "vendor": "Rush",
     "cost": -869.29
@@ -418,7 +418,7 @@
   {
     "date": "2024-09-01",
     "expense": "Parts starter cable",
-    "place": "",
+    "place": "Caldwell, ID",
     "odometer_miles": 153326.0,
     "vendor": "NAPA",
     "cost": 16.2

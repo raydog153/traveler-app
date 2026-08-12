@@ -44,8 +44,6 @@ def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFil
         price=payload.price,
         notes=payload.notes,
         location=location,
-        latitude=location.lat,
-        longitude=location.long,
     )
     db.add(fillup)
     db.commit()

@@ -1,45 +1,59 @@
-"""Builds the route/map payload from gas_fillups: for each unique location,
-plot its earliest visit, grouped and colored by the year of that first visit
--- the same derived view bus_route_map.html's `routeData` was, but computed
-live instead of hand-curated. Locations with no lat/lng (not yet geocoded)
-are simply omitted -- they'll appear once a future fill-up there gets
-geocoded.
+"""Builds the route/map payload by merging gas_fillups and
+maintenance_records into a single chronological list of stops: every record
+with a geocoded location becomes its own point -- repeat visits to the same
+location plot multiple times, since that's the actual travel history, not
+just the first arrival. Marker color (set on the frontend) distinguishes
+record type; points are grouped by year for the route line and the
+show/hide-by-year legend. A record with no location, or one not yet
+geocoded (null lat/lng), is simply omitted until a later edit fills it in.
 """
 
 from collections import defaultdict
+from typing import Callable, Literal, TypeVar
 
-from app.models import GasFillup
+from app.models import GasFillup, Location, MaintenanceRecord
 from app.schemas import RouteData, RouteLocation, RouteYear
 from app.services.analytics import display_city
 
+RecordT = TypeVar("RecordT", GasFillup, MaintenanceRecord)
 
-def build_route_data(fillups: list[GasFillup]) -> RouteData:
-    by_location: dict[str, list[GasFillup]] = defaultdict(list)
-    for f in fillups:
-        by_location[f.location_id].append(f)
 
-    by_year: dict[int, list[tuple[GasFillup, int]]] = defaultdict(list)
-    for rows in by_location.values():
-        rows.sort(key=lambda f: f.date)
-        first = rows[0]
-        if first.latitude is None or first.longitude is None:
+def _points_from(
+    records: list[RecordT],
+    location_of: Callable[[RecordT], Location | None],
+    type_: Literal["gas", "maintenance"],
+    detail_of: Callable[[RecordT], str | None],
+) -> list[RouteLocation]:
+    points = []
+    for r in records:
+        loc = location_of(r)
+        if loc is None or loc.lat is None or loc.long is None:
             continue
-        by_year[first.date.year].append((first, len(rows)))
-
-    years = []
-    for year in sorted(by_year):
-        entries = sorted(by_year[year], key=lambda e: e[0].date)
-        locations = [
+        points.append(
             RouteLocation(
-                name=display_city(first.location),
-                latitude=float(first.latitude),
-                longitude=float(first.longitude),
-                arrival_date=first.date,
-                visit_count=visit_count,
+                id=f"{type_}-{r.id}",
+                name=display_city(loc),
+                latitude=float(loc.lat),
+                longitude=float(loc.long),
+                date=r.date,
+                type=type_,
+                detail=detail_of(r),
             )
-            for first, visit_count in entries
-        ]
-        years.append(RouteYear(year=str(year), locations=locations))
+        )
+    return points
 
-    total_stops = sum(len(y.locations) for y in years)
-    return RouteData(total_stops=total_stops, years=years)
+
+def build_route_data(fillups: list[GasFillup], maintenance_records: list[MaintenanceRecord]) -> RouteData:
+    points = _points_from(fillups, lambda f: f.location, "gas", lambda f: f.notes or None)
+    points += _points_from(maintenance_records, lambda m: m.location, "maintenance", lambda m: m.expense)
+
+    by_year: dict[int, list[RouteLocation]] = defaultdict(list)
+    for p in points:
+        by_year[p.date.year].append(p)
+
+    years = [
+        RouteYear(year=str(year), locations=sorted(by_year[year], key=lambda p: (p.date, p.id)))
+        for year in sorted(by_year)
+    ]
+
+    return RouteData(total_stops=len(points), years=years)

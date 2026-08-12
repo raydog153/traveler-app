@@ -8,9 +8,16 @@ mechanically splitting gas_fillups.city on its first comma, which leaves a
 handful of rows with a missing/misspelled/spelled-out-in-full state;
 locations.json instead captures those rows after they were manually
 corrected, so reseeding (or a fresh install) doesn't regress the fixes.
-It's also the sole source of each seeded GasFillup row's own lat/lng and
-location_id -- both looked up by re-applying that same city/state split to
-gas_raw.json's `city` field (see `app.models.split_city_state`).
+It's also the sole source of each seeded GasFillup/MaintenanceRecord row's
+own location_id -- looked up by re-applying that same city/state split to
+gas_raw.json's `city` field and maint_raw.json's `place` field (see
+`app.models.split_city_state`). lat/lng live only on `locations` now, not on
+`gas_fillups`. maint_raw.json's `place` was re-pulled from the original
+"Bus Living - Our Spot" Google Sheet's maintenance tab -- the version
+previously committed here had several rows with a truncated (state-only or
+blank) place, because the sheet-to-fixture pull only picked up rows the
+short way. `place` is optional on a MaintenanceRecord (unlike GasFillup's
+city), so rows with no place get a null location_id.
 
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
@@ -54,19 +61,27 @@ def seed(db: Session, force: bool = False) -> None:
     maint_rows = _load_fixture("maint_raw.json")
     location_rows = _load_fixture("locations.json")
 
-    fixture_locations = {location_id(row["city"], row["state"]): row for row in location_rows}
+    fixture_location_ids = {location_id(row["city"], row["state"]) for row in location_rows}
 
-    # gas_raw.json rows whose city/state don't appear in locations.json --
-    # possible if the fixture drifts out of sync with the live data. Seeded
-    # with null lat/lng, to be geocoded live on the next fill-up there.
-    gas_locations = {}
+    # gas_raw.json/maint_raw.json rows whose city/state don't appear in
+    # locations.json -- possible if the fixture drifts out of sync with the
+    # live data. Seeded with null lat/lng, to be geocoded live on the next
+    # fill-up/maintenance record there.
+    referenced_locations: dict[str, tuple[str, str]] = {}
     for row in gas_rows:
         city, state = split_city_state(row["city"])
-        gas_locations.setdefault(location_id(city, state), (city, state))
-    unmatched = {loc_id: cs for loc_id, cs in gas_locations.items() if loc_id not in fixture_locations}
+        referenced_locations.setdefault(location_id(city, state), (city, state))
+    for row in maint_rows:
+        if not row["place"].strip():
+            continue
+        city, state = split_city_state(row["place"])
+        referenced_locations.setdefault(location_id(city, state), (city, state))
+    unmatched = {
+        loc_id: cs for loc_id, cs in referenced_locations.items() if loc_id not in fixture_location_ids
+    }
     print(
-        f"lat/lng backfill via locations.json: {len(gas_locations) - len(unmatched)}/{len(gas_locations)} "
-        f"locations matched, {len(unmatched)} unmatched"
+        f"lat/lng backfill via locations.json: {len(referenced_locations) - len(unmatched)}/"
+        f"{len(referenced_locations)} locations matched, {len(unmatched)} unmatched"
     )
 
     for row in location_rows:
@@ -85,10 +100,6 @@ def seed(db: Session, force: bool = False) -> None:
 
     for row in gas_rows:
         city, state = split_city_state(row["city"])
-        loc_id = location_id(city, state)
-        fixture_row = fixture_locations.get(loc_id)
-        lat = fixture_row["lat"] if fixture_row else None
-        lng = fixture_row["long"] if fixture_row else None
         db.add(
             GasFillup(
                 date=datetime.date.fromisoformat(row["date"]),
@@ -96,18 +107,20 @@ def seed(db: Session, force: bool = False) -> None:
                 gallons=row["gallons"],
                 price=row["price"],
                 notes=row["notes"],
-                location_id=loc_id,
-                latitude=lat,
-                longitude=lng,
+                location_id=location_id(city, state),
             )
         )
 
     for row in maint_rows:
+        loc_id = None
+        if row["place"].strip():
+            city, state = split_city_state(row["place"])
+            loc_id = location_id(city, state)
         db.add(
             MaintenanceRecord(
                 date=datetime.date.fromisoformat(row["date"]),
                 expense=row["expense"],
-                place=row["place"],
+                location_id=loc_id,
                 odometer_miles=row["odometer_miles"],
                 vendor=row["vendor"],
                 cost=row["cost"],

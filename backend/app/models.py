@@ -39,8 +39,6 @@ class GasFillup(Base):
     price: Mapped[float] = mapped_column(Numeric(8, 2), nullable=False)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
     location_id: Mapped[str] = mapped_column(Text, ForeignKey("locations.id"), nullable=False)
-    latitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
-    longitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     created_at: Mapped[dt.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -73,10 +71,15 @@ class MaintenanceRecord(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     date: Mapped[dt.date] = mapped_column(Date, nullable=False)
     expense: Mapped[str] = mapped_column(Text, nullable=False)
-    place: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    # Nullable, unlike GasFillup.location_id -- the "Place" field on the
+    # maintenance form is optional (some records, e.g. parts ordered online,
+    # have no associated place).
+    location_id: Mapped[str | None] = mapped_column(Text, ForeignKey("locations.id"), nullable=True)
     odometer_miles: Mapped[float | None] = mapped_column(Numeric(10, 1), nullable=True)
     vendor: Mapped[str] = mapped_column(Text, nullable=False, default="")
     cost: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
     created_at: Mapped[dt.datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    location: Mapped["Location | None"] = relationship()

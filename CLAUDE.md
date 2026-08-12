@@ -46,11 +46,13 @@ the only automated test command.
 
 Three tables — `GasFillup`, `MaintenanceRecord`, and `Location` (`models.py`).
 `Location` (city, state, lat, long) is the normalized, deduped store of every
-place a fill-up happened; `GasFillup.location_id` is a required foreign key
-into it (`gas_fillups` has no city text of its own anymore -- see
-`seed/fixtures/locations.json` below for how the historical free-text
-"City, State" field, not always consistent, was reconciled into this table).
-Its primary key is a derived natural key, not an auto-increment id:
+place a fill-up or maintenance visit happened. `GasFillup.location_id` is a
+required foreign key into it (`gas_fillups` has no city text of its own
+anymore -- see `seed/fixtures/locations.json` below for how the historical
+free-text "City, State" field, not always consistent, was reconciled into
+this table); `MaintenanceRecord.location_id` is the same FK but nullable,
+since "Place" is an optional field on the maintenance form. Its primary key
+is a derived natural key, not an auto-increment id:
 `models.location_id(city, state)` lowercases `"{city} {state}"`, strips
 punctuation, and collapses whitespace to underscores (e.g. `"D'Iberville"`/
 `"MS"` -> `"diberville_ms"`). Callers set `id` explicitly on insert (see

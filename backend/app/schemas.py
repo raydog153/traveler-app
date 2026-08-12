@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -92,11 +93,13 @@ class DashboardSummary(BaseModel):
 
 
 class RouteLocation(BaseModel):
+    id: str
     name: str
     latitude: float
     longitude: float
-    arrival_date: dt.date
-    visit_count: int
+    date: dt.date
+    type: Literal["gas", "maintenance"]
+    detail: str | None = None
 
 
 class RouteYear(BaseModel):
