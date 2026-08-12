@@ -59,6 +59,13 @@ docker compose run --rm backend python -m seed.seed
 This is idempotent — it skips seeding if `gas_fillups` already has rows.
 Pass `--force` to wipe and reseed.
 
+This also seeds `locations` (city/state/lat/long, one row per distinct
+`gas_fillups.city`) from `backend/seed/fixtures/locations.json`. That fixture
+is a snapshot of the table, including manual state corrections -- if you fix
+a row's data directly in the database, re-export the table to that file
+(`select id, city, state, lat, long from locations order by id`, as JSON,
+minus the `id` column) so the fix survives a reseed.
+
 ## Tests
 
 ```bash

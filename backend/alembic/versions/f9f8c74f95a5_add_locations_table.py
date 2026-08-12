@@ -1,12 +1,16 @@
 """add locations table
 
-gas_fillups.city packs "City, State" into one field (e.g. "Lancaster, MA"),
-inconsistently: a handful of rows have no comma/state at all, a couple omit
-the space after the comma, and a few spell the state out in full instead of
-abbreviating it. This migration splits on the first comma verbatim -- it
-does not attempt to normalize those inconsistencies -- and backfills one
-locations row per distinct (city, state) pair found in gas_fillups, reusing
-that city's existing lat/lng.
+Schema only -- data comes from seed.seed() (backend/seed/fixtures/locations.json),
+which is the source of truth for locations going forward. (This revision
+originally also backfilled rows here by mechanically splitting
+gas_fillups.city on its first comma, but that path only ever ran correctly
+against an already-populated gas_fillups table -- on a genuinely fresh
+install, migrations run before seeding, so gas_fillups is empty at this
+point and the backfill silently inserted nothing to insert an all-NULL row
+instead, which violates the NOT NULL constraint. Backfilling here also
+duplicated seed.seed() as a second, inferior source of truth: it re-derives
+the same state-parsing mistakes seed.seed()'s fixture already has manual
+fixes for. Removed once the fixture existed to replace it.)
 
 Revision ID: f9f8c74f95a5
 Revises: 853cc1c56d53
@@ -39,33 +43,6 @@ def upgrade() -> None:
     )
     op.create_index('idx_locations_city_state_lower', 'locations', [sa.literal_column('lower(city)'), sa.literal_column('lower(state)')], unique=True)
     # ### end Alembic commands ###
-
-    _backfill_locations()
-
-
-def _backfill_locations() -> None:
-    conn = op.get_bind()
-    rows = conn.execute(sa.text("SELECT DISTINCT city, latitude, longitude FROM gas_fillups")).fetchall()
-
-    by_city_state: dict[tuple[str, str], tuple[float | None, float | None]] = {}
-    for raw_city, lat, long_ in rows:
-        city, _, state = raw_city.partition(",")
-        by_city_state[(city.strip(), state.strip())] = (lat, long_)
-
-    locations_table = sa.table(
-        "locations",
-        sa.column("city", sa.Text),
-        sa.column("state", sa.Text),
-        sa.column("lat", sa.Numeric(9, 6)),
-        sa.column("long", sa.Numeric(9, 6)),
-    )
-    conn.execute(
-        locations_table.insert(),
-        [
-            {"city": city, "state": state, "lat": lat, "long": long_}
-            for (city, state), (lat, long_) in by_city_state.items()
-        ],
-    )
 
 
 def downgrade() -> None:

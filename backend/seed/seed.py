@@ -1,5 +1,14 @@
 """Idempotent loader: reads the committed fixtures (gas_raw.json,
-maint_raw.json, route_data.json) and inserts them into Postgres.
+maint_raw.json, route_data.json, locations.json) and inserts them into
+Postgres.
+
+locations.json is a snapshot of the `locations` table (city, state, lat,
+long), not a raw historical source like the other three fixtures. The
+`add locations table` migration derives locations by mechanically splitting
+gas_fillups.city on its first comma, which leaves a handful of rows with a
+missing/misspelled/spelled-out-in-full state; locations.json instead
+captures those rows after they were manually corrected, so reseeding
+(or a fresh install) doesn't regress the fixes.
 
 Historical lat/lng backfill: route_data.json's locations only have a short
 city name (e.g. "Lancaster") and no state, while gas_raw.json's city field
@@ -31,7 +40,7 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
-from app.models import GasFillup, MaintenanceRecord
+from app.models import GasFillup, Location, MaintenanceRecord
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -107,11 +116,13 @@ def seed(db: Session, force: bool = False) -> None:
     if force:
         db.execute(delete(GasFillup))
         db.execute(delete(MaintenanceRecord))
+        db.execute(delete(Location))
         db.commit()
 
     gas_rows = _load_fixture("gas_raw.json")
     maint_rows = _load_fixture("maint_raw.json")
     route_data = _load_fixture("route_data.json")
+    location_rows = _load_fixture("locations.json")
 
     print("joining historical cities to route_data for lat/lng backfill...")
     city_lat_lng = backfill_lat_lng(gas_rows, route_data)
@@ -143,8 +154,21 @@ def seed(db: Session, force: bool = False) -> None:
             )
         )
 
+    for row in location_rows:
+        db.add(
+            Location(
+                city=row["city"],
+                state=row["state"],
+                lat=row["lat"],
+                long=row["long"],
+            )
+        )
+
     db.commit()
-    print(f"seeded {len(gas_rows)} gas fill-ups and {len(maint_rows)} maintenance records")
+    print(
+        f"seeded {len(gas_rows)} gas fill-ups, {len(maint_rows)} maintenance records, "
+        f"and {len(location_rows)} locations"
+    )
 
 
 def main() -> None:

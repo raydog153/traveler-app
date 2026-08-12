@@ -1,0 +1,920 @@
+[
+  {
+    "city": "Adrian",
+    "state": "MI",
+    "lat": 41.897547,
+    "long": -84.037166
+  },
+  {
+    "city": "Albany",
+    "state": "NY",
+    "lat": 42.651755,
+    "long": -73.755076
+  },
+  {
+    "city": "Ammon",
+    "state": "ID",
+    "lat": 43.469637,
+    "long": -111.966636
+  },
+  {
+    "city": "Antrim Township",
+    "state": "PA",
+    "lat": 39.757796,
+    "long": -77.722316
+  },
+  {
+    "city": "Augusta",
+    "state": "GA",
+    "lat": 33.468731,
+    "long": -82.028319
+  },
+  {
+    "city": "Balmorhea",
+    "state": "TX",
+    "lat": 30.984312,
+    "long": -103.744626
+  },
+  {
+    "city": "Bay Minette",
+    "state": "AL",
+    "lat": 30.882963,
+    "long": -87.773047
+  },
+  {
+    "city": "Belgrade",
+    "state": "MT",
+    "lat": 45.776246,
+    "long": -111.177095
+  },
+  {
+    "city": "Bilixi",
+    "state": "MS",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Billings",
+    "state": "MT",
+    "lat": 45.782777,
+    "long": -108.504594
+  },
+  {
+    "city": "Blackwater",
+    "state": "MO",
+    "lat": 38.9803,
+    "long": -92.99075
+  },
+  {
+    "city": "Bloomingdale",
+    "state": "GA",
+    "lat": 32.132425,
+    "long": -81.299002
+  },
+  {
+    "city": "Boulder",
+    "state": "MT",
+    "lat": 46.236595,
+    "long": -112.120834
+  },
+  {
+    "city": "Bow",
+    "state": "WA",
+    "lat": 48.560305,
+    "long": -122.398037
+  },
+  {
+    "city": "Brooklet",
+    "state": "GA",
+    "lat": 32.379629,
+    "long": -81.663166
+  },
+  {
+    "city": "Brunswick",
+    "state": "GA",
+    "lat": 31.151092,
+    "long": -81.487816
+  },
+  {
+    "city": "Buckeye",
+    "state": "AZ",
+    "lat": 33.37032,
+    "long": -112.583777
+  },
+  {
+    "city": "Butler",
+    "state": "NY",
+    "lat": 43.191555,
+    "long": -76.756737
+  },
+  {
+    "city": "Butte",
+    "state": "MT",
+    "lat": 46.003823,
+    "long": -112.534778
+  },
+  {
+    "city": "Casa Grande",
+    "state": "AZ",
+    "lat": 32.911003,
+    "long": -111.77339
+  },
+  {
+    "city": "Castleton On Hudson",
+    "state": "NY",
+    "lat": 42.533197,
+    "long": -73.7463
+  },
+  {
+    "city": "Cedear City",
+    "state": "UT",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Chadron",
+    "state": "NE",
+    "lat": 42.829385,
+    "long": -103.000642
+  },
+  {
+    "city": "Colby",
+    "state": "KS",
+    "lat": 39.395837,
+    "long": -101.052377
+  },
+  {
+    "city": "Colorado Springs",
+    "state": "CO",
+    "lat": 38.835314,
+    "long": -104.821601
+  },
+  {
+    "city": "Columbus",
+    "state": "GA",
+    "lat": 32.466711,
+    "long": -84.991896
+  },
+  {
+    "city": "Conway",
+    "state": "SC",
+    "lat": 33.836003,
+    "long": -79.047814
+  },
+  {
+    "city": "D'Iberville",
+    "state": "MS",
+    "lat": 30.426309,
+    "long": -88.890864
+  },
+  {
+    "city": "Darien",
+    "state": "GA",
+    "lat": 31.370226,
+    "long": -81.43399
+  },
+  {
+    "city": "Deer Lodge",
+    "state": "MT",
+    "lat": 46.399094,
+    "long": -112.738372
+  },
+  {
+    "city": "Deming",
+    "state": "NM",
+    "lat": 32.268698,
+    "long": -107.75864
+  },
+  {
+    "city": "Denver",
+    "state": "CO",
+    "lat": 39.739236,
+    "long": -104.990251
+  },
+  {
+    "city": "Dessert Hot Springs",
+    "state": "CA",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Dickinson",
+    "state": "ND",
+    "lat": 46.879176,
+    "long": -102.789624
+  },
+  {
+    "city": "Dubuque",
+    "state": "IA",
+    "lat": 42.506363,
+    "long": -90.667748
+  },
+  {
+    "city": "Durham",
+    "state": "NC",
+    "lat": 35.995568,
+    "long": -78.900208
+  },
+  {
+    "city": "East Saint Louis",
+    "state": "IL",
+    "lat": 38.624514,
+    "long": -90.150647
+  },
+  {
+    "city": "Ehrenberg",
+    "state": "AZ",
+    "lat": 33.604191,
+    "long": -114.525232
+  },
+  {
+    "city": "Elk River",
+    "state": "MI",
+    "lat": 44.901669,
+    "long": -85.413683
+  },
+  {
+    "city": "Ellensburg",
+    "state": "WA",
+    "lat": 46.996514,
+    "long": -120.547847
+  },
+  {
+    "city": "Eunice",
+    "state": "NM",
+    "lat": 32.437343,
+    "long": -103.15908
+  },
+  {
+    "city": "Fillmore",
+    "state": "UT",
+    "lat": 38.963855,
+    "long": -112.339738
+  },
+  {
+    "city": "Flagstaff",
+    "state": "AZ",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Fort Lauderdale",
+    "state": "FL",
+    "lat": 26.122439,
+    "long": -80.137317
+  },
+  {
+    "city": "Fox Township",
+    "state": "PA",
+    "lat": 41.314284,
+    "long": -78.6115
+  },
+  {
+    "city": "Frackville",
+    "state": "PA",
+    "lat": 40.783977,
+    "long": -76.230221
+  },
+  {
+    "city": "Franklin",
+    "state": "AL",
+    "lat": 32.275142,
+    "long": -86.145453
+  },
+  {
+    "city": "Gearogetown",
+    "state": "TX",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "George",
+    "state": "WA",
+    "lat": 47.079022,
+    "long": -119.855882
+  },
+  {
+    "city": "Georgetown",
+    "state": "TX",
+    "lat": 30.633262,
+    "long": -97.677984
+  },
+  {
+    "city": "Georgetown",
+    "state": "SC",
+    "lat": 33.376834,
+    "long": -79.294496
+  },
+  {
+    "city": "Globe",
+    "state": "AZ",
+    "lat": 33.394222,
+    "long": -110.786498
+  },
+  {
+    "city": "Granite Falls",
+    "state": "NC",
+    "lat": 35.796521,
+    "long": -81.430646
+  },
+  {
+    "city": "Green River",
+    "state": "WY",
+    "lat": 41.529408,
+    "long": -109.465528
+  },
+  {
+    "city": "Guymon",
+    "state": "OK",
+    "lat": 36.682804,
+    "long": -101.481549
+  },
+  {
+    "city": "Hagerstown",
+    "state": "MD",
+    "lat": 39.641763,
+    "long": -77.719993
+  },
+  {
+    "city": "Hamburg",
+    "state": "PA",
+    "lat": 40.555648,
+    "long": -75.981877
+  },
+  {
+    "city": "Hardeeville",
+    "state": "SC",
+    "lat": 32.287141,
+    "long": -81.080667
+  },
+  {
+    "city": "Helena",
+    "state": "MT",
+    "lat": 46.589145,
+    "long": -112.039106
+  },
+  {
+    "city": "Hinesville",
+    "state": "GA",
+    "lat": 31.831503,
+    "long": -81.61411
+  },
+  {
+    "city": "Hope Mills",
+    "state": "NC",
+    "lat": 34.975676,
+    "long": -78.950726
+  },
+  {
+    "city": "Hubbard",
+    "state": "PA",
+    "lat": 41.156446,
+    "long": -80.569239
+  },
+  {
+    "city": "Hugo",
+    "state": "OK",
+    "lat": 34.01066,
+    "long": -95.509682
+  },
+  {
+    "city": "Hurricane",
+    "state": "UT",
+    "lat": 37.175261,
+    "long": -113.289948
+  },
+  {
+    "city": "Jacksonville",
+    "state": "FL",
+    "lat": 30.329757,
+    "long": -81.659153
+  },
+  {
+    "city": "Jennings",
+    "state": "LA",
+    "lat": 30.222428,
+    "long": -92.657085
+  },
+  {
+    "city": "Jerome",
+    "state": "ID",
+    "lat": 42.724073,
+    "long": -114.518653
+  },
+  {
+    "city": "Kalamazoo",
+    "state": "MI",
+    "lat": 42.289653,
+    "long": -85.585628
+  },
+  {
+    "city": "Kellogg",
+    "state": "ID",
+    "lat": 47.536167,
+    "long": -116.128119
+  },
+  {
+    "city": "King City",
+    "state": "CA",
+    "lat": 36.212744,
+    "long": -121.126029
+  },
+  {
+    "city": "Klamath Falls",
+    "state": "OR",
+    "lat": 42.224867,
+    "long": -121.78167
+  },
+  {
+    "city": "Lackawanna",
+    "state": "NY",
+    "lat": 42.825614,
+    "long": -78.823366
+  },
+  {
+    "city": "Lancaster",
+    "state": "MA",
+    "lat": 42.453403,
+    "long": -71.673454
+  },
+  {
+    "city": "Las Vegas",
+    "state": "NV",
+    "lat": 36.171563,
+    "long": -115.139101
+  },
+  {
+    "city": "Leeds",
+    "state": "AL",
+    "lat": 33.54816,
+    "long": -86.544429
+  },
+  {
+    "city": "Leominster",
+    "state": "MA",
+    "lat": 42.525091,
+    "long": -71.759794
+  },
+  {
+    "city": "Lumberton",
+    "state": "NC",
+    "lat": 34.61822,
+    "long": -79.008642
+  },
+  {
+    "city": "Lunenburg",
+    "state": "MA",
+    "lat": 42.59713,
+    "long": -71.74163
+  },
+  {
+    "city": "Mesquite",
+    "state": "NV",
+    "lat": 36.805531,
+    "long": -114.06719
+  },
+  {
+    "city": "Michigan City",
+    "state": "MI",
+    "lat": 41.707539,
+    "long": -86.89503
+  },
+  {
+    "city": "Middle Smithfield Township",
+    "state": "PA",
+    "lat": 41.083575,
+    "long": -75.084476
+  },
+  {
+    "city": "Midland - Andrews Park",
+    "state": "TX",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Miles City",
+    "state": "MT",
+    "lat": 46.408336,
+    "long": -105.840558
+  },
+  {
+    "city": "Millen",
+    "state": "GA",
+    "lat": 32.804051,
+    "long": -81.949281
+  },
+  {
+    "city": "Missoula",
+    "state": "MT",
+    "lat": 46.872128,
+    "long": -113.994031
+  },
+  {
+    "city": "Morgantown",
+    "state": "WV",
+    "lat": 39.630408,
+    "long": -79.954468
+  },
+  {
+    "city": "Mountain Home",
+    "state": "ID",
+    "lat": 43.13295,
+    "long": -115.691198
+  },
+  {
+    "city": "Nappa",
+    "state": "IA",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "New Milford",
+    "state": "PA",
+    "lat": 41.872578,
+    "long": -75.727132
+  },
+  {
+    "city": "North Lancaster",
+    "state": "CA",
+    "lat": 34.703947,
+    "long": -118.148102
+  },
+  {
+    "city": "North Leominster",
+    "state": "MA",
+    "lat": 42.541757,
+    "long": -71.737016
+  },
+  {
+    "city": "North Platte",
+    "state": "NE",
+    "lat": 41.140276,
+    "long": -100.760145
+  },
+  {
+    "city": "Northhampton",
+    "state": "MA",
+    "lat": 42.32509,
+    "long": -72.641201
+  },
+  {
+    "city": "Oberlin",
+    "state": "OH",
+    "lat": 41.293939,
+    "long": -82.217379
+  },
+  {
+    "city": "Omaha",
+    "state": "NE",
+    "lat": 41.256537,
+    "long": -95.934503
+  },
+  {
+    "city": "Oneonta",
+    "state": "NY",
+    "lat": 42.452857,
+    "long": -75.063775
+  },
+  {
+    "city": "Orangeburg",
+    "state": "SC",
+    "lat": 33.49182,
+    "long": -80.855648
+  },
+  {
+    "city": "Orofino",
+    "state": "ID",
+    "lat": 46.479347,
+    "long": -116.25514
+  },
+  {
+    "city": "Otsiningo Park",
+    "state": "NY",
+    "lat": 42.123541,
+    "long": -75.902852
+  },
+  {
+    "city": "Owingsville",
+    "state": "KY",
+    "lat": 38.144802,
+    "long": -83.764085
+  },
+  {
+    "city": "Palatka",
+    "state": "FL",
+    "lat": 29.647227,
+    "long": -81.629711
+  },
+  {
+    "city": "Paraje",
+    "state": "NM",
+    "lat": 35.055321,
+    "long": -107.475604
+  },
+  {
+    "city": "Paxico",
+    "state": "KS",
+    "lat": 39.069443,
+    "long": -96.166383
+  },
+  {
+    "city": "Pembroke",
+    "state": "GA",
+    "lat": 32.136033,
+    "long": -81.622057
+  },
+  {
+    "city": "Perrysburg",
+    "state": "OH",
+    "lat": 41.556996,
+    "long": -83.627157
+  },
+  {
+    "city": "Phoenix",
+    "state": "AZ",
+    "lat": 33.448295,
+    "long": -112.072549
+  },
+  {
+    "city": "Pleasant Prairie",
+    "state": "WI",
+    "lat": 42.553075,
+    "long": -87.933412
+  },
+  {
+    "city": "Pooler",
+    "state": "GA",
+    "lat": 32.115481,
+    "long": -81.247057
+  },
+  {
+    "city": "Port Arthor",
+    "state": "TX",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Powhatan",
+    "state": "NC",
+    "lat": 35.61361,
+    "long": -78.41778
+  },
+  {
+    "city": "Preston",
+    "state": "GA",
+    "lat": 32.065992,
+    "long": -84.537417
+  },
+  {
+    "city": "Prudenville",
+    "state": "MI",
+    "lat": 44.298476,
+    "long": -84.652091
+  },
+  {
+    "city": "Purvis",
+    "state": "MS",
+    "lat": 31.143235,
+    "long": -89.409787
+  },
+  {
+    "city": "Rapid City",
+    "state": "SD",
+    "lat": 44.080543,
+    "long": -103.231015
+  },
+  {
+    "city": "Rapid River",
+    "state": "MI",
+    "lat": 45.926638,
+    "long": -86.96706
+  },
+  {
+    "city": "Redding - Magnolia",
+    "state": "CA",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Rexburg",
+    "state": "ID",
+    "lat": 43.82311,
+    "long": -111.792424
+  },
+  {
+    "city": "Richmond",
+    "state": "VA",
+    "lat": 37.540725,
+    "long": -77.436048
+  },
+  {
+    "city": "Riggins",
+    "state": "IA",
+    "lat": 45.420022,
+    "long": -116.316316
+  },
+  {
+    "city": "Riverside",
+    "state": "MD",
+    "lat": 39.47372,
+    "long": -76.241345
+  },
+  {
+    "city": "Rocky Mount",
+    "state": "VA",
+    "lat": 36.99764,
+    "long": -79.891977
+  },
+  {
+    "city": "Rome",
+    "state": "NY",
+    "lat": 43.212847,
+    "long": -75.45573
+  },
+  {
+    "city": "Round Rock",
+    "state": "TX",
+    "lat": 30.508255,
+    "long": -97.678896
+  },
+  {
+    "city": "Salina",
+    "state": "KS",
+    "lat": 38.840281,
+    "long": -97.611424
+  },
+  {
+    "city": "San Angelo",
+    "state": "TX",
+    "lat": 31.463772,
+    "long": -100.437038
+  },
+  {
+    "city": "Sandy Hook",
+    "state": "VA",
+    "lat": 37.752645,
+    "long": -77.912496
+  },
+  {
+    "city": "Sandy Ridge",
+    "state": "NC",
+    "lat": 36.499027,
+    "long": -80.104214
+  },
+  {
+    "city": "Sante Fe",
+    "state": "NM",
+    "lat": 35.689431,
+    "long": -105.938194
+  },
+  {
+    "city": "Saraland",
+    "state": "NE",
+    "lat": 30.820742,
+    "long": -88.070556
+  },
+  {
+    "city": "Saratoga Springs",
+    "state": "UT",
+    "lat": 40.33019,
+    "long": -111.904488
+  },
+  {
+    "city": "Savannah",
+    "state": "GA",
+    "lat": 32.080899,
+    "long": -81.091203
+  },
+  {
+    "city": "Show Low",
+    "state": "AZ",
+    "lat": 34.254208,
+    "long": -110.029833
+  },
+  {
+    "city": "Slidell",
+    "state": "LA",
+    "lat": 30.275195,
+    "long": -89.781175
+  },
+  {
+    "city": "Springhill",
+    "state": "LA",
+    "lat": 33.005969,
+    "long": -93.46684
+  },
+  {
+    "city": "Statesboro",
+    "state": "GA",
+    "lat": 32.448788,
+    "long": -81.783167
+  },
+  {
+    "city": "Stratford",
+    "state": "TX",
+    "lat": 36.33614,
+    "long": -102.072119
+  },
+  {
+    "city": "Sweet Springs",
+    "state": "MO",
+    "lat": 38.963629,
+    "long": -93.414932
+  },
+  {
+    "city": "Thermopolis",
+    "state": "WY",
+    "lat": 43.646067,
+    "long": -108.212043
+  },
+  {
+    "city": "Tuscalossa",
+    "state": "NM",
+    "lat": null,
+    "long": null
+  },
+  {
+    "city": "Union",
+    "state": "SC",
+    "lat": 34.715412,
+    "long": -81.623711
+  },
+  {
+    "city": "Valley City",
+    "state": "ND",
+    "lat": 46.923313,
+    "long": -98.003155
+  },
+  {
+    "city": "Vicksburg",
+    "state": "AZ",
+    "lat": 33.744475,
+    "long": -113.752156
+  },
+  {
+    "city": "Warr Acres",
+    "state": "OK",
+    "lat": 35.522306,
+    "long": -97.618981
+  },
+  {
+    "city": "Watkins Glen",
+    "state": "NY",
+    "lat": 42.380629,
+    "long": -76.873292
+  },
+  {
+    "city": "Waynesboro",
+    "state": "GA",
+    "lat": 33.089873,
+    "long": -82.015674
+  },
+  {
+    "city": "West Laramie",
+    "state": "WY",
+    "lat": 41.308866,
+    "long": -105.620546
+  },
+  {
+    "city": "West Monroe",
+    "state": "LA",
+    "lat": 32.518478,
+    "long": -92.147635
+  },
+  {
+    "city": "White HIlls",
+    "state": "AZ",
+    "lat": 35.740283,
+    "long": -114.350756
+  },
+  {
+    "city": "Willcox",
+    "state": "AZ",
+    "lat": 32.252852,
+    "long": -109.832012
+  },
+  {
+    "city": "Willits",
+    "state": "CA",
+    "lat": 39.409608,
+    "long": -123.355566
+  },
+  {
+    "city": "Woodhull",
+    "state": "IL",
+    "lat": 41.178926,
+    "long": -90.315958
+  },
+  {
+    "city": "Woodstock",
+    "state": "VA",
+    "lat": 38.881778,
+    "long": -78.505843
+  },
+  {
+    "city": "Yuma",
+    "state": "AZ",
+    "lat": 32.692651,
+    "long": -114.627692
+  }
+]
