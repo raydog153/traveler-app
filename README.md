@@ -7,9 +7,10 @@ with a live, editable app.
 
 ## Stack
 
-- **Backend**: FastAPI, SQLAlchemy 2.0, Postgres, Alembic migrations. Two
-  tables (`gas_fillups`, `maintenance_records`); everything else (yearly
-  stats, major maintenance events, route map data) is computed on read.
+- **Backend**: FastAPI, SQLAlchemy 2.0, Postgres, Alembic migrations. Three
+  tables (`gas_fillups`, `maintenance_records`, `locations`); everything
+  else (yearly stats, major maintenance events, route map data) is computed
+  on read.
 - **Frontend**: Vue 3 + Vite SPA (Pinia, vue-router, Chart.js, Leaflet).
 - **Geocoding**: new fill-up cities are geocoded automatically via
   OpenStreetMap Nominatim.
@@ -49,8 +50,7 @@ docker compose run --rm backend alembic upgrade head
 ## Seeding historical data
 
 The database starts empty. To load the historical gas/maintenance history
-(originally sourced from the "Bus Living - Our Spot" Google Sheet and the
-route map's city coordinates):
+(originally sourced from the "Bus Living - Our Spot" Google Sheet):
 
 ```bash
 docker compose run --rm backend python -m seed.seed

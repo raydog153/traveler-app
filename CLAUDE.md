@@ -28,11 +28,11 @@ docker compose run --rm backend alembic upgrade head          # applied automati
 ```
 
 The database starts empty; seeding pulls from `backend/seed/fixtures/*.json`
-(originally sourced from the "Bus Living - Our Spot" Google Sheet and the old
-route map's city coordinates). `locations.json` is different from the other
-fixtures: it's not a raw historical source but a snapshot of the `locations`
-table itself (including manual state corrections) -- if you edit that table
-directly, re-export it back to the fixture or a reseed will lose the edit.
+(originally sourced from the "Bus Living - Our Spot" Google Sheet).
+`locations.json` is different from the other fixtures: it's not a raw
+historical source but a snapshot of the `locations` table itself (including
+manual state corrections) -- if you edit that table directly, re-export it
+back to the fixture or a reseed will lose the edit.
 
 There is no lint/format tooling configured in this repo (no ruff/eslint
 config) — don't assume one and don't add one unless asked.

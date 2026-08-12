@@ -1,26 +1,16 @@
 """Idempotent loader: reads the committed fixtures (gas_raw.json,
-maint_raw.json, route_data.json, locations.json) and inserts them into
-Postgres.
+maint_raw.json, locations.json) and inserts them into Postgres.
 
 locations.json is a snapshot of the `locations` table (city, state, lat,
-long), not a raw historical source like the other three fixtures. The
-`add locations table` migration derives locations by mechanically splitting
-gas_fillups.city on its first comma, which leaves a handful of rows with a
-missing/misspelled/spelled-out-in-full state; locations.json instead
-captures those rows after they were manually corrected, so reseeding
-(or a fresh install) doesn't regress the fixes.
-
-Historical lat/lng backfill: route_data.json's locations only have a short
-city name (e.g. "Lancaster") and no state, while gas_raw.json's city field
-is "name, state" (e.g. "Lancaster, MA"). Short names collide across
-different states/years (confirmed: "Georgetown" is a first-visit city in
-both the 2022 and 2023 groups, in different states) -- so cities cannot be
-joined by name alone. Instead, each gas_raw city's *earliest* fill-up date
-is matched against route_data's (short name, reconstructed full date) pairs,
-since route_data's `arrival_time` is exactly that same earliest-visit date
-by construction. A route_data entry's full date is reconstructed from its
-parent day's `title` (e.g. "2022 (first visits)") plus its own
-`arrival_time` (e.g. "Apr 08").
+long), not a raw historical source like the other two fixtures. The
+`add locations table` migration originally derived locations by
+mechanically splitting gas_fillups.city on its first comma, which leaves a
+handful of rows with a missing/misspelled/spelled-out-in-full state;
+locations.json instead captures those rows after they were manually
+corrected, so reseeding (or a fresh install) doesn't regress the fixes.
+It's also the sole source of each seeded GasFillup row's own lat/lng --
+looked up by re-applying that same city/state split to gas_raw.json's
+`city` field (see `_split_city_state`).
 
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
@@ -32,7 +22,6 @@ on backend container startup, see Dockerfile).
 
 import datetime
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -45,66 +34,15 @@ from app.models import GasFillup, Location, MaintenanceRecord
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 
-def _load_fixture(name: str) -> list | dict:
+def _load_fixture(name: str) -> list:
     return json.loads((FIXTURES_DIR / name).read_text())
 
 
-def _city_short_name(city: str) -> str:
-    return city.split(",")[0].strip().lower()
-
-
-def build_route_date_index(route_data: dict) -> dict[tuple[str, str], tuple[float, float]]:
-    """(lowercased short_name, ISO date) -> (lat, lng), built from route_data.json."""
-    index: dict[tuple[str, str], tuple[float, float]] = {}
-    for day in route_data["days"]:
-        year_match = re.search(r"(\d{4})", day["title"])
-        if not year_match:
-            continue
-        year = year_match.group(1)
-        for loc in day["locations"]:
-            try:
-                full_date = datetime.datetime.strptime(
-                    f"{year} {loc['arrival_time']}", "%Y %b %d"
-                ).date()
-            except ValueError:
-                continue
-            key = (loc["name"].strip().lower(), full_date.isoformat())
-            index[key] = (loc["latitude"], loc["longitude"])
-    return index
-
-
-def backfill_lat_lng(gas_rows: list[dict], route_data: dict) -> dict[str, tuple[float, float]]:
-    """Full city string -> (lat, lng), joined via earliest-visit-date matching.
-
-    Logs every join attempt (matched or not) so historical coordinate
-    assignment can be spot-checked, since a silent mis-join would put a
-    fill-up on the map in the wrong state.
-    """
-    route_index = build_route_date_index(route_data)
-
-    earliest_date_by_city: dict[str, str] = {}
-    for row in gas_rows:
-        city = row["city"]
-        if city not in earliest_date_by_city or row["date"] < earliest_date_by_city[city]:
-            earliest_date_by_city[city] = row["date"]
-
-    city_lat_lng: dict[str, tuple[float, float]] = {}
-    unmatched: list[str] = []
-    for city, earliest_date in sorted(earliest_date_by_city.items()):
-        short_name = _city_short_name(city)
-        coords = route_index.get((short_name, earliest_date))
-        if coords:
-            city_lat_lng[city] = coords
-            print(f"  matched  {city!r:35s} first visit {earliest_date} -> {coords}")
-        else:
-            unmatched.append(city)
-            print(f"  NO MATCH {city!r:35s} first visit {earliest_date}")
-
-    print(
-        f"lat/lng backfill: {len(city_lat_lng)}/{len(earliest_date_by_city)} cities matched, "
-        f"{len(unmatched)} unmatched (will be geocoded live on next fill-up at that city)"
-    )
-    return city_lat_lng
+def _split_city_state(raw_city: str) -> tuple[str, str]:
+    """Matches the split used to derive locations.json from gas_fillups.city
+    in the first place, so a gas_raw.json row's city looks up cleanly."""
+    city, _, state = raw_city.partition(",")
+    return city.strip(), state.strip()
 
 
 def seed(db: Session, force: bool = False) -> None:
@@ -121,14 +59,19 @@ def seed(db: Session, force: bool = False) -> None:
 
     gas_rows = _load_fixture("gas_raw.json")
     maint_rows = _load_fixture("maint_raw.json")
-    route_data = _load_fixture("route_data.json")
     location_rows = _load_fixture("locations.json")
 
-    print("joining historical cities to route_data for lat/lng backfill...")
-    city_lat_lng = backfill_lat_lng(gas_rows, route_data)
+    lat_long_by_city_state = {(row["city"], row["state"]): (row["lat"], row["long"]) for row in location_rows}
+    distinct_cities = {row["city"] for row in gas_rows}
+    matched_cities = {c for c in distinct_cities if _split_city_state(c) in lat_long_by_city_state}
+    print(
+        f"lat/lng backfill via locations.json: {len(matched_cities)}/{len(distinct_cities)} "
+        f"cities matched, {len(distinct_cities) - len(matched_cities)} unmatched "
+        f"(will be geocoded live on next fill-up at that city)"
+    )
 
     for row in gas_rows:
-        lat, lng = city_lat_lng.get(row["city"], (None, None))
+        lat, lng = lat_long_by_city_state.get(_split_city_state(row["city"]), (None, None))
         db.add(
             GasFillup(
                 date=datetime.date.fromisoformat(row["date"]),
