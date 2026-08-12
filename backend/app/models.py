@@ -29,6 +29,27 @@ class GasFillup(Base):
     )
 
 
+class Location(Base):
+    __tablename__ = "locations"
+    __table_args__ = (
+        Index(
+            "idx_locations_city_state_lower",
+            text("lower(city)"),
+            text("lower(state)"),
+            unique=True,
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    city: Mapped[str] = mapped_column(Text, nullable=False)
+    state: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    lat: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    long: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    created_at: Mapped[dt.datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+
 class MaintenanceRecord(Base):
     __tablename__ = "maintenance_records"
     # No non-negative check on `cost`: the historical log includes at least one

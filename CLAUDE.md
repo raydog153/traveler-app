@@ -41,9 +41,12 @@ the only automated test command.
 
 ### Backend (`backend/app`)
 
-Two tables only — `GasFillup` and `MaintenanceRecord` (`models.py`). Nothing
-else is persisted; stats, chart series, and map data are all derived at
-request time in `app/services/`:
+Three tables — `GasFillup`, `MaintenanceRecord`, and `Location` (`models.py`).
+`Location` (city, state, lat, long) is a normalized, deduped view of
+`gas_fillups.city` (which packs "City, State" into one free-text field);
+it's backfilled by the `add locations table` migration and not yet read by
+any router/service. Beyond that, nothing else is persisted; stats, chart
+series, and map data are all derived at request time in `app/services/`:
 
 - **`analytics.py`** — dataset-agnostic primitives ported from the original
   HTML dashboards' JS: `is_clean(notes)` decides whether a fill-up counts
