@@ -57,7 +57,7 @@
             <li v-for="e in summary.major_events" :key="e.date + e.label">
               <span class="m-date">{{ e.date }}</span>
               <span class="m-label">{{ e.label }}</span>
-              <span class="m-cost">${{ Math.round(e.cost).toLocaleString() }}</span>
+              <span class="m-cost">{{ formatCurrency(e.cost, { decimals: 0 }) }}</span>
             </li>
           </ul>
         </div>
@@ -74,6 +74,7 @@ import CostPerGallonChart from '../components/charts/CostPerGallonChart.vue'
 import MpgScatterChart from '../components/charts/MpgScatterChart.vue'
 import CumulativeSpendChart from '../components/charts/CumulativeSpendChart.vue'
 import YearlyComboChart from '../components/charts/YearlyComboChart.vue'
+import { formatCurrency } from '../utils/format'
 
 const store = useDashboardStore()
 const summary = computed(() => store.summary)

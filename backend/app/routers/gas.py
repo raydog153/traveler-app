@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -15,6 +15,22 @@ def list_fillups(db: Session = Depends(get_db)) -> list[GasFillupOut]:
     fillups = db.execute(select(GasFillup)).scalars().all()
     computed = analytics.compute_fillups(list(fillups))
     return [analytics.to_gas_out(c) for c in computed]
+
+
+def _find_previous_fillup(db: Session, fillup: GasFillup) -> GasFillup | None:
+    """The fill-up immediately before this one in (date, id) order -- the
+    only row its own driven/mpg computation depends on."""
+    return db.execute(
+        select(GasFillup)
+        .where(
+            or_(
+                GasFillup.date < fillup.date,
+                and_(GasFillup.date == fillup.date, GasFillup.id < fillup.id),
+            )
+        )
+        .order_by(GasFillup.date.desc(), GasFillup.id.desc())
+        .limit(1)
+    ).scalar_one_or_none()
 
 
 @router.post("/fillups", response_model=GasFillupOut, status_code=status.HTTP_201_CREATED)
@@ -34,9 +50,12 @@ def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFil
     db.commit()
     db.refresh(fillup)
 
-    # Recompute against the full set so driven/mpg reflect the correct
-    # neighboring odometer readings regardless of where this entry sorts in.
-    all_fillups = db.execute(select(GasFillup)).scalars().all()
-    computed = analytics.compute_fillups(list(all_fillups))
-    match = next(c for c in computed if c.fillup.id == fillup.id)
-    return analytics.to_gas_out(match)
+    # Only the immediately preceding fill-up affects this row's own
+    # driven/mpg -- no need to refetch and recompute the whole table just to
+    # return one row. (A backdated insert can still shift a *later* row's
+    # driven/mpg, but GET /fillups already recomputes correctly for every
+    # read, so no other row is left stale.)
+    previous = _find_previous_fillup(db, fillup)
+    prev_odometer = float(previous.odometer_miles) if previous else None
+    computed = analytics.compute_from_previous(fillup, prev_odometer)
+    return analytics.to_gas_out(computed)

@@ -17,26 +17,26 @@ def build_route_data(fillups: list[GasFillup]) -> RouteData:
     for f in fillups:
         by_city[f.city].append(f)
 
-    by_year: dict[int, list[tuple]] = defaultdict(list)
-    for city, rows in by_city.items():
+    by_year: dict[int, list[tuple[GasFillup, int]]] = defaultdict(list)
+    for rows in by_city.values():
         rows.sort(key=lambda f: f.date)
         first = rows[0]
         if first.latitude is None or first.longitude is None:
             continue
-        by_year[first.date.year].append((first.date, city, first, len(rows)))
+        by_year[first.date.year].append((first, len(rows)))
 
     years = []
     for year in sorted(by_year):
-        entries = sorted(by_year[year], key=lambda e: e[0])
+        entries = sorted(by_year[year], key=lambda e: e[0].date)
         locations = [
             RouteLocation(
-                name=city,
+                name=first.city,
                 latitude=float(first.latitude),
                 longitude=float(first.longitude),
-                arrival_date=arrival_date,
+                arrival_date=first.date,
                 visit_count=visit_count,
             )
-            for arrival_date, city, first, visit_count in entries
+            for first, visit_count in entries
         ]
         years.append(RouteYear(year=str(year), locations=locations))
 

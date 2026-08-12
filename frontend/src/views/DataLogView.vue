@@ -6,6 +6,9 @@
     <div class="tabs">
       <button class="tab-btn" :class="{ active: tab === 'gas' }" @click="tab = 'gas'">Gas Log</button>
       <button class="tab-btn" :class="{ active: tab === 'maint' }" @click="tab = 'maint'">Maintenance Log</button>
+      <label v-if="tab === 'gas'" class="checkbox-label">
+        <input type="checkbox" v-model="hideExcludedFillups" /> Hide excluded fill-ups
+      </label>
       <button class="btn add-btn" @click="showForm = true">
         + Add {{ tab === 'gas' ? 'Fill-up' : 'Maintenance' }}
       </button>
@@ -14,8 +17,7 @@
     <DataTable
       v-if="tab === 'gas'"
       :columns="gasColumns"
-      :rows="gasStore.fillups"
-      show-hide-excluded
+      :rows="visibleFillups"
       :excluded-predicate="(r) => !r.is_clean"
       default-sort-key="date"
     />
@@ -39,6 +41,7 @@ import { useMapStore } from '../stores/mapStore'
 import DataTable from '../components/DataTable.vue'
 import NewFillupForm from '../components/NewFillupForm.vue'
 import NewMaintenanceForm from '../components/NewMaintenanceForm.vue'
+import { formatCurrency, formatMiles, formatMpg } from '../utils/format'
 
 const gasStore = useGasStore()
 const maintenanceStore = useMaintenanceStore()
@@ -47,6 +50,11 @@ const mapStore = useMapStore()
 
 const tab = ref('gas')
 const showForm = ref(false)
+const hideExcludedFillups = ref(false)
+
+const visibleFillups = computed(() =>
+  hideExcludedFillups.value ? gasStore.fillups.filter((r) => r.is_clean) : gasStore.fillups,
+)
 
 onMounted(() => {
   gasStore.fetchAll()
@@ -61,30 +69,30 @@ const subhead = computed(() => {
   }
   const total = maintenanceStore.records.length
   const totalCost = maintenanceStore.records.reduce((s, r) => s + r.cost, 0)
-  return `${total} maintenance line items, $${Math.round(totalCost).toLocaleString()} total — sortable, searchable.`
+  return `${total} maintenance line items, ${formatCurrency(totalCost, { decimals: 0 })} total — sortable, searchable.`
 })
 
 function onFillupCreated() {
-  // Dashboard/map stats are server-computed off the full dataset -- force a
-  // refetch next time those views are visited rather than trying to patch
-  // their cached summaries client-side.
-  dashboardStore.loaded = false
-  mapStore.loaded = false
+  // Dashboard/map stats are server-computed off the full dataset -- mark
+  // them stale so they refetch next time those views are visited, rather
+  // than trying to patch their cached summaries client-side.
+  dashboardStore.invalidate()
+  mapStore.invalidate()
 }
 
 function onMaintenanceCreated() {
-  dashboardStore.loaded = false
+  dashboardStore.invalidate()
 }
 
 const gasColumns = [
   { key: 'date', label: 'Date' },
   { key: 'city', label: 'City' },
-  { key: 'odometer_miles', label: 'Odometer', num: true, fmt: (v) => Math.round(v).toLocaleString() },
+  { key: 'odometer_miles', label: 'Odometer', num: true, fmt: formatMiles },
   { key: 'gallons', label: 'Gallons', num: true, fmt: (v) => v.toFixed(2) },
-  { key: 'price', label: 'Price', num: true, fmt: (v) => `$${v.toFixed(2)}` },
-  { key: 'cost_per_gal', label: '$/gal', num: true, fmt: (v) => `$${v.toFixed(2)}` },
-  { key: 'driven', label: 'Miles since', num: true, fmt: (v) => (v != null ? Math.round(v).toLocaleString() : '') },
-  { key: 'mpg', label: 'MPG', num: true, fmt: (v) => (v != null ? v.toFixed(1) : '') },
+  { key: 'price', label: 'Price', num: true, fmt: formatCurrency },
+  { key: 'cost_per_gal', label: '$/gal', num: true, fmt: formatCurrency },
+  { key: 'driven', label: 'Miles since', num: true, fmt: formatMiles },
+  { key: 'mpg', label: 'MPG', num: true, fmt: formatMpg },
   { key: 'is_clean', label: 'Status', badge: (row) => (row.is_clean ? { text: 'clean', cls: 'clean' } : { text: 'excluded', cls: 'excluded' }) },
   { key: 'notes', label: 'Notes', notes: true },
 ]
@@ -93,14 +101,9 @@ const maintColumns = [
   { key: 'date', label: 'Date' },
   { key: 'expense', label: 'Expense' },
   { key: 'place', label: 'Place' },
-  { key: 'odometer_miles', label: 'Odometer', num: true, fmt: (v) => (v != null ? Math.round(v).toLocaleString() : '') },
+  { key: 'odometer_miles', label: 'Odometer', num: true, fmt: formatMiles },
   { key: 'vendor', label: 'Vendor' },
-  {
-    key: 'cost',
-    label: 'Cost',
-    num: true,
-    fmt: (v) => `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
-  },
+  { key: 'cost', label: 'Cost', num: true, fmt: formatCurrency },
   { key: 'is_major', label: '', badge: (row) => (row.is_major ? { text: 'major', cls: 'major' } : null) },
 ]
 </script>
@@ -140,6 +143,14 @@ h1 {
   background: var(--accent);
   color: #0f1720;
   border-color: var(--accent);
+}
+.checkbox-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
 }
 .add-btn {
   margin-left: auto;

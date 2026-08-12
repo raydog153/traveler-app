@@ -1,12 +1,14 @@
 <template>
-  <div class="chart-box">
+  <ChartBox>
     <Scatter :data="chartData" :options="options" />
-  </div>
+  </ChartBox>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { Scatter } from 'vue-chartjs'
+import ChartBox from './ChartBox.vue'
+import { baseChartOptions, legendBoxWidth12, linearScale, timeScale } from './chartDefaults'
 
 const props = defineProps({
   cleanPoints: { type: Array, required: true },
@@ -54,25 +56,18 @@ const options = computed(() => {
     }
   })
   return {
-    responsive: true,
-    maintainAspectRatio: false,
+    ...baseChartOptions,
     plugins: {
-      legend: { labels: { boxWidth: 12 } },
+      legend: legendBoxWidth12,
       annotation: { annotations },
     },
     scales: {
-      x: { type: 'time', time: { unit: 'quarter' }, grid: { color: '#1c2733' } },
+      x: timeScale(),
       // Hard cap (not just a suggested max): a bad odometer entry in the
       // source data can otherwise blow up the axis to fit one outlier point
       // and squash every real value into unreadable near-zero territory.
-      y: { grid: { color: '#1c2733' }, title: { display: true, text: 'MPG' }, min: 0, max: 25 },
+      y: linearScale({ title: { display: true, text: 'MPG' }, min: 0, max: 25 }),
     },
   }
 })
 </script>
-
-<style scoped>
-.chart-box {
-  height: 340px;
-}
-</style>

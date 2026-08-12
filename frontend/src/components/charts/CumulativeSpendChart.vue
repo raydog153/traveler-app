@@ -1,12 +1,14 @@
 <template>
-  <div class="chart-box">
+  <ChartBox>
     <Line :data="chartData" :options="options" />
-  </div>
+  </ChartBox>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { Line } from 'vue-chartjs'
+import ChartBox from './ChartBox.vue'
+import { baseChartOptions, legendBoxWidth12, linearScale, timeScale } from './chartDefaults'
 
 const props = defineProps({
   gas: { type: Array, required: true },
@@ -37,18 +39,11 @@ const chartData = computed(() => ({
 }))
 
 const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { labels: { boxWidth: 12 } } },
+  ...baseChartOptions,
+  plugins: { legend: legendBoxWidth12 },
   scales: {
-    x: { type: 'time', time: { unit: 'quarter' }, grid: { color: '#1c2733' } },
-    y: { grid: { color: '#1c2733' }, title: { display: true, text: 'Cumulative $' } },
+    x: timeScale(),
+    y: linearScale({ title: { display: true, text: 'Cumulative $' } }),
   },
 }
 </script>
-
-<style scoped>
-.chart-box {
-  height: 340px;
-}
-</style>

@@ -6,6 +6,7 @@ import pytest
 
 from app.models import GasFillup, MaintenanceRecord
 from app.services import analytics
+from app.services.dashboard_summary import build_dashboard_summary
 
 FIXTURES_DIR = Path(__file__).parent.parent / "seed" / "fixtures"
 
@@ -149,7 +150,7 @@ class TestFixtureRegression:
 
     def test_total_spend_matches_independent_sum(self, fixtures):
         fillups, records, gas_raw, maint_raw = fixtures
-        summary = analytics.build_dashboard_summary(fillups, records)
+        summary = build_dashboard_summary(fillups, records)
         stat_by_label = {s.label: s.value for s in summary.stats}
 
         expected_gas_total = round(sum(r["price"] for r in gas_raw))

@@ -1,12 +1,14 @@
 <template>
-  <div class="chart-box">
+  <ChartBox>
     <Bar :data="chartData" :options="options" />
-  </div>
+  </ChartBox>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { Bar } from 'vue-chartjs'
+import ChartBox from './ChartBox.vue'
+import { baseChartOptions, legendBoxWidth12, linearScale } from './chartDefaults'
 
 const props = defineProps({
   yearly: { type: Array, required: true },
@@ -39,18 +41,11 @@ const chartData = computed(() => ({
 }))
 
 const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: { legend: { labels: { boxWidth: 12 } } },
+  ...baseChartOptions,
+  plugins: { legend: legendBoxWidth12 },
   scales: {
-    y: { position: 'left', grid: { color: '#1c2733' }, title: { display: true, text: '$ spent' } },
+    y: linearScale({ position: 'left', title: { display: true, text: '$ spent' } }),
     y1: { position: 'right', grid: { display: false }, title: { display: true, text: 'miles' } },
   },
 }
 </script>
-
-<style scoped>
-.chart-box {
-  height: 340px;
-}
-</style>

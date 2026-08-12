@@ -11,12 +11,11 @@ read/test than equivalent CTEs and the performance difference is immaterial.
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date
 
 from app.models import GasFillup, MaintenanceRecord
 from app.schemas import (
     ChartPoint,
-    DashboardSummary,
     GasFillupOut,
     MajorEvent,
     MaintenanceRecordOut,
@@ -26,9 +25,6 @@ from app.schemas import (
 
 MAJOR_EVENT_THRESHOLD = 2000.0
 MPG_ROLLING_WINDOW = 7
-
-ENGINE_REPLACEMENT_DATE = date(2025, 7, 21)
-TRANSMISSION_REPLACEMENT_DATE = date(2025, 9, 25)
 
 _NOT_FULL_FILLUP = "not a full fillup"
 _OFF_ON_MILEAGE = ("off on milage", "off on mileage")
@@ -57,6 +53,25 @@ class ComputedFillup:
     is_clean: bool
 
 
+def compute_from_previous(f: GasFillup, prev_odometer: float | None) -> ComputedFillup:
+    """Derive one fill-up's cost/gal, miles driven, and mpg given the
+    odometer reading of the fill-up immediately before it (by date, id
+    order), or None if it's the very first fill-up on record."""
+    gallons = float(f.gallons)
+    cost_per_gal = float(f.price) / gallons if gallons else 0.0
+
+    driven: float | None = None
+    mpg: float | None = None
+    if prev_odometer is not None:
+        driven = float(f.odometer_miles) - prev_odometer
+        if driven > 0 and gallons:
+            mpg = driven / gallons
+        else:
+            driven = None
+
+    return ComputedFillup(f, cost_per_gal, driven, mpg, is_clean(f.notes))
+
+
 def compute_fillups(fillups: list[GasFillup]) -> list[ComputedFillup]:
     """Sort by (date, id) and derive cost/gal, miles driven, and mpg from the
     previous fill-up's odometer reading -- recomputed on every read so a
@@ -65,21 +80,17 @@ def compute_fillups(fillups: list[GasFillup]) -> list[ComputedFillup]:
     out: list[ComputedFillup] = []
     prev_odometer: float | None = None
     for f in ordered:
-        gallons = float(f.gallons)
-        cost_per_gal = float(f.price) / gallons if gallons else 0.0
-
-        driven: float | None = None
-        mpg: float | None = None
-        if prev_odometer is not None:
-            driven = float(f.odometer_miles) - prev_odometer
-            if driven > 0 and gallons:
-                mpg = driven / gallons
-            else:
-                driven = None
-
+        computed = compute_from_previous(f, prev_odometer)
         prev_odometer = float(f.odometer_miles)
-        out.append(ComputedFillup(f, cost_per_gal, driven, mpg, is_clean(f.notes)))
+        out.append(computed)
     return out
+
+
+def clean_mpg_fillups(computed: list[ComputedFillup]) -> list[ComputedFillup]:
+    """Fill-ups with a usable mpg reading that aren't flagged excluded --
+    the shared "counts toward MPG stats" filter used by yearly/stat-card/
+    narrative aggregation."""
+    return [c for c in computed if c.mpg is not None and c.is_clean]
 
 
 def to_gas_out(c: ComputedFillup) -> GasFillupOut:
@@ -125,7 +136,7 @@ def yearly_summary(computed: list[ComputedFillup]) -> list[YearlySummary]:
         cost = sum(float(c.fillup.price) for c in rows)
         gallons = sum(float(c.fillup.gallons) for c in rows)
         miles = sum(c.driven for c in rows if c.driven)
-        clean_mpgs = [c.mpg for c in rows if c.mpg is not None and c.is_clean]
+        clean_mpgs = [c.mpg for c in clean_mpg_fillups(rows)]
         avg_mpg = sum(clean_mpgs) / len(clean_mpgs) if clean_mpgs else None
         out.append(
             YearlySummary(
@@ -149,7 +160,7 @@ def major_events(records: list[MaintenanceRecord]) -> list[MajorEvent]:
 def stat_cards(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> list[StatCard]:
     total_spent = sum(float(c.fillup.price) for c in computed)
     total_gal = sum(float(c.fillup.gallons) for c in computed)
-    clean_mpgs = [c.mpg for c in computed if c.mpg is not None and c.is_clean]
+    clean_mpgs = [c.mpg for c in clean_mpg_fillups(computed)]
     avg_mpg = sum(clean_mpgs) / len(clean_mpgs) if clean_mpgs else 0.0
     avg_cpg = total_spent / total_gal if total_gal else 0.0
     total_maint = sum(float(r.cost) for r in records)
@@ -183,57 +194,3 @@ def cumulative(dates_and_values: list[tuple[date, float]]) -> list[ChartPoint]:
         running += v
         out.append(ChartPoint(x=d, y=round(running, 2)))
     return out
-
-
-def narrative_text(computed: list[ComputedFillup]) -> str:
-    clean_points = [(c.fillup.date, c.mpg) for c in computed if c.mpg is not None and c.is_clean]
-
-    def avg_between(lo: date | None = None, hi: date | None = None) -> str:
-        vals = [mpg for d, mpg in clean_points if (lo is None or d >= lo) and (hi is None or d < hi)]
-        return f"{sum(vals) / len(vals):.1f}" if vals else "n/a"
-
-    before = avg_between(hi=ENGINE_REPLACEMENT_DATE)
-    last_12mo = avg_between(lo=ENGINE_REPLACEMENT_DATE - timedelta(days=365), hi=ENGINE_REPLACEMENT_DATE)
-    after_engine = avg_between(lo=ENGINE_REPLACEMENT_DATE, hi=TRANSMISSION_REPLACEMENT_DATE)
-    after_trans = avg_between(lo=TRANSMISSION_REPLACEMENT_DATE)
-
-    return (
-        f"After the engine swap, MPG dropped. Average MPG before the July 21, 2025 engine "
-        f"replacement: {before} (last 12 months prior: {last_12mo}). Between the new engine "
-        f"and the September 25 transmission: {after_engine}. Since the new transmission: "
-        f"{after_trans} — still running below the pre-engine average, though the sample "
-        f"since is small."
-    )
-
-
-def build_dashboard_summary(
-    fillups: list[GasFillup], records: list[MaintenanceRecord]
-) -> DashboardSummary:
-    computed = compute_fillups(fillups)
-
-    price_series = [ChartPoint(x=c.fillup.date, y=c.cost_per_gal) for c in computed]
-    mpg_points = [c for c in computed if c.mpg is not None]
-    clean_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in mpg_points if c.is_clean]
-    excluded_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in mpg_points if not c.is_clean]
-
-    subhead = ""
-    if computed:
-        subhead = (
-            f"{len(computed)} fill-ups · {computed[0].fillup.date.isoformat()} to "
-            f"{computed[-1].fillup.date.isoformat()} · cross-referenced with {len(records)} "
-            f"maintenance records"
-        )
-
-    return DashboardSummary(
-        subhead=subhead,
-        stats=stat_cards(computed, records),
-        yearly=yearly_summary(computed),
-        major_events=major_events(records),
-        narrative=narrative_text(computed),
-        price_per_gallon_series=price_series,
-        mpg_clean_points=clean_pts,
-        mpg_excluded_points=excluded_pts,
-        mpg_rolling_avg=rolling_avg(clean_pts, MPG_ROLLING_WINDOW),
-        cumulative_gas=cumulative([(c.fillup.date, float(c.fillup.price)) for c in computed]),
-        cumulative_maintenance=cumulative([(r.date, float(r.cost)) for r in records]),
-    )

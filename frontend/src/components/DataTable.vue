@@ -2,9 +2,6 @@
   <div>
     <div class="controls">
       <input v-model="search" type="text" class="search" placeholder="Search this table..." />
-      <label v-if="showHideExcluded" class="checkbox-label">
-        <input type="checkbox" v-model="hideExcluded" /> Hide excluded fill-ups
-      </label>
       <span class="count">{{ sortedRows.length }} row{{ sortedRows.length !== 1 ? 's' : '' }}</span>
     </div>
 
@@ -45,13 +42,14 @@ import { computed, ref } from 'vue'
 const props = defineProps({
   columns: { type: Array, required: true },
   rows: { type: Array, required: true },
-  showHideExcluded: { type: Boolean, default: false },
+  // Purely visual: dims a row when this returns true. Filtering rows in/out
+  // (e.g. a "hide excluded" toggle) is the caller's concern, not this
+  // generic table's -- pass already-filtered `rows` for that.
   excludedPredicate: { type: Function, default: null },
   defaultSortKey: { type: String, default: 'date' },
 })
 
 const search = ref('')
-const hideExcluded = ref(false)
 const sortKey = ref(props.defaultSortKey)
 const sortDir = ref(1)
 
@@ -66,9 +64,6 @@ function sortBy(key) {
 
 const filteredRows = computed(() => {
   let rows = props.rows
-  if (props.showHideExcluded && hideExcluded.value && props.excludedPredicate) {
-    rows = rows.filter((r) => !props.excludedPredicate(r))
-  }
   if (search.value.trim()) {
     const q = search.value.trim().toLowerCase()
     rows = rows.filter((r) => Object.values(r).some((v) => v != null && String(v).toLowerCase().includes(q)))
@@ -109,14 +104,6 @@ const sortedRows = computed(() => {
   font-size: 13px;
   flex: 1;
   min-width: 200px;
-}
-.checkbox-label {
-  font-size: 12.5px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
 }
 .count {
   font-size: 12px;
