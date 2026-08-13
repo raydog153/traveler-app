@@ -24,7 +24,6 @@
         :excluded-points="summary.mpg_excluded_points"
         :rolling-avg="summary.mpg_rolling_avg"
         :major-events="summary.major_events"
-        :era-mpg="summary.era_mpg"
       />
 
       <div class="chart-pair">

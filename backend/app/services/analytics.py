@@ -93,8 +93,8 @@ def compute_fillups(fillups: list[GasFillup]) -> list[ComputedFillup]:
 
 def clean_mpg_fillups(computed: list[ComputedFillup]) -> list[ComputedFillup]:
     """Fill-ups with a usable mpg reading that aren't flagged excluded --
-    the shared "counts toward MPG stats" filter used by yearly/stat-card/
-    narrative aggregation."""
+    the shared "counts toward MPG stats" filter used by yearly/stat-card
+    aggregation."""
     return [c for c in computed if c.mpg is not None and c.is_clean]
 
 

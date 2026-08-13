@@ -1,13 +1,10 @@
-"""Assembles the full dashboard payload from the generic analytics primitives
-and the bespoke narrative text. Lives above both so neither has to import the
-other -- analytics.py stays dataset-agnostic and narrative.py only depends on
-analytics.py, not the reverse.
+"""Assembles the full dashboard payload from the generic, dataset-agnostic
+analytics primitives in analytics.py.
 """
 
 from app.models import GasFillup, MaintenanceRecord
 from app.schemas import ChartPoint, DashboardSummary
 from app.services import analytics
-from app.services.narrative import era_mpg_summary, narrative_text
 
 
 def build_dashboard_summary(
@@ -37,7 +34,6 @@ def build_dashboard_summary(
         major_events=major_events,
         major_events_by_cost=sorted(major_events, key=lambda e: -e.cost),
         service_alert=analytics.service_status(computed, records),
-        narrative=narrative_text(computed),
         price_per_gallon_series=price_series,
         mpg_clean_points=clean_pts,
         mpg_excluded_points=excluded_pts,
@@ -45,5 +41,4 @@ def build_dashboard_summary(
         cumulative_gas=analytics.cumulative([(c.fillup.date, float(c.fillup.price)) for c in computed]),
         cumulative_maintenance=analytics.cumulative([(r.date, float(r.cost)) for r in records]),
         cost_of_ownership=analytics.cost_of_ownership(computed, records),
-        era_mpg=era_mpg_summary(computed),
     )

@@ -27,9 +27,9 @@ import { formatMiles } from './utils/format'
 
 const navTabs = [
   { to: '/dashboard', label: 'Dashboard' },
-  { to: '/log', label: 'Data log' },
+  { to: '/find-places', label: 'Find places' },
   { to: '/map', label: 'Map' },
-  { to: '/guide', label: 'Guide' },
+  { to: '/log', label: 'Data log' },
 ]
 
 const store = useDashboardStore()

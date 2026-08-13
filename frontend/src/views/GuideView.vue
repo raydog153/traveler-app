@@ -9,7 +9,7 @@
     <div v-else class="guide-layout">
       <aside class="sidebar">
         <div class="panel-header">
-          <h1>🐾 Traveler guide</h1>
+          <h1>🐾 Find places</h1>
           <p class="sub">Dog parks, playgrounds and trailheads near wherever the bus is parked.</p>
         </div>
 

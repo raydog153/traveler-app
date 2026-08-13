@@ -103,14 +103,6 @@ class CostOfOwnership(BaseModel):
     maintenance_cost_per_mile: float
 
 
-class EraMpgSummary(BaseModel):
-    before_engine: float | None
-    engine_to_transmission: float | None
-    since_transmission: float | None
-    engine_replacement_date: dt.date
-    transmission_replacement_date: dt.date
-
-
 class TripStats(BaseModel):
     states_visited: int
     longest_leg_miles: float | None
@@ -126,7 +118,6 @@ class DashboardSummary(BaseModel):
     major_events: list[MajorEvent]
     major_events_by_cost: list[MajorEvent]
     service_alert: ServiceAlert | None
-    narrative: str
     price_per_gallon_series: list[ChartPoint]
     mpg_clean_points: list[ChartPoint]
     mpg_excluded_points: list[ChartPoint]
@@ -134,7 +125,6 @@ class DashboardSummary(BaseModel):
     cumulative_gas: list[ChartPoint]
     cumulative_maintenance: list[ChartPoint]
     cost_of_ownership: CostOfOwnership
-    era_mpg: EraMpgSummary
 
 
 class RouteLocation(BaseModel):

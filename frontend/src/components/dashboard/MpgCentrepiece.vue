@@ -2,25 +2,11 @@
   <div class="panel centrepiece">
     <div class="head-row">
       <div class="head-text">
-        <h2>Fuel economy never recovered from the engine swap</h2>
+        <h2>Fuel economy over time</h2>
         <p class="desc">
           Cleaned MPG per fill-up with a 7-fill-up rolling average. Faded dots are excluded — partial fills or
-          estimated mileage.
+          estimated mileage. Vertical markers are maintenance events over $10k.
         </p>
-      </div>
-      <div class="era-chips">
-        <div class="era-chip" style="border-color: oklch(0.7 0.012 255)">
-          <div class="chip-label">Before engine swap</div>
-          <div class="chip-value">{{ fmtMpg(eraMpg.before_engine) }}</div>
-        </div>
-        <div class="era-chip" style="border-color: var(--rust)">
-          <div class="chip-label">Engine → transmission</div>
-          <div class="chip-value">{{ fmtMpg(eraMpg.engine_to_transmission) }}</div>
-        </div>
-        <div class="era-chip" style="border-color: var(--green)">
-          <div class="chip-label">Since transmission</div>
-          <div class="chip-value">{{ fmtMpg(eraMpg.since_transmission) }}</div>
-        </div>
       </div>
     </div>
 
@@ -32,17 +18,6 @@
         <div v-for="g in [0, 25, 50, 75]" :key="g" class="gridline" :style="{ top: g + '%' }" />
 
         <div
-          v-if="engineXPct != null && transXPct != null"
-          class="era-band rust"
-          :style="{ left: engineXPct + '%', width: transXPct - engineXPct + '%' }"
-        />
-        <div
-          v-if="transXPct != null"
-          class="era-band green"
-          :style="{ left: transXPct + '%', right: 0 }"
-        />
-
-        <div
           v-for="ev in markers"
           :key="ev.date + ev.label"
           class="maint-rule"
@@ -51,14 +26,6 @@
         >
           <span v-if="ev.severe" class="maint-label mono">{{ ev.tag }}</span>
         </div>
-
-        <span v-if="engineXPct != null" class="era-label engine-label" :style="{ left: engineXPct + '%' }"
-          >New engine</span
-        >
-        <span v-if="transXPct != null" class="era-label trans-label" :style="{ left: transXPct + '%' }"
-          >New transmission</span
-        >
-        <span class="era-label original-label">Original engine</span>
 
         <svg class="line-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
           <polyline
@@ -90,21 +57,6 @@
         <span v-for="y in xTickYears" :key="y.year" class="mono" :style="{ left: y.xPct + '%' }">{{ y.year }}</span>
       </div>
     </div>
-
-    <div class="callout">
-      <template v-if="eraMpg.before_engine != null">
-        Averaging <strong>{{ fmtMpg(eraMpg.before_engine) }} mpg</strong> before the
-        {{ formatMonthYear(eraMpg.engine_replacement_date) }} engine replacement
-        <template v-if="eraMpg.engine_to_transmission != null">
-          and <strong>{{ fmtMpg(eraMpg.engine_to_transmission) }}</strong> between the new engine and the
-          {{ formatMonthYear(eraMpg.transmission_replacement_date) }} transmission.
-        </template>
-        <template v-if="eraMpg.since_transmission != null">
-          Since the transmission it has come back to <strong>{{ fmtMpg(eraMpg.since_transmission) }}</strong
-          >.
-        </template>
-      </template>
-    </div>
   </div>
 </template>
 
@@ -117,7 +69,6 @@ const props = defineProps({
   excludedPoints: { type: Array, required: true },
   rollingAvg: { type: Array, required: true },
   majorEvents: { type: Array, required: true },
-  eraMpg: { type: Object, required: true },
 })
 
 const Y_TICKS = [18, 14, 10, 6, 2]
@@ -150,15 +101,6 @@ const avgLinePoints = computed(() => {
     .join(' ')
 })
 
-const engineXPct = computed(() =>
-  props.eraMpg.engine_replacement_date ? dateToPercent(props.eraMpg.engine_replacement_date, minDate.value, maxDate.value) : null,
-)
-const transXPct = computed(() =>
-  props.eraMpg.transmission_replacement_date
-    ? dateToPercent(props.eraMpg.transmission_replacement_date, minDate.value, maxDate.value)
-    : null,
-)
-
 const markers = computed(() =>
   props.majorEvents.map((ev) => ({
     ...ev,
@@ -178,14 +120,6 @@ const xTickYears = computed(() => {
   return years
 })
 
-function fmtMpg(v) {
-  return v != null ? v.toFixed(1) : '—'
-}
-
-function formatMonthYear(iso) {
-  if (!iso) return ''
-  return new Date(iso + 'T00:00:00').toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
-}
 </script>
 
 <style scoped>
@@ -212,23 +146,6 @@ h2 {
   margin: 0;
   max-width: 46ch;
 }
-.era-chips {
-  display: flex;
-  gap: 14px;
-}
-.era-chip {
-  border-left: 3px solid;
-  padding-left: 11px;
-}
-.chip-label {
-  font-size: 10.5px;
-  color: var(--text-muted);
-}
-.chip-value {
-  font-size: 17px;
-  font-weight: 600;
-}
-
 .plot-wrap {
   position: relative;
   padding-left: 26px;
@@ -260,17 +177,6 @@ h2 {
   height: 1px;
   background: var(--gridline);
 }
-.era-band {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-}
-.era-band.rust {
-  background: oklch(0.63 0.17 35 / 0.07);
-}
-.era-band.green {
-  background: oklch(0.62 0.13 155 / 0.06);
-}
 .maint-rule {
   position: absolute;
   top: 0;
@@ -290,26 +196,6 @@ h2 {
   font-weight: 600;
   color: var(--severe-red);
   white-space: nowrap;
-}
-.era-label {
-  position: absolute;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  transform: translateX(4px);
-}
-.engine-label {
-  top: 4px;
-  color: oklch(0.55 0.15 35);
-}
-.trans-label {
-  bottom: 4px;
-  color: var(--green-text);
-}
-.original-label {
-  bottom: 4px;
-  left: 4px;
-  color: var(--text-muted);
 }
 .line-svg {
   position: absolute;
@@ -345,15 +231,5 @@ h2 {
   color: oklch(0.65 0.012 255);
   transform: translateX(-50%);
   top: 4px;
-}
-.callout {
-  margin: 16px 24px 4px;
-  padding: 14px 16px;
-  background: oklch(0.975 0.012 35);
-  border: 1px solid oklch(0.93 0.03 35);
-  border-radius: 11px;
-  color: oklch(0.4 0.05 35);
-  font-size: 12.5px;
-  line-height: 1.6;
 }
 </style>
