@@ -50,9 +50,9 @@ const props = defineProps({
 })
 
 const BAR_MAX_PX = 150
-const MILES_MAX = 15000
 
 const maxTotal = computed(() => Math.max(1, ...props.yearly.map((y) => y.cost + y.maintenance_cost)))
+const maxMiles = computed(() => Math.max(1, ...props.yearly.map((y) => y.miles)))
 
 function barHeightPx(y) {
   return ((y.cost + y.maintenance_cost) / maxTotal.value) * BAR_MAX_PX
@@ -68,15 +68,11 @@ function formatMilesShort(v) {
 
 const n = computed(() => props.yearly.length)
 
-// Confined to the container's top band (see .chart-area's fixed height in
-// the style block) so the line/dots/chips stay clear of tall bars -- the
-// original design overlays them assuming bars rarely reach their max height,
-// which isn't true of this vehicle's real 2025 maintenance spend.
 const milesDots = computed(() =>
   props.yearly.map((y, i) => ({
     value: y.miles,
     xPct: n.value > 1 ? (i / (n.value - 1)) * 96 + 2 : 50,
-    yPct: 4 + (100 - Math.min(100, (y.miles / MILES_MAX) * 100)) * 0.18,
+    yPct: 8 + (100 - (y.miles / maxMiles.value) * 100) * 0.82,
   })),
 )
 
@@ -139,6 +135,7 @@ h2 {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 2;
 }
 .miles-dot {
   position: absolute;
@@ -148,6 +145,7 @@ h2 {
   background: #fff;
   border: 2px solid oklch(0.45 0.02 255);
   transform: translate(-50%, -50%);
+  z-index: 2;
 }
 .miles-chip {
   position: absolute;
@@ -189,7 +187,7 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  border-radius: 7px;
+  border-radius: 0;
   overflow: hidden;
 }
 .seg {
