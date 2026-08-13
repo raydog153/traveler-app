@@ -208,6 +208,71 @@ class TestServiceStatus:
         assert status is None
 
 
+class TestServiceStatusProgress:
+    def test_progress_pct_partway_through_interval(self):
+        fillups = [make_fillup(1, "2021-06-01", 101500, 20, 60)]
+        records = [make_record(1, "2021-01-01", 100, expense="Oil change", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.interval_miles == pytest.approx(analytics.SERVICE_INTERVAL_MILES)
+        assert status.progress_pct == pytest.approx(30.0)
+
+    def test_progress_pct_clamped_at_100_when_overdue(self):
+        fillups = [make_fillup(1, "2021-06-01", 110000, 20, 60)]
+        records = [make_record(1, "2021-01-01", 100, expense="Oil change", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.progress_pct == pytest.approx(100.0)
+
+    def test_progress_pct_clamped_at_0_when_serviced_this_instant(self):
+        fillups = [make_fillup(1, "2021-06-01", 100000, 20, 60)]
+        records = [make_record(1, "2021-06-01", 100, expense="Oil change", odometer_miles=100000)]
+        status = analytics.service_status(analytics.compute_fillups(fillups), records)
+
+        assert status.progress_pct == pytest.approx(0.0)
+
+
+class TestCostOfOwnership:
+    def test_arithmetic_across_gas_and_maintenance(self):
+        fillups = [
+            make_fillup(1, "2021-01-01", 100000, 20, 60),
+            make_fillup(2, "2021-01-08", 100300, 15, 45),
+        ]
+        records = [make_record(1, "2021-03-01", 500)]
+        computed = analytics.compute_fillups(fillups)
+
+        result = analytics.cost_of_ownership(computed, records)
+
+        assert result.gas_total == pytest.approx(105)
+        assert result.gas_gallons == pytest.approx(35)
+        assert result.gas_avg_cost_per_gal == pytest.approx(3.0)
+        assert result.maintenance_total == pytest.approx(500)
+        assert result.maintenance_visits == 1
+        assert result.total_cost == pytest.approx(605)
+        assert result.total_miles == pytest.approx(300)
+        assert result.cost_per_mile == pytest.approx(605 / 300)
+        assert result.gas_share_pct == pytest.approx(105 / 605 * 100)
+        assert result.maintenance_cost_per_mile == pytest.approx(500 / 300)
+
+    def test_handles_no_data_without_dividing_by_zero(self):
+        result = analytics.cost_of_ownership([], [])
+
+        assert result.total_cost == 0
+        assert result.cost_per_mile == 0
+        assert result.gas_share_pct == 0
+        assert result.maintenance_cost_per_mile == 0
+
+    def test_handles_no_driven_miles_without_dividing_by_zero(self):
+        # A single fill-up has no previous odometer to derive miles driven from.
+        fillups = [make_fillup(1, "2021-01-01", 100000, 20, 60)]
+        computed = analytics.compute_fillups(fillups)
+
+        result = analytics.cost_of_ownership(computed, [])
+
+        assert result.total_miles == 0
+        assert result.cost_per_mile == 0
+
+
 class TestRollingAvgAndCumulative:
     def test_rolling_avg_widens_until_window_full(self):
         points = [analytics.ChartPoint(x=datetime.date(2021, 1, i + 1), y=v) for i, v in enumerate([10, 20, 30])]

@@ -7,6 +7,14 @@ import { defineStore } from 'pinia'
  * editing records.
  */
 export function createResourceStore(id, { stateKey, fetchFn, createFn, updateFn, deleteFn }) {
+  // Tracks an in-flight fetchAll() promise per store instance, outside Pinia
+  // state (it's not serializable and shouldn't be reactive). Several
+  // components can call fetchAll() independently on mount (e.g. App.vue's
+  // header and a routed view both want the same data) -- without this, each
+  // call passes the `this.loaded` guard before the first one resolves and
+  // fires its own duplicate network request.
+  let inFlight = null
+
   return defineStore(id, {
     state: () => ({
       [stateKey]: createFn ? [] : null,
@@ -15,18 +23,26 @@ export function createResourceStore(id, { stateKey, fetchFn, createFn, updateFn,
       error: null,
     }),
     actions: {
+      // Resolves once data is loaded (or a load attempt has failed) --
+      // never rejects, so callers that want to react to failure should read
+      // `error`/`loaded` after it resolves rather than try/catch.
       async fetchAll({ force = false } = {}) {
         if (this.loaded && !force) return
+        if (inFlight && !force) return inFlight
         this.loading = true
         this.error = null
-        try {
-          this[stateKey] = await fetchFn()
-          this.loaded = true
-        } catch (err) {
-          this.error = err.message
-        } finally {
-          this.loading = false
-        }
+        inFlight = (async () => {
+          try {
+            this[stateKey] = await fetchFn()
+            this.loaded = true
+          } catch (err) {
+            this.error = err.message
+          } finally {
+            this.loading = false
+            inFlight = null
+          }
+        })()
+        return inFlight
       },
       // Marks the cache stale so the next fetchAll() call re-requests it,
       // without forcing an immediate fetch -- for other stores' data that

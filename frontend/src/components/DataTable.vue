@@ -1,51 +1,83 @@
 <template>
-  <div>
-    <div class="controls">
-      <input v-model="search" type="text" class="search" placeholder="Search this table..." />
-      <span class="count">{{ sortedRows.length }} row{{ sortedRows.length !== 1 ? 's' : '' }}</span>
+  <div class="panel card--table table-card">
+    <div class="table-scroll">
+      <div class="grid-table" :style="{ gridTemplateColumns: gridTemplateColumns }">
+        <div class="row header-row">
+          <div
+            v-for="c in columns"
+            :key="c.key"
+            class="cell head-cell"
+            :class="{ sorted: sortKey === c.key, num: c.num }"
+            @click="sortBy(c.key)"
+          >
+            {{ c.label }}<span v-if="sortKey === c.key" class="sort-arrow">{{ sortDir === 1 ? ' ▲' : ' ▼' }}</span>
+          </div>
+          <div v-if="editable" class="cell head-cell actions-col"></div>
+        </div>
+
+        <div
+          v-for="row in sortedRows"
+          :key="row.id"
+          class="row body-row"
+          :class="{ excluded: excludedPredicate && excludedPredicate(row) }"
+        >
+          <div v-for="c in columns" :key="c.key" class="cell" :class="{ num: c.num, mono: c.mono }">
+            <template v-if="c.kind === 'city'">
+              <span class="city-text">{{ row[c.key] }}</span>
+              <span v-if="flagOf(row)" class="flag-pill" :class="flagOf(row).cls">{{ flagOf(row).text }}</span>
+            </template>
+            <template v-else-if="c.kind === 'mpg'">
+              <div class="mpg-cell">
+                <div class="mini-bar-track">
+                  <div
+                    class="mini-bar-fill"
+                    :class="mpgBarClass(row)"
+                    :style="{ width: mpgBarPct(row.mpg) + '%' }"
+                  />
+                </div>
+                <span class="mpg-value mono">{{ row.mpg != null ? row.mpg.toFixed(1) : '—' }}</span>
+              </div>
+            </template>
+            <template v-else-if="c.kind === 'costBar'">
+              <div class="cost-cell">
+                <span class="cost-value mono">{{ formatCurrency(row[c.key], { decimals: 0 }) }}</span>
+                <div class="cost-bar-track">
+                  <div class="cost-bar-fill" :style="{ width: costBarPct(row[c.key]) + '%' }" />
+                </div>
+              </div>
+            </template>
+            <template v-else-if="c.badge">
+              <span v-if="c.badge(row)" class="badge" :class="c.badge(row).cls">{{ c.badge(row).text }}</span>
+            </template>
+            <template v-else>
+              {{ c.fmt ? c.fmt(row[c.key]) : row[c.key] }}
+            </template>
+          </div>
+          <div v-if="editable" class="cell actions-cell">
+            <button type="button" class="icon-btn" title="Edit" @click="$emit('edit', row)">✎</button>
+            <button type="button" class="icon-btn danger" title="Delete" @click="$emit('delete', row)">🗑</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th
-              v-for="c in columns"
-              :key="c.key"
-              @click="sortBy(c.key)"
-              :class="{ sorted: sortKey === c.key, asc: sortKey === c.key && sortDir === -1 }"
-            >
-              {{ c.label }}
-            </th>
-            <th v-if="editable" class="actions-col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in sortedRows" :key="row.id" :class="{ excluded: excludedPredicate && excludedPredicate(row) }">
-            <td v-for="c in columns" :key="c.key" :class="{ num: c.num, 'notes-cell': c.notes }">
-              <template v-if="c.badge">
-                <span v-if="c.badge(row)" class="badge" :class="c.badge(row).cls">{{ c.badge(row).text }}</span>
-              </template>
-              <template v-else>
-                {{ c.fmt ? c.fmt(row[c.key]) : row[c.key] }}
-              </template>
-            </td>
-            <td v-if="editable" class="actions-cell">
-              <button type="button" class="icon-btn" title="Edit" @click="$emit('edit', row)">✎</button>
-              <button type="button" class="icon-btn danger" title="Delete" @click="$emit('delete', row)">🗑</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="footer-bar">
+      <span class="footer-left">{{ footerText }}</span>
+      <div class="footer-actions">
+        <button type="button" class="page-btn" disabled>Previous</button>
+        <button type="button" class="page-btn" disabled>Next</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
+import { formatCurrency } from '../utils/format'
+import { valueToPercent } from '../utils/chartScale'
 
 const props = defineProps({
-  columns: { type: Array, required: true },
+  columns: { type: Array, required: true }, // [{ key, label, width, num, mono, fmt, badge, kind }]
   rows: { type: Array, required: true },
   // Purely visual: dims a row when this returns true. Filtering rows in/out
   // (e.g. a "hide excluded" toggle) is the caller's concern, not this
@@ -55,12 +87,21 @@ const props = defineProps({
   // Adds a trailing edit/delete actions column, emitting 'edit'/'delete'
   // with the row -- the caller owns what those actions actually do.
   editable: { type: Boolean, default: false },
+  footerText: { type: String, default: '' },
+  // Best-effort flag pill for a row (gas rows only) -- derived from notes
+  // text the same way analytics.is_clean does on the backend, plus "first
+  // entry" for a row with no previous fill-up to derive miles/mpg from.
+  flagOf: { type: Function, default: () => null },
 })
 defineEmits(['edit', 'delete'])
 
-const search = ref('')
 const sortKey = ref(props.defaultSortKey)
 const sortDir = ref(1)
+
+const gridTemplateColumns = computed(() => {
+  const widths = props.columns.map((c) => c.width || '1fr').join(' ')
+  return props.editable ? `${widths} 64px` : widths
+})
 
 function sortBy(key) {
   if (sortKey.value === key) {
@@ -71,17 +112,8 @@ function sortBy(key) {
   }
 }
 
-const filteredRows = computed(() => {
-  let rows = props.rows
-  if (search.value.trim()) {
-    const q = search.value.trim().toLowerCase()
-    rows = rows.filter((r) => Object.values(r).some((v) => v != null && String(v).toLowerCase().includes(q)))
-  }
-  return rows
-})
-
 const sortedRows = computed(() => {
-  const rows = [...filteredRows.value]
+  const rows = [...props.rows]
   const key = sortKey.value
   const dir = sortDir.value
   rows.sort((a, b) => {
@@ -94,116 +126,186 @@ const sortedRows = computed(() => {
   })
   return rows
 })
+
+const MPG_BAR_MAX = 14
+function mpgBarPct(mpg) {
+  if (mpg == null) return 0
+  return valueToPercent(mpg, 0, MPG_BAR_MAX, false)
+}
+function mpgBarClass(row) {
+  if (row.is_clean === false) return 'amber'
+  if (row.mpg != null && row.mpg >= 9.5) return 'green'
+  return 'accent'
+}
+
+const costMax = computed(() => Math.max(1, ...props.rows.map((r) => r.cost || 0)))
+function costBarPct(cost) {
+  return valueToPercent(cost || 0, 0, costMax.value, false)
+}
 </script>
 
 <style scoped>
-.controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  align-items: center;
+.table-card {
+  padding: 0;
+  overflow: hidden;
 }
-.search {
-  background: var(--panel2);
-  border: 1px solid var(--grid);
-  color: var(--text);
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  flex: 1;
-  min-width: 200px;
-}
-.count {
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.table-wrap {
-  background: var(--panel);
-  border: 1px solid var(--grid);
-  border-radius: 12px;
+.table-scroll {
+  max-height: 560px;
   overflow: auto;
-  max-height: 70vh;
 }
-table {
-  border-collapse: collapse;
-  width: 100%;
+.grid-table {
+  display: grid;
   font-size: 12.5px;
 }
-thead th {
+.row {
+  display: contents;
+}
+.header-row .cell {
   position: sticky;
   top: 0;
-  background: var(--panel2);
-  color: var(--muted);
-  text-align: left;
-  padding: 9px 10px;
-  border-bottom: 1px solid var(--grid);
+  background: var(--fill-subtle);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 12px 10px;
   cursor: pointer;
-  white-space: nowrap;
   user-select: none;
-}
-thead th:hover {
-  color: var(--text);
-}
-thead th.sorted::after {
-  content: ' \25be';
-  color: var(--accent);
-}
-thead th.sorted.asc::after {
-  content: ' \25b4';
-}
-tbody td {
-  padding: 7px 10px;
-  border-bottom: 1px solid #1e2833;
   white-space: nowrap;
+  z-index: 1;
 }
-tbody tr:hover {
-  background: var(--panel2);
+.header-row .cell.sorted {
+  color: var(--ac);
 }
-tbody tr.excluded {
-  opacity: 0.45;
+.sort-arrow {
+  font-size: 9px;
 }
-.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+.body-row .cell {
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--row-border);
+  background: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 }
-.notes-cell {
-  white-space: normal;
-  max-width: 220px;
-  color: var(--muted);
+.body-row.excluded .cell {
+  opacity: 0.62;
+}
+.cell.num,
+.cell.mono {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  justify-content: flex-end;
+}
+
+.city-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flag-pill {
+  margin-left: 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.flag-pill.amber {
+  color: var(--amber-text);
+  background: var(--amber-tint);
+}
+.flag-pill.neutral {
+  color: var(--text-muted);
+  background: var(--fill-subtle);
+}
+
+.mpg-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+}
+.mini-bar-track {
+  width: 44px;
+  height: 4px;
+  border-radius: 3px;
+  background: var(--gridline);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.mini-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+.mini-bar-fill.green {
+  background: var(--green);
+}
+.mini-bar-fill.accent {
+  background: var(--ac);
+}
+.mini-bar-fill.amber {
+  background: var(--amber-text);
+}
+.mpg-value {
+  font-weight: 600;
   font-size: 12px;
 }
+
+.cost-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  width: 100%;
+}
+.cost-value {
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.cost-bar-track {
+  width: 70px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--gridline);
+  overflow: hidden;
+}
+.cost-bar-fill {
+  height: 100%;
+  background: var(--rust);
+  opacity: 0.8;
+  border-radius: 3px;
+}
+
 .badge {
   display: inline-block;
   font-size: 10.5px;
-  padding: 2px 7px;
-  border-radius: 10px;
-  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
 }
 .badge.clean {
-  background: rgba(74, 222, 128, 0.15);
-  color: var(--good);
+  color: var(--green-text);
+  background: var(--green-tint);
 }
 .badge.excluded {
-  background: rgba(143, 161, 179, 0.2);
-  color: var(--muted);
+  color: var(--text-muted);
+  background: var(--fill-subtle);
 }
 .badge.major {
-  background: rgba(248, 113, 113, 0.18);
-  color: var(--accent3);
+  color: var(--severe-red);
+  background: var(--rust-tint);
 }
-.actions-col {
-  width: 64px;
-}
+
 .actions-cell {
-  text-align: right;
-  white-space: nowrap;
+  justify-content: flex-end;
+  gap: 4px;
 }
 .icon-btn {
   background: none;
   border: none;
-  color: var(--muted);
+  color: var(--text-muted);
   cursor: pointer;
   font-size: 13px;
   padding: 2px 5px;
@@ -211,10 +313,34 @@ tbody tr.excluded {
   line-height: 1;
 }
 .icon-btn:hover {
-  color: var(--text);
-  background: var(--panel2);
+  color: var(--text-primary);
+  background: var(--fill-subtle);
 }
 .icon-btn.danger:hover {
-  color: var(--accent3);
+  color: var(--severe-red);
+}
+
+.footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--fill-subtle-2);
+  border-top: 1px solid var(--row-border);
+  padding: 12px 18px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-actions {
+  display: flex;
+  gap: 8px;
+}
+.page-btn {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  color: oklch(0.7 0.012 255);
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: not-allowed;
 }
 </style>

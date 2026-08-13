@@ -26,7 +26,7 @@ defineEmits(['confirm', 'cancel'])
 <style scoped>
 .confirm-message {
   font-size: 13.5px;
-  color: var(--text);
+  color: var(--text-primary);
   margin: 0;
 }
 </style>

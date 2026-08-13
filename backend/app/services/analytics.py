@@ -16,6 +16,7 @@ from datetime import date
 from app.models import GasFillup, Location, MaintenanceRecord
 from app.schemas import (
     ChartPoint,
+    CostOfOwnership,
     GasFillupOut,
     MajorEvent,
     MaintenanceRecordOut,
@@ -178,6 +179,18 @@ def is_service_record(expense: str) -> bool:
     return bool(_SERVICE_RECORD_RE.search(expense))
 
 
+def sorted_service_records(records: list[MaintenanceRecord]) -> list[MaintenanceRecord]:
+    """Service-type maintenance records that have an odometer reading,
+    ordered by (date, id) -- the shared ordering both service_status (most
+    recent one) and mapping._since_service_miles (nearest-prior at every
+    historical point) key off of, so the "what counts as the anchoring
+    service record" rule only lives in one place."""
+    return sorted(
+        (r for r in records if r.odometer_miles is not None and is_service_record(r.expense)),
+        key=lambda r: (r.date, r.id),
+    )
+
+
 def service_status(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> ServiceAlert | None:
     """Miles until the next assumed-every-5000-miles service, based on the
     most recent service-type maintenance record that has an odometer
@@ -191,15 +204,16 @@ def service_status(computed: list[ComputedFillup], records: list[MaintenanceReco
     if not odometers:
         return None
 
-    service_records = [r for r in records if r.odometer_miles is not None and is_service_record(r.expense)]
+    service_records = sorted_service_records(records)
     if not service_records:
         return None
-    last = max(service_records, key=lambda r: (r.date, r.id))
+    last = service_records[-1]
 
     current_odometer = max(odometers)
     last_odometer = float(last.odometer_miles)
     miles_since = current_odometer - last_odometer
     miles_until = SERVICE_INTERVAL_MILES - miles_since
+    progress_pct = min(100.0, max(0.0, miles_since / SERVICE_INTERVAL_MILES * 100))
 
     if miles_until <= 0:
         level = "overdue"
@@ -215,6 +229,38 @@ def service_status(computed: list[ComputedFillup], records: list[MaintenanceReco
         last_service_date=last.date,
         last_service_odometer=last_odometer,
         current_odometer=current_odometer,
+        interval_miles=SERVICE_INTERVAL_MILES,
+        progress_pct=progress_pct,
+    )
+
+
+def cost_of_ownership(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> CostOfOwnership:
+    gas_total = sum(float(c.fillup.price) for c in computed)
+    gas_gallons = sum(float(c.fillup.gallons) for c in computed)
+    gas_avg_cost_per_gal = gas_total / gas_gallons if gas_gallons else 0.0
+    maintenance_total = sum(float(r.cost) for r in records)
+    maintenance_visits = len(records)
+    total_cost = gas_total + maintenance_total
+    total_miles = sum(c.driven for c in computed if c.driven)
+
+    # total_cost can go negative (e.g. a warranty credit logged as a
+    # negative-cost maintenance record outweighs gas spend), and gas_total
+    # alone can exceed total_cost when maintenance nets negative -- clamp so
+    # the dashboard's gas/maintenance split bar never gets an out-of-range
+    # width from either case.
+    gas_share_pct = min(100.0, max(0.0, gas_total / total_cost * 100)) if total_cost > 0 else 0.0
+
+    return CostOfOwnership(
+        total_cost=total_cost,
+        total_miles=total_miles,
+        cost_per_mile=total_cost / total_miles if total_miles else 0.0,
+        gas_total=gas_total,
+        gas_gallons=gas_gallons,
+        gas_avg_cost_per_gal=gas_avg_cost_per_gal,
+        gas_share_pct=gas_share_pct,
+        maintenance_total=maintenance_total,
+        maintenance_visits=maintenance_visits,
+        maintenance_cost_per_mile=maintenance_total / total_miles if total_miles else 0.0,
     )
 
 

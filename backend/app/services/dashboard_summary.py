@@ -7,7 +7,7 @@ analytics.py, not the reverse.
 from app.models import GasFillup, MaintenanceRecord
 from app.schemas import ChartPoint, DashboardSummary
 from app.services import analytics
-from app.services.narrative import narrative_text
+from app.services.narrative import era_mpg_summary, narrative_text
 
 
 def build_dashboard_summary(
@@ -28,11 +28,14 @@ def build_dashboard_summary(
             f"maintenance records"
         )
 
+    major_events = analytics.major_events(records)
+
     return DashboardSummary(
         subhead=subhead,
         stats=analytics.stat_cards(computed, records),
         yearly=analytics.yearly_summary(computed, records),
-        major_events=analytics.major_events(records),
+        major_events=major_events,
+        major_events_by_cost=sorted(major_events, key=lambda e: -e.cost),
         service_alert=analytics.service_status(computed, records),
         narrative=narrative_text(computed),
         price_per_gallon_series=price_series,
@@ -41,4 +44,6 @@ def build_dashboard_summary(
         mpg_rolling_avg=analytics.rolling_avg(clean_pts, analytics.MPG_ROLLING_WINDOW),
         cumulative_gas=analytics.cumulative([(c.fillup.date, float(c.fillup.price)) for c in computed]),
         cumulative_maintenance=analytics.cumulative([(r.date, float(r.cost)) for r in records]),
+        cost_of_ownership=analytics.cost_of_ownership(computed, records),
+        era_mpg=era_mpg_summary(computed),
     )

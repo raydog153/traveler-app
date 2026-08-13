@@ -81,6 +81,8 @@ class ServiceAlert(BaseModel):
     last_service_date: dt.date
     last_service_odometer: float
     current_odometer: float
+    interval_miles: float
+    progress_pct: float
 
 
 class ChartPoint(BaseModel):
@@ -88,11 +90,41 @@ class ChartPoint(BaseModel):
     y: float
 
 
+class CostOfOwnership(BaseModel):
+    total_cost: float
+    total_miles: float
+    cost_per_mile: float
+    gas_total: float
+    gas_gallons: float
+    gas_avg_cost_per_gal: float
+    gas_share_pct: float
+    maintenance_total: float
+    maintenance_visits: int
+    maintenance_cost_per_mile: float
+
+
+class EraMpgSummary(BaseModel):
+    before_engine: float | None
+    engine_to_transmission: float | None
+    since_transmission: float | None
+    engine_replacement_date: dt.date
+    transmission_replacement_date: dt.date
+
+
+class TripStats(BaseModel):
+    states_visited: int
+    longest_leg_miles: float | None
+    longest_stay_days: int | None
+    avg_miles_between_fillups: float | None
+    maintenance_stops: int
+
+
 class DashboardSummary(BaseModel):
     subhead: str
     stats: list[StatCard]
     yearly: list[YearlySummary]
     major_events: list[MajorEvent]
+    major_events_by_cost: list[MajorEvent]
     service_alert: ServiceAlert | None
     narrative: str
     price_per_gallon_series: list[ChartPoint]
@@ -101,6 +133,8 @@ class DashboardSummary(BaseModel):
     mpg_rolling_avg: list[ChartPoint]
     cumulative_gas: list[ChartPoint]
     cumulative_maintenance: list[ChartPoint]
+    cost_of_ownership: CostOfOwnership
+    era_mpg: EraMpgSummary
 
 
 class RouteLocation(BaseModel):
@@ -111,6 +145,11 @@ class RouteLocation(BaseModel):
     date: dt.date
     type: Literal["gas", "maintenance"]
     detail: str | None = None
+    amount: float | None = None
+    gallons: float | None = None
+    mpg: float | None = None
+    odometer_miles: float | None = None
+    since_service_miles: float | None = None
 
 
 class RouteYear(BaseModel):
@@ -121,3 +160,4 @@ class RouteYear(BaseModel):
 class RouteData(BaseModel):
     total_stops: int
     years: list[RouteYear]
+    trip_stats: TripStats
