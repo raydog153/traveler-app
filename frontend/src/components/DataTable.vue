@@ -15,12 +15,7 @@
           <div v-if="editable" class="cell head-cell actions-col"></div>
         </div>
 
-        <div
-          v-for="row in sortedRows"
-          :key="row.id"
-          class="row body-row"
-          :class="{ excluded: excludedPredicate && excludedPredicate(row) }"
-        >
+        <div v-for="row in sortedRows" :key="row.id" class="row body-row">
           <div v-for="c in columns" :key="c.key" class="cell" :class="{ num: c.num, mono: c.mono }">
             <template v-if="c.kind === 'city'">
               <span class="city-text">{{ row[c.key] }}</span>
@@ -28,14 +23,10 @@
             </template>
             <template v-else-if="c.kind === 'mpg'">
               <div class="mpg-cell">
-                <div class="mini-bar-track">
-                  <div
-                    class="mini-bar-fill"
-                    :class="mpgBarClass(row)"
-                    :style="{ width: mpgBarPct(row.mpg) + '%' }"
-                  />
-                </div>
                 <span class="mpg-value mono">{{ row.mpg != null ? row.mpg.toFixed(1) : '—' }}</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" :style="{ width: mpgBarPct(row.mpg) + '%' }" />
+                </div>
               </div>
             </template>
             <template v-else-if="c.kind === 'costBar'">
@@ -79,18 +70,13 @@ import { valueToPercent } from '../utils/chartScale'
 const props = defineProps({
   columns: { type: Array, required: true }, // [{ key, label, width, num, mono, fmt, badge, kind }]
   rows: { type: Array, required: true },
-  // Purely visual: dims a row when this returns true. Filtering rows in/out
-  // (e.g. a "hide excluded" toggle) is the caller's concern, not this
-  // generic table's -- pass already-filtered `rows` for that.
-  excludedPredicate: { type: Function, default: null },
   defaultSortKey: { type: String, default: 'date' },
   // Adds a trailing edit/delete actions column, emitting 'edit'/'delete'
   // with the row -- the caller owns what those actions actually do.
   editable: { type: Boolean, default: false },
   footerText: { type: String, default: '' },
-  // Best-effort flag pill for a row (gas rows only) -- derived from notes
-  // text the same way analytics.is_clean does on the backend, plus "first
-  // entry" for a row with no previous fill-up to derive miles/mpg from.
+  // Best-effort flag pill for a row (gas rows only) -- e.g. "first entry"
+  // for a row with no previous fill-up to derive miles/mpg from.
   flagOf: { type: Function, default: () => null },
 })
 defineEmits(['edit', 'delete'])
@@ -132,12 +118,6 @@ function mpgBarPct(mpg) {
   if (mpg == null) return 0
   return valueToPercent(mpg, 0, MPG_BAR_MAX, false)
 }
-function mpgBarClass(row) {
-  if (row.is_clean === false) return 'amber'
-  if (row.mpg != null && row.mpg >= 9.5) return 'green'
-  return 'accent'
-}
-
 const costMax = computed(() => Math.max(1, ...props.rows.map((r) => r.cost || 0)))
 function costBarPct(cost) {
   return valueToPercent(cost || 0, 0, costMax.value, false)
@@ -189,9 +169,6 @@ function costBarPct(cost) {
   display: flex;
   align-items: center;
 }
-.body-row.excluded .cell {
-  opacity: 0.62;
-}
 .cell.num,
 .cell.mono {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
@@ -211,10 +188,6 @@ function costBarPct(cost) {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.flag-pill.amber {
-  color: var(--amber-text);
-  background: var(--amber-tint);
-}
 .flag-pill.neutral {
   color: var(--text-muted);
   background: var(--fill-subtle);
@@ -222,35 +195,27 @@ function costBarPct(cost) {
 
 .mpg-cell {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
   width: 100%;
-  justify-content: flex-end;
-}
-.mini-bar-track {
-  width: 44px;
-  height: 4px;
-  border-radius: 3px;
-  background: var(--gridline);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.mini-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-}
-.mini-bar-fill.green {
-  background: var(--green);
-}
-.mini-bar-fill.accent {
-  background: var(--ac);
-}
-.mini-bar-fill.amber {
-  background: var(--amber-text);
 }
 .mpg-value {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 12.5px;
+}
+.mini-bar-track {
+  width: 70px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--gridline);
+  overflow: hidden;
+}
+.mini-bar-fill {
+  height: 100%;
+  background: var(--ac);
+  opacity: 0.8;
+  border-radius: 3px;
 }
 
 .cost-cell {
@@ -284,14 +249,6 @@ function costBarPct(cost) {
   padding: 2px 8px;
   border-radius: 20px;
   font-weight: 500;
-}
-.badge.clean {
-  color: var(--green-text);
-  background: var(--green-tint);
-}
-.badge.excluded {
-  color: var(--text-muted);
-  background: var(--fill-subtle);
 }
 .badge.major {
   color: var(--severe-red);

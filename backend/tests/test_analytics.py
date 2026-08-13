@@ -30,29 +30,6 @@ def make_record(
     )
 
 
-class TestIsClean:
-    def test_blank_notes_is_clean(self):
-        assert analytics.is_clean("") is True
-        assert analytics.is_clean(None) is True
-
-    def test_not_a_full_fillup_is_excluded(self):
-        assert analytics.is_clean("Not a full fillup") is False
-
-    def test_off_on_mileage_variants_excluded(self):
-        assert analytics.is_clean("80 min off on milage") is False
-        assert analytics.is_clean("off on mileage") is False
-
-    def test_est_word_excluded(self):
-        assert analytics.is_clean("Est mileage") is False
-
-    def test_est_substring_not_excluded(self):
-        # "est" must match as a whole word -- "Best guess" shouldn't trigger it.
-        assert analytics.is_clean("Best guess on this one") is True
-
-    def test_unrelated_notes_are_clean(self):
-        assert analytics.is_clean("No reciept") is True
-
-
 class TestComputeFillups:
     def test_first_fillup_has_no_driven_or_mpg(self):
         [c] = analytics.compute_fillups([make_fillup(1, "2021-01-01", 100000, 20, 60)])
@@ -90,10 +67,11 @@ class TestComputeFillups:
 
 
 class TestYearlySummary:
-    def test_aggregates_per_year_and_excludes_dirty_mpg_from_average(self):
+    def test_aggregates_per_year_and_averages_mpg_across_all_fillups(self):
         fillups = [
             make_fillup(1, "2021-01-01", 100000, 20, 60),
-            make_fillup(2, "2021-01-08", 100300, 15, 45, notes="Not a full fillup"),
+            # notes text (e.g. "Not a full fillup") no longer affects the average.
+            make_fillup(2, "2021-01-08", 100300, 10, 30, notes="Not a full fillup"),
             make_fillup(3, "2021-01-15", 100700, 20, 60),
             make_fillup(4, "2022-01-01", 101000, 20, 60),
         ]
@@ -101,10 +79,9 @@ class TestYearlySummary:
         summary = {y.year: y for y in analytics.yearly_summary(computed, [])}
 
         assert summary["2021"].fillups == 3
-        # miles: 300 (excluded row still counts toward miles) + 400 = 700
         assert summary["2021"].miles == pytest.approx(700)
-        # avg mpg only from the clean 3rd row (400 driven / 20 gal = 20mpg)
-        assert summary["2021"].avg_mpg_clean == pytest.approx(20.0)
+        # avg mpg across both mpg-bearing rows: 300/10=30 and 400/20=20 -> 25
+        assert summary["2021"].avg_mpg == pytest.approx(25.0)
         assert summary["2022"].fillups == 1
 
     def test_aggregates_maintenance_cost_per_year(self):

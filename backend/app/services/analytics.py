@@ -1,7 +1,7 @@
 """Derived/computed logic ported from the original bus_gas_dashboard.html and
-bus_data_reference.html: which fill-ups are "clean" for MPG purposes,
-per-fill-up cost/gallon/driven/mpg, yearly aggregates, major maintenance
-events, and the chart-ready series used by the dashboard.
+bus_data_reference.html: per-fill-up cost/gallon/driven/mpg, yearly
+aggregates, major maintenance events, and the chart-ready series used by the
+dashboard.
 
 Kept as plain Python over already-fetched rows rather than SQL window
 functions: the dataset is a few hundred rows total, so this is simpler to
@@ -30,23 +30,7 @@ MPG_ROLLING_WINDOW = 7
 SERVICE_INTERVAL_MILES = 5000.0
 SERVICE_DUE_SOON_MILES = 1000.0
 
-_NOT_FULL_FILLUP = "not a full fillup"
-_OFF_ON_MILEAGE = ("off on milage", "off on mileage")
-_EST_WORD_RE = re.compile(r"\best\b")
 _SERVICE_RECORD_RE = re.compile(r"oil change|\bpm\b", re.IGNORECASE)
-
-
-def is_clean(notes: str | None) -> bool:
-    if not notes:
-        return True
-    n = notes.lower()
-    if _NOT_FULL_FILLUP in n:
-        return False
-    if any(phrase in n for phrase in _OFF_ON_MILEAGE):
-        return False
-    if _EST_WORD_RE.search(n):
-        return False
-    return True
 
 
 @dataclass
@@ -55,7 +39,6 @@ class ComputedFillup:
     cost_per_gal: float
     driven: float | None
     mpg: float | None
-    is_clean: bool
 
 
 def compute_from_previous(f: GasFillup, prev_odometer: float | None) -> ComputedFillup:
@@ -74,7 +57,7 @@ def compute_from_previous(f: GasFillup, prev_odometer: float | None) -> Computed
         else:
             driven = None
 
-    return ComputedFillup(f, cost_per_gal, driven, mpg, is_clean(f.notes))
+    return ComputedFillup(f, cost_per_gal, driven, mpg)
 
 
 def compute_fillups(fillups: list[GasFillup]) -> list[ComputedFillup]:
@@ -91,11 +74,10 @@ def compute_fillups(fillups: list[GasFillup]) -> list[ComputedFillup]:
     return out
 
 
-def clean_mpg_fillups(computed: list[ComputedFillup]) -> list[ComputedFillup]:
-    """Fill-ups with a usable mpg reading that aren't flagged excluded --
-    the shared "counts toward MPG stats" filter used by yearly/stat-card
-    aggregation."""
-    return [c for c in computed if c.mpg is not None and c.is_clean]
+def mpg_fillups(computed: list[ComputedFillup]) -> list[ComputedFillup]:
+    """Fill-ups with a usable mpg reading -- the shared "counts toward MPG
+    stats" filter used by yearly/stat-card aggregation."""
+    return [c for c in computed if c.mpg is not None]
 
 
 def display_city(location: Location) -> str:
@@ -117,7 +99,6 @@ def to_gas_out(c: ComputedFillup) -> GasFillupOut:
         cost_per_gal=c.cost_per_gal,
         driven=c.driven,
         mpg=c.mpg,
-        is_clean=c.is_clean,
     )
 
 
@@ -149,15 +130,15 @@ def yearly_summary(computed: list[ComputedFillup], records: list[MaintenanceReco
         cost = sum(float(c.fillup.price) for c in rows)
         gallons = sum(float(c.fillup.gallons) for c in rows)
         miles = sum(c.driven for c in rows if c.driven)
-        clean_mpgs = [c.mpg for c in clean_mpg_fillups(rows)]
-        avg_mpg = sum(clean_mpgs) / len(clean_mpgs) if clean_mpgs else None
+        mpgs = [c.mpg for c in mpg_fillups(rows)]
+        avg_mpg = sum(mpgs) / len(mpgs) if mpgs else None
         out.append(
             YearlySummary(
                 year=str(year),
                 cost=cost,
                 miles=miles,
                 gallons=gallons,
-                avg_mpg_clean=avg_mpg,
+                avg_mpg=avg_mpg,
                 fillups=len(rows),
                 maintenance_cost=maintenance_cost_by_year.get(year, 0.0),
             )
@@ -172,10 +153,9 @@ def major_events(records: list[MaintenanceRecord]) -> list[MajorEvent]:
 
 
 def is_service_record(expense: str) -> bool:
-    """Matched by substring/regex on the expense field, same approach as
-    `is_clean` -- covers this log's actual wording for oil changes and "PM"
-    (preventive maintenance) service visits, e.g. "Oil change/ PM maintance
-    check" or "PM Service"."""
+    """Matched by substring/regex on the expense field -- covers this log's
+    actual wording for oil changes and "PM" (preventive maintenance) service
+    visits, e.g. "Oil change/ PM maintance check" or "PM Service"."""
     return bool(_SERVICE_RECORD_RE.search(expense))
 
 
@@ -267,8 +247,8 @@ def cost_of_ownership(computed: list[ComputedFillup], records: list[MaintenanceR
 def stat_cards(computed: list[ComputedFillup], records: list[MaintenanceRecord]) -> list[StatCard]:
     total_spent = sum(float(c.fillup.price) for c in computed)
     total_gal = sum(float(c.fillup.gallons) for c in computed)
-    clean_mpgs = [c.mpg for c in clean_mpg_fillups(computed)]
-    avg_mpg = sum(clean_mpgs) / len(clean_mpgs) if clean_mpgs else 0.0
+    mpgs = [c.mpg for c in mpg_fillups(computed)]
+    avg_mpg = sum(mpgs) / len(mpgs) if mpgs else 0.0
     avg_cpg = total_spent / total_gal if total_gal else 0.0
     total_maint = sum(float(r.cost) for r in records)
     total_combined = total_spent + total_maint
@@ -277,7 +257,7 @@ def stat_cards(computed: list[ComputedFillup], records: list[MaintenanceRecord])
         StatCard(label="Total spent on gas", value=f"${total_spent:,.0f}"),
         StatCard(label="Total gallons", value=f"{total_gal:,.0f} gal"),
         StatCard(label="Avg cost / gallon", value=f"${avg_cpg:.2f}"),
-        StatCard(label="Avg MPG (cleaned)", value=f"{avg_mpg:.1f} mpg"),
+        StatCard(label="Avg MPG", value=f"{avg_mpg:.1f} mpg"),
         StatCard(label="Total maintenance", value=f"${total_maint:,.0f}"),
         StatCard(label="Gas + maintenance", value=f"${total_combined:,.0f}"),
     ]

@@ -4,8 +4,8 @@
       <div class="head-text">
         <h2>Fuel economy over time</h2>
         <p class="desc">
-          Cleaned MPG per fill-up with a 7-fill-up rolling average. Faded dots are excluded — partial fills or
-          estimated mileage. Vertical markers are maintenance events over $10k.
+          MPG per fill-up with a 7-fill-up rolling average.<template v-if="showMaintenance"> Vertical markers are
+          maintenance events over $10k.</template>
         </p>
       </div>
     </div>
@@ -41,15 +41,9 @@
         </svg>
 
         <div
-          v-for="p in excludedDots"
-          :key="'ex-' + p.x"
-          class="dot excluded"
-          :style="{ left: p.xPct + '%', top: p.yPct + '%' }"
-        />
-        <div
-          v-for="p in cleanDots"
-          :key="'cl-' + p.x"
-          class="dot clean"
+          v-for="p in dots"
+          :key="p.x"
+          class="dot"
           :style="{ left: p.xPct + '%', top: p.yPct + '%' }"
         />
       </div>
@@ -65,10 +59,10 @@ import { computed } from 'vue'
 import { dateToPercent, valueToPercent } from '../../utils/chartScale'
 
 const props = defineProps({
-  cleanPoints: { type: Array, required: true },
-  excludedPoints: { type: Array, required: true },
+  points: { type: Array, required: true },
   rollingAvg: { type: Array, required: true },
   majorEvents: { type: Array, required: true },
+  showMaintenance: { type: Boolean, default: true },
 })
 
 const Y_TICKS = [18, 14, 10, 6, 2]
@@ -76,7 +70,7 @@ const Y_MIN = 2
 const Y_MAX = 18
 
 const allDates = computed(() => {
-  const dates = [...props.cleanPoints, ...props.excludedPoints].map((p) => p.x)
+  const dates = props.points.map((p) => p.x)
   return dates.length ? dates : [new Date().toISOString().slice(0, 10)]
 })
 const minDate = computed(() => allDates.value.reduce((a, b) => (a < b ? a : b)))
@@ -90,8 +84,7 @@ function toPlotPoint(p) {
   }
 }
 
-const cleanDots = computed(() => props.cleanPoints.map(toPlotPoint))
-const excludedDots = computed(() => props.excludedPoints.map(toPlotPoint))
+const dots = computed(() => props.points.map(toPlotPoint))
 
 const avgLinePoints = computed(() => {
   if (!props.rollingAvg.length) return ''
@@ -102,12 +95,14 @@ const avgLinePoints = computed(() => {
 })
 
 const markers = computed(() =>
-  props.majorEvents.map((ev) => ({
-    ...ev,
-    xPct: dateToPercent(ev.date, minDate.value, maxDate.value),
-    severe: ev.cost >= 10000,
-    tag: `$${Math.round(ev.cost / 1000)}k`,
-  })),
+  props.showMaintenance
+    ? props.majorEvents.map((ev) => ({
+        ...ev,
+        xPct: dateToPercent(ev.date, minDate.value, maxDate.value),
+        severe: ev.cost >= 10000,
+        tag: `$${Math.round(ev.cost / 1000)}k`,
+      }))
+    : [],
 )
 
 const xTickYears = computed(() => {
@@ -207,18 +202,10 @@ h2 {
   position: absolute;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-}
-.dot.clean {
   width: 6px;
   height: 6px;
   background: var(--ac);
   opacity: 0.42;
-}
-.dot.excluded {
-  width: 5px;
-  height: 5px;
-  background: oklch(0.78 0.03 258);
-  opacity: 0.55;
 }
 .x-axis {
   position: relative;

@@ -28,7 +28,6 @@ class GasFillupOut(BaseModel):
     cost_per_gal: float
     driven: float | None
     mpg: float | None
-    is_clean: bool
 
 
 class MaintenanceRecordIn(BaseModel):
@@ -63,7 +62,7 @@ class YearlySummary(BaseModel):
     cost: float
     miles: float
     gallons: float
-    avg_mpg_clean: float | None
+    avg_mpg: float | None
     fillups: int
     maintenance_cost: float
 
@@ -119,8 +118,7 @@ class DashboardSummary(BaseModel):
     major_events_by_cost: list[MajorEvent]
     service_alert: ServiceAlert | None
     price_per_gallon_series: list[ChartPoint]
-    mpg_clean_points: list[ChartPoint]
-    mpg_excluded_points: list[ChartPoint]
+    mpg_points: list[ChartPoint]
     mpg_rolling_avg: list[ChartPoint]
     cumulative_gas: list[ChartPoint]
     cumulative_maintenance: list[ChartPoint]

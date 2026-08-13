@@ -13,9 +13,7 @@ def build_dashboard_summary(
     computed = analytics.compute_fillups(fillups)
 
     price_series = [ChartPoint(x=c.fillup.date, y=c.cost_per_gal) for c in computed]
-    mpg_points = [c for c in computed if c.mpg is not None]
-    clean_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in mpg_points if c.is_clean]
-    excluded_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in mpg_points if not c.is_clean]
+    mpg_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in analytics.mpg_fillups(computed)]
 
     subhead = ""
     if computed:
@@ -35,9 +33,8 @@ def build_dashboard_summary(
         major_events_by_cost=sorted(major_events, key=lambda e: -e.cost),
         service_alert=analytics.service_status(computed, records),
         price_per_gallon_series=price_series,
-        mpg_clean_points=clean_pts,
-        mpg_excluded_points=excluded_pts,
-        mpg_rolling_avg=analytics.rolling_avg(clean_pts, analytics.MPG_ROLLING_WINDOW),
+        mpg_points=mpg_pts,
+        mpg_rolling_avg=analytics.rolling_avg(mpg_pts, analytics.MPG_ROLLING_WINDOW),
         cumulative_gas=analytics.cumulative([(c.fillup.date, float(c.fillup.price)) for c in computed]),
         cumulative_maintenance=analytics.cumulative([(r.date, float(r.cost)) for r in records]),
         cost_of_ownership=analytics.cost_of_ownership(computed, records),

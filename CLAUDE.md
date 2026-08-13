@@ -64,12 +64,11 @@ nothing else is persisted; stats, chart series, and map data are all derived
 at request time in `app/services/`:
 
 - **`analytics.py`** — dataset-agnostic primitives ported from the original
-  HTML dashboards' JS: `is_clean(notes)` decides whether a fill-up counts
-  toward MPG stats (excludes partial fill-ups, odometer resets, and estimated
-  readings, matched by substring/regex on the notes field), `compute_fillups`
-  derives cost/gal, miles driven, and MPG for each row from the *previous*
-  fill-up's odometer reading (sorted by date then id), plus yearly summaries,
-  stat cards, rolling averages, and cumulative series.
+  HTML dashboards' JS: `compute_fillups` derives cost/gal, miles driven, and
+  MPG for each row from the *previous* fill-up's odometer reading (sorted by
+  date then id), plus yearly summaries, stat cards, rolling averages, and
+  cumulative series. Every fill-up with a derivable MPG counts toward MPG
+  stats -- the `notes` field is free text only, never used to derive state.
 - **`narrative.py`** — sits above `analytics.py` and is the one place that
   bakes in bespoke, non-generic knowledge: this vehicle's actual engine
   (2025-07-21) and transmission (2025-09-25) replacement dates, used to

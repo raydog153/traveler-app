@@ -1,7 +1,9 @@
 <template>
   <div class="panel small-chart">
-    <h2>Total cost of ownership — gas vs. maintenance</h2>
-    <p class="desc">Maintenance overtook gas early on and never looked back.</p>
+    <h2>{{ showMaintenance ? 'Total cost of ownership — gas vs. maintenance' : 'Cumulative gas spend' }}</h2>
+    <p class="desc">
+      {{ showMaintenance ? 'Maintenance overtook gas early on and never looked back.' : 'Running total spent on gas over time.' }}
+    </p>
 
     <div class="plot-wrap">
       <div class="y-axis">
@@ -11,10 +13,10 @@
         <div v-for="g in [0, 33, 66, 100]" :key="g" class="gridline" :style="{ top: g + '%' }" />
 
         <svg class="area-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <polygon v-if="maintArea" :points="maintArea" fill="var(--rust)" opacity="0.14" />
+          <polygon v-if="showMaintenance && maintArea" :points="maintArea" fill="var(--rust)" opacity="0.14" />
           <polygon v-if="gasArea" :points="gasArea" fill="var(--ac)" opacity="0.12" />
           <polyline
-            v-if="maintLine"
+            v-if="showMaintenance && maintLine"
             :points="maintLine"
             fill="none"
             stroke="var(--rust)"
@@ -31,7 +33,7 @@
           />
         </svg>
 
-        <span class="inline-label maint-label">Maintenance</span>
+        <span v-if="showMaintenance" class="inline-label maint-label">Maintenance</span>
         <span class="inline-label gas-label">Gas</span>
       </div>
     </div>
@@ -45,6 +47,7 @@ import { dateToPercent, valueToPercent } from '../../utils/chartScale'
 const props = defineProps({
   gas: { type: Array, required: true },
   maintenance: { type: Array, required: true },
+  showMaintenance: { type: Boolean, default: true },
 })
 
 const yTicks = computed(() => {
@@ -52,11 +55,11 @@ const yTicks = computed(() => {
   return [max, Math.round(max * 0.67), Math.round(max * 0.33), 0].map((v) => `${Math.round(v / 1000)}k`)
 })
 
-const allDates = computed(() => [...props.gas, ...props.maintenance].map((p) => p.x))
+const allDates = computed(() => [...props.gas, ...(props.showMaintenance ? props.maintenance : [])].map((p) => p.x))
 const minDate = computed(() => (allDates.value.length ? allDates.value.reduce((a, b) => (a < b ? a : b)) : new Date().toISOString()))
 const maxDate = computed(() => (allDates.value.length ? allDates.value.reduce((a, b) => (a > b ? a : b)) : new Date().toISOString()))
 const yMax = computed(() => {
-  const m = Math.max(0, ...props.gas.map((p) => p.y), ...props.maintenance.map((p) => p.y))
+  const m = Math.max(0, ...props.gas.map((p) => p.y), ...(props.showMaintenance ? props.maintenance.map((p) => p.y) : []))
   return m > 0 ? m * 1.08 : 100
 })
 

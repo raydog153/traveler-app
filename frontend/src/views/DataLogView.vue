@@ -16,13 +16,6 @@
         <input v-model="search" type="text" class="search-input" :placeholder="searchPlaceholder" />
       </div>
 
-      <label v-if="tab === 'gas'" class="checkbox-label">
-        <span class="checkbox-box" :class="{ checked: hideExcludedFillups }" @click="hideExcludedFillups = !hideExcludedFillups">
-          <input type="checkbox" v-model="hideExcludedFillups" />
-        </span>
-        Hide excluded fill-ups
-      </label>
-
       <span class="row-count">{{ rowCountText }}</span>
     </div>
 
@@ -30,7 +23,6 @@
       v-if="tab === 'gas'"
       :columns="gasColumns"
       :rows="searchedFillups"
-      :excluded-predicate="(r) => !r.is_clean"
       :flag-of="flagOf"
       default-sort-key="date"
       editable
@@ -100,7 +92,6 @@ const subTabs = [
 const tab = ref('gas')
 const search = ref('')
 const showForm = ref(false)
-const hideExcludedFillups = ref(false)
 const editingFillup = ref(null)
 const editingRecord = ref(null)
 const pendingDelete = ref(null)
@@ -109,17 +100,13 @@ const deleteError = ref('')
 
 const searchPlaceholder = computed(() => (tab.value === 'gas' ? 'Search city, note or date…' : 'Search expense, place or vendor…'))
 
-const visibleFillups = computed(() =>
-  hideExcludedFillups.value ? gasStore.fillups.filter((r) => r.is_clean) : gasStore.fillups,
-)
-
 function matchesSearch(row, fields) {
   const q = search.value.trim().toLowerCase()
   if (!q) return true
   return fields.some((f) => row[f] != null && String(row[f]).toLowerCase().includes(q))
 }
 
-const searchedFillups = computed(() => visibleFillups.value.filter((r) => matchesSearch(r, ['date', 'city', 'notes'])))
+const searchedFillups = computed(() => gasStore.fillups.filter((r) => matchesSearch(r, ['date', 'city', 'notes'])))
 const searchedRecords = computed(() =>
   maintenanceStore.records.filter((r) => matchesSearch(r, ['date', 'expense', 'place', 'vendor'])),
 )
@@ -143,20 +130,10 @@ const maintFooterText = computed(() => {
   return `Showing ${rows.length} of ${maintenanceStore.records.length} · median ${medCost != null ? formatCurrency(medCost, { decimals: 0 }) : '—'} · largest ${maxCost != null ? formatCurrency(maxCost, { decimals: 0 }) : '—'}`
 })
 
-// Best-effort flag pill for a gas row, mirroring the substrings
-// analytics.is_clean checks on the backend -- purely a display label, the
-// authoritative exclusion decision is still the server's `is_clean` field.
-// `driven == null` covers both a literal first entry AND any row the
-// backend excluded for an unrelated reason (an odometer reset/backdated
-// entry with no usable prior reading) -- check is_clean/notes first so
-// those don't get mislabeled "first entry".
+// Flags a gas row with no previous fill-up to derive miles/mpg from (either
+// a literal first entry, or a backdated/odometer-reset row with no usable
+// prior reading).
 function flagOf(row) {
-  if (!row.is_clean) {
-    const notes = (row.notes || '').toLowerCase()
-    if (notes.includes('not a full fillup')) return { text: 'partial fill', cls: 'amber' }
-    if (/\best\b/.test(notes)) return { text: 'est. mileage', cls: 'amber' }
-    return { text: 'excluded', cls: 'amber' }
-  }
   if (row.driven == null) return { text: 'first entry', cls: 'neutral' }
   return null
 }
@@ -169,8 +146,7 @@ onMounted(() => {
 const subhead = computed(() => {
   if (tab.value === 'gas') {
     const total = gasStore.fillups.length
-    const clean = gasStore.fillups.filter((r) => r.is_clean).length
-    return `${total} fill-ups logged — ${clean} clean, ${total - clean} excluded from MPG averages.`
+    return `${total} fill-ups logged.`
   }
   const total = maintenanceStore.records.length
   const totalCost = maintenanceStore.records.reduce((s, r) => s + r.cost, 0)
@@ -318,41 +294,6 @@ h1 {
 .search-input:focus {
   outline: none;
   border-color: var(--ac);
-}
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  cursor: pointer;
-}
-.checkbox-label input {
-  display: none;
-}
-.checkbox-box {
-  width: 15px;
-  height: 15px;
-  border-radius: 5px;
-  border: 1px solid var(--card-border);
-  display: inline-block;
-  position: relative;
-}
-.checkbox-box.checked {
-  background: var(--ac);
-  border-color: var(--ac);
-}
-.checkbox-box.checked::after {
-  content: '';
-  position: absolute;
-  left: 4px;
-  top: 1px;
-  width: 4px;
-  height: 8px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
 }
 .row-count {
   margin-left: auto;

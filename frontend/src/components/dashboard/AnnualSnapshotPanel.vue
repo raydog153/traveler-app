@@ -7,7 +7,7 @@
       </div>
       <div class="legend">
         <span class="legend-item"><span class="swatch gas" />Gas</span>
-        <span class="legend-item"><span class="swatch maint" />Maintenance</span>
+        <span v-if="showMaintenance" class="legend-item"><span class="swatch maint" />Maintenance</span>
         <span class="legend-item"><span class="dash-swatch" />Miles driven</span>
       </div>
     </div>
@@ -30,9 +30,9 @@
 
       <div class="bars">
         <div v-for="y in yearly" :key="y.year" class="bar-col">
-          <div class="total-label">{{ formatShort(y.cost + y.maintenance_cost) }}</div>
+          <div class="total-label">{{ formatShort(totalFor(y)) }}</div>
           <div class="bar-stack" :style="{ height: barHeightPx(y) + 'px' }">
-            <div class="seg maint" :style="{ flexGrow: y.maintenance_cost || 0.0001 }" />
+            <div v-if="showMaintenance" class="seg maint" :style="{ flexGrow: y.maintenance_cost || 0.0001 }" />
             <div class="seg gas" :style="{ flexGrow: y.cost || 0.0001 }" />
           </div>
           <div class="year-label">{{ y.year }}</div>
@@ -47,15 +47,20 @@ import { computed } from 'vue'
 
 const props = defineProps({
   yearly: { type: Array, required: true },
+  showMaintenance: { type: Boolean, default: true },
 })
 
 const BAR_MAX_PX = 150
 
-const maxTotal = computed(() => Math.max(1, ...props.yearly.map((y) => y.cost + y.maintenance_cost)))
+function totalFor(y) {
+  return props.showMaintenance ? y.cost + y.maintenance_cost : y.cost
+}
+
+const maxTotal = computed(() => Math.max(1, ...props.yearly.map(totalFor)))
 const maxMiles = computed(() => Math.max(1, ...props.yearly.map((y) => y.miles)))
 
 function barHeightPx(y) {
-  return ((y.cost + y.maintenance_cost) / maxTotal.value) * BAR_MAX_PX
+  return (totalFor(y) / maxTotal.value) * BAR_MAX_PX
 }
 
 function formatShort(v) {

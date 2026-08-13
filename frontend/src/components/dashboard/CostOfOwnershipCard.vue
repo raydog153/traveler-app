@@ -1,27 +1,27 @@
 <template>
   <div class="card panel">
-    <div class="label">Total cost of ownership</div>
+    <div class="label">{{ showMaintenance ? 'Total cost of ownership' : 'Total gas cost' }}</div>
     <div class="hero-row">
-      <span class="total">{{ formatCurrency(data.total_cost, { decimals: 0 }) }}</span>
+      <span class="total">{{ formatCurrency(heroTotal, { decimals: 0 }) }}</span>
       <span class="over-miles">over {{ formatMiles(data.total_miles) }} miles</span>
     </div>
 
     <div class="stats-row">
       <div class="stat">
         <div class="stat-label">Cost per mile</div>
-        <div class="stat-value">{{ formatCurrency(data.cost_per_mile) }}</div>
+        <div class="stat-value">{{ formatCurrency(heroCostPerMile) }}</div>
       </div>
-      <div class="stat">
+      <div v-if="showMaintenance" class="stat">
         <div class="stat-label">Gas share</div>
         <div class="stat-value accent">{{ Math.round(data.gas_share_pct) }}%</div>
       </div>
     </div>
 
     <div class="split-bar">
-      <div class="seg gas" :style="{ width: data.gas_share_pct + '%' }">
+      <div class="seg gas" :style="{ width: (showMaintenance ? data.gas_share_pct : 100) + '%' }">
         {{ formatCurrency(data.gas_total, { decimals: 0 }) }}
       </div>
-      <div class="seg maint" :style="{ width: 100 - data.gas_share_pct + '%' }">
+      <div v-if="showMaintenance" class="seg maint" :style="{ width: 100 - data.gas_share_pct + '%' }">
         {{ formatCurrency(data.maintenance_total, { decimals: 0 }) }}
       </div>
     </div>
@@ -31,7 +31,7 @@
         <span class="swatch gas" />
         Gas — {{ Math.round(data.gas_gallons).toLocaleString() }} gal at {{ formatCurrency(data.gas_avg_cost_per_gal) }} avg
       </span>
-      <span class="legend-item">
+      <span v-if="showMaintenance" class="legend-item">
         <span class="swatch maint" />
         Maintenance — {{ data.maintenance_visits }} visits, {{ formatCurrency(data.maintenance_cost_per_mile) }} per mile
       </span>
@@ -40,11 +40,18 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { formatCurrency, formatMiles } from '../../utils/format'
 
-defineProps({
+const props = defineProps({
   data: { type: Object, required: true },
+  showMaintenance: { type: Boolean, default: true },
 })
+
+const heroTotal = computed(() => (props.showMaintenance ? props.data.total_cost : props.data.gas_total))
+const heroCostPerMile = computed(() =>
+  props.showMaintenance ? props.data.cost_per_mile : props.data.gas_total / (props.data.total_miles || 1),
+)
 </script>
 
 <style scoped>
