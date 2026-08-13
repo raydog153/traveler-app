@@ -25,7 +25,7 @@
               :class="{ off: !visible[y.year] }"
               :style="visible[y.year] ? { borderColor: colorFor(y.year), background: tintFor(y.year) } : {}"
             >
-              <input type="checkbox" v-model="visible[y.year]" @change="toggleYear(y.year)" />
+              <input v-model="visible[y.year]" type="checkbox" @change="toggleYear(y.year)" />
               <span class="dot" :style="{ background: colorFor(y.year) }" />
               {{ y.year }} <span class="count">{{ y.locations.length }}</span>
             </label>
@@ -71,8 +71,6 @@ const yearLayers = {}
 const markersByStopId = {}
 const visible = reactive({})
 const selectedStop = shallowRef(null)
-
-const TYPE_COLOR = { gas: 'oklch(0.6 0.14 258)', maintenance: 'oklch(0.6 0.14 35)' }
 
 function colorFor(year) {
   const yearList = store.routeData?.years.map((y) => y.year) || []

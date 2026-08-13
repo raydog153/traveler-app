@@ -1,9 +1,8 @@
 <template>
   <div class="wrap">
     <div v-if="configError" class="config-error">
-      Google Maps isn't configured: set <code>GOOGLE_MAPS_API_KEY</code> in your <code>.env</code> file
-      (Maps JavaScript API, Places API (New), and Geocoding API must be enabled with billing active), then
-      restart the frontend.
+      Google Maps isn't configured: set <code>GOOGLE_MAPS_API_KEY</code> in your <code>.env</code> file (Maps JavaScript
+      API, Places API (New), and Geocoding API must be enabled with billing active), then restart the frontend.
     </div>
 
     <div v-else class="guide-layout">
@@ -38,9 +37,9 @@
               <span class="type-select-label">{{ typeSelectLabel }}</span>
               <span class="type-select-caret" :class="{ open: typeMenuOpen }">▾</span>
             </button>
-            <div v-if="typeMenuOpen" class="type-select-menu" ref="typeMenuEl">
+            <div v-if="typeMenuOpen" ref="typeMenuEl" class="type-select-menu">
               <label v-for="c in CATEGORIES" :key="c.key" class="type-option">
-                <input type="checkbox" :value="c.key" v-model="selectedCategories" />
+                <input v-model="selectedCategories" type="checkbox" :value="c.key" />
                 <span>{{ c.bullet }} {{ c.label }}</span>
               </label>
             </div>
@@ -80,7 +79,9 @@
             @keydown.enter.prevent="activatePark(park)"
             @keydown.space.prevent="activatePark(park)"
           >
-            <span class="icon-tile" :class="tileClass(park.categoryKey)">{{ CATEGORY_BY_KEY[park.categoryKey].bullet }}</span>
+            <span class="icon-tile" :class="tileClass(park.categoryKey)">{{
+              CATEGORY_BY_KEY[park.categoryKey].bullet
+            }}</span>
             <div class="park-text">
               <div class="park-name truncate">{{ park.name }}</div>
               <div class="park-addr truncate">{{ park.address }}</div>
@@ -111,6 +112,11 @@
 // only worth doing at all if a key is actually configured.
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
+// prettier-ignore
+/* eslint-disable */
+// Verbatim "Dynamic Library Import" bootstrap snippet from Google's own
+// Maps JS API docs -- left exactly as shipped so it stays diffable against
+// the source if Google ever changes it.
 if (GOOGLE_MAPS_API_KEY) {
   ;(g => {
     var h, a, k, p = 'The Google Maps JavaScript API', c = 'google', l = 'importLibrary', q = '__ib__', m = document, b = window
@@ -132,33 +138,188 @@ if (GOOGLE_MAPS_API_KEY) {
     d[l] ? console.warn(p + ' only loads once. Ignoring:', g) : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)))
   })({ key: GOOGLE_MAPS_API_KEY, v: 'weekly', loading: 'async' })
 }
+/* eslint-enable */
 
 const CATEGORIES = [
-  { key: 'dog_park', label: 'Dog Parks', includedPrimaryTypes: ['dog_park'], bullet: '🐾', singular: 'dog park', plural: 'dog parks' },
-  { key: 'playground', label: 'Kid Playgrounds', includedPrimaryTypes: ['playground'], bullet: '🛝', singular: 'playground', plural: 'playgrounds' },
-  { key: 'boat_launch', label: 'Boat Launches', includedPrimaryTypes: ['marina'], bullet: '⚓', singular: 'boat launch', plural: 'boat launches' },
-  { key: 'trailhead', label: 'Trailheads', includedPrimaryTypes: ['hiking_area'], bullet: '🥾', singular: 'trailhead', plural: 'trailheads' },
+  {
+    key: 'dog_park',
+    label: 'Dog Parks',
+    includedPrimaryTypes: ['dog_park'],
+    bullet: '🐾',
+    singular: 'dog park',
+    plural: 'dog parks',
+  },
+  {
+    key: 'playground',
+    label: 'Kid Playgrounds',
+    includedPrimaryTypes: ['playground'],
+    bullet: '🛝',
+    singular: 'playground',
+    plural: 'playgrounds',
+  },
+  {
+    key: 'boat_launch',
+    label: 'Boat Launches',
+    includedPrimaryTypes: ['marina'],
+    bullet: '⚓',
+    singular: 'boat launch',
+    plural: 'boat launches',
+  },
+  {
+    key: 'trailhead',
+    label: 'Trailheads',
+    includedPrimaryTypes: ['hiking_area'],
+    bullet: '🥾',
+    singular: 'trailhead',
+    plural: 'trailheads',
+  },
   { key: 'park', label: 'Parks', includedPrimaryTypes: ['park'], bullet: '🍃', singular: 'park', plural: 'parks' },
-  { key: 'city_park', label: 'City Parks', includedPrimaryTypes: ['city_park'], bullet: '🌳', singular: 'city park', plural: 'city parks' },
-  { key: 'state_park', label: 'State Parks', includedPrimaryTypes: ['state_park'], bullet: '🌲', singular: 'state park', plural: 'state parks' },
-  { key: 'national_park', label: 'National Parks', includedPrimaryTypes: ['national_park'], bullet: '🏞️', singular: 'national park', plural: 'national parks' },
-  { key: 'wildlife_park', label: 'Wildlife Parks', includedPrimaryTypes: ['wildlife_park'], bullet: '🦌', singular: 'wildlife park', plural: 'wildlife parks' },
-  { key: 'wildlife_refuge', label: 'Wildlife Refuges', includedPrimaryTypes: ['wildlife_refuge'], bullet: '🦉', singular: 'wildlife refuge', plural: 'wildlife refuges' },
-  { key: 'nature_preserve', label: 'Nature Preserves', includedPrimaryTypes: ['nature_preserve'], bullet: '🌿', singular: 'nature preserve', plural: 'nature preserves' },
-  { key: 'scenic_spot', label: 'Scenic Spots', includedPrimaryTypes: ['scenic_spot'], bullet: '📸', singular: 'scenic spot', plural: 'scenic spots' },
-  { key: 'water_park', label: 'Water Parks', includedPrimaryTypes: ['water_park'], bullet: '🌊', singular: 'water park', plural: 'water parks' },
-  { key: 'cycling_park', label: 'Cycling Parks', includedPrimaryTypes: ['cycling_park'], bullet: '🚴', singular: 'cycling park', plural: 'cycling parks' },
-  { key: 'skateboard_park', label: 'Skate Parks', includedPrimaryTypes: ['skateboard_park'], bullet: '🛹', singular: 'skate park', plural: 'skate parks' },
-  { key: 'off_roading_area', label: 'Off-Roading Areas', includedPrimaryTypes: ['off_roading_area'], bullet: '🚙', singular: 'off-roading area', plural: 'off-roading areas' },
-  { key: 'picnic_ground', label: 'Picnic Grounds', includedPrimaryTypes: ['picnic_ground'], bullet: '🧺', singular: 'picnic ground', plural: 'picnic grounds' },
-  { key: 'campground', label: 'Campgrounds', includedPrimaryTypes: ['campground'], bullet: '⛺', singular: 'campground', plural: 'campgrounds' },
-  { key: 'farmstay', label: 'Farmstays', includedPrimaryTypes: ['farmstay'], bullet: '🚜', singular: 'farmstay', plural: 'farmstays' },
-  { key: 'visitor_center', label: 'Visitor Centers', includedPrimaryTypes: ['visitor_center'], bullet: 'ℹ️', singular: 'visitor center', plural: 'visitor centers' },
-  { key: 'park_and_ride', label: 'Park & Ride', includedPrimaryTypes: ['park_and_ride'], bullet: '🅿️', singular: 'park & ride lot', plural: 'park & ride lots' },
-  { key: 'farmers_market', label: 'Farmers Markets', includedPrimaryTypes: ['farmers_market'], bullet: '🥕', singular: 'farmers market', plural: 'farmers markets' },
-  { key: 'thrift_store', label: 'Thrift Stores', includedPrimaryTypes: ['thrift_store'], bullet: '👕', singular: 'thrift store', plural: 'thrift stores' },
+  {
+    key: 'city_park',
+    label: 'City Parks',
+    includedPrimaryTypes: ['city_park'],
+    bullet: '🌳',
+    singular: 'city park',
+    plural: 'city parks',
+  },
+  {
+    key: 'state_park',
+    label: 'State Parks',
+    includedPrimaryTypes: ['state_park'],
+    bullet: '🌲',
+    singular: 'state park',
+    plural: 'state parks',
+  },
+  {
+    key: 'national_park',
+    label: 'National Parks',
+    includedPrimaryTypes: ['national_park'],
+    bullet: '🏞️',
+    singular: 'national park',
+    plural: 'national parks',
+  },
+  {
+    key: 'wildlife_park',
+    label: 'Wildlife Parks',
+    includedPrimaryTypes: ['wildlife_park'],
+    bullet: '🦌',
+    singular: 'wildlife park',
+    plural: 'wildlife parks',
+  },
+  {
+    key: 'wildlife_refuge',
+    label: 'Wildlife Refuges',
+    includedPrimaryTypes: ['wildlife_refuge'],
+    bullet: '🦉',
+    singular: 'wildlife refuge',
+    plural: 'wildlife refuges',
+  },
+  {
+    key: 'nature_preserve',
+    label: 'Nature Preserves',
+    includedPrimaryTypes: ['nature_preserve'],
+    bullet: '🌿',
+    singular: 'nature preserve',
+    plural: 'nature preserves',
+  },
+  {
+    key: 'scenic_spot',
+    label: 'Scenic Spots',
+    includedPrimaryTypes: ['scenic_spot'],
+    bullet: '📸',
+    singular: 'scenic spot',
+    plural: 'scenic spots',
+  },
+  {
+    key: 'water_park',
+    label: 'Water Parks',
+    includedPrimaryTypes: ['water_park'],
+    bullet: '🌊',
+    singular: 'water park',
+    plural: 'water parks',
+  },
+  {
+    key: 'cycling_park',
+    label: 'Cycling Parks',
+    includedPrimaryTypes: ['cycling_park'],
+    bullet: '🚴',
+    singular: 'cycling park',
+    plural: 'cycling parks',
+  },
+  {
+    key: 'skateboard_park',
+    label: 'Skate Parks',
+    includedPrimaryTypes: ['skateboard_park'],
+    bullet: '🛹',
+    singular: 'skate park',
+    plural: 'skate parks',
+  },
+  {
+    key: 'off_roading_area',
+    label: 'Off-Roading Areas',
+    includedPrimaryTypes: ['off_roading_area'],
+    bullet: '🚙',
+    singular: 'off-roading area',
+    plural: 'off-roading areas',
+  },
+  {
+    key: 'picnic_ground',
+    label: 'Picnic Grounds',
+    includedPrimaryTypes: ['picnic_ground'],
+    bullet: '🧺',
+    singular: 'picnic ground',
+    plural: 'picnic grounds',
+  },
+  {
+    key: 'campground',
+    label: 'Campgrounds',
+    includedPrimaryTypes: ['campground'],
+    bullet: '⛺',
+    singular: 'campground',
+    plural: 'campgrounds',
+  },
+  {
+    key: 'farmstay',
+    label: 'Farmstays',
+    includedPrimaryTypes: ['farmstay'],
+    bullet: '🚜',
+    singular: 'farmstay',
+    plural: 'farmstays',
+  },
+  {
+    key: 'visitor_center',
+    label: 'Visitor Centers',
+    includedPrimaryTypes: ['visitor_center'],
+    bullet: 'ℹ️',
+    singular: 'visitor center',
+    plural: 'visitor centers',
+  },
+  {
+    key: 'park_and_ride',
+    label: 'Park & Ride',
+    includedPrimaryTypes: ['park_and_ride'],
+    bullet: '🅿️',
+    singular: 'park & ride lot',
+    plural: 'park & ride lots',
+  },
+  {
+    key: 'farmers_market',
+    label: 'Farmers Markets',
+    includedPrimaryTypes: ['farmers_market'],
+    bullet: '🥕',
+    singular: 'farmers market',
+    plural: 'farmers markets',
+  },
+  {
+    key: 'thrift_store',
+    label: 'Thrift Stores',
+    includedPrimaryTypes: ['thrift_store'],
+    bullet: '👕',
+    singular: 'thrift store',
+    plural: 'thrift stores',
+  },
 ]
-const CATEGORY_BY_KEY = Object.fromEntries(CATEGORIES.map(c => [c.key, c]))
+const CATEGORY_BY_KEY = Object.fromEntries(CATEGORIES.map((c) => [c.key, c]))
 
 // Tints named in the design spec; every other category falls back to a
 // neutral tile rather than inventing colors the design doesn't specify.
@@ -175,7 +336,12 @@ function emojiIconUrl(emoji, selected) {
   const strokeWidth = selected ? 2.5 : 2
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="#fff" stroke="' +
-    ring + '" stroke-width="' + strokeWidth + '"/><text x="20" y="27" font-size="19" text-anchor="middle">' + emoji + '</text></svg>'
+    ring +
+    '" stroke-width="' +
+    strokeWidth +
+    '"/><text x="20" y="27" font-size="19" text-anchor="middle">' +
+    emoji +
+    '</text></svg>'
   const url = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg)
   emojiIconCache[cacheKey] = url
   return url
@@ -199,7 +365,10 @@ const MAP_STYLES = [
 ]
 
 function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch])
+  return String(str).replace(
+    /[&<>"']/g,
+    (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch],
+  )
 }
 
 function milesBetween(lat1, lon1, lat2, lon2) {
@@ -212,7 +381,6 @@ function milesBetween(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return R * c
 }
-
 </script>
 
 <script setup>
@@ -268,7 +436,7 @@ const typeSelectLabel = computed(() => {
     const only = CATEGORY_BY_KEY[selectedCategories.value[0]]
     return only.bullet + ' ' + only.label
   }
-  const bullets = selectedCategories.value.map(k => CATEGORY_BY_KEY[k].bullet).join(' ')
+  const bullets = selectedCategories.value.map((k) => CATEGORY_BY_KEY[k].bullet).join(' ')
   return bullets + ' ' + selectedCategories.value.length + ' types selected'
 })
 
@@ -288,7 +456,7 @@ function setStatus(text, isError) {
 }
 
 function clearMarkers() {
-  markers.forEach(m => m.setMap(null))
+  markers.forEach((m) => m.setMap(null))
   markers = []
   parks.value = []
   activePark.value = null
@@ -315,9 +483,15 @@ function selectPark(park) {
     'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(park.lat + ',' + park.lon)
   infoWindow.setContent(
     '<div class="park-chip">' +
-      '<div class="park-chip-name">' + escapeHtml(name) + '</div>' +
-      '<div class="park-chip-addr">' + escapeHtml(park.address) + '</div>' +
-      '<a class="park-chip-directions" href="' + directionsUrl + '" target="_blank" rel="noopener noreferrer">Get directions →</a>' +
+      '<div class="park-chip-name">' +
+      escapeHtml(name) +
+      '</div>' +
+      '<div class="park-chip-addr">' +
+      escapeHtml(park.address) +
+      '</div>' +
+      '<a class="park-chip-directions" href="' +
+      directionsUrl +
+      '" target="_blank" rel="noopener noreferrer">Get directions →</a>' +
       '</div>',
   )
   infoWindow.open({ map, anchor: park.marker })
@@ -342,11 +516,11 @@ function searchOneCategory(key, lat, lon, radiusM) {
   }
 
   return Place.searchNearby(request)
-    .then(result => {
+    .then((result) => {
       const places = result.places || []
       return places
-        .filter(p => p.location)
-        .map(p => {
+        .filter((p) => p.location)
+        .map((p) => {
           const plat = p.location.lat()
           const plon = p.location.lng()
           return {
@@ -359,7 +533,7 @@ function searchOneCategory(key, lat, lon, radiusM) {
           }
         })
     })
-    .catch(err => {
+    .catch((err) => {
       console.error('Places Nearby Search failed for ' + key + ':', err)
       return { failedCategory: key }
     })
@@ -368,13 +542,13 @@ function searchOneCategory(key, lat, lon, radiusM) {
 function summarizeCounts(places) {
   const counts = {}
   const order = []
-  places.forEach(p => {
+  places.forEach((p) => {
     if (!counts[p.categoryKey]) order.push(p.categoryKey)
     counts[p.categoryKey] = (counts[p.categoryKey] || 0) + 1
   })
   if (order.length <= 1) return ''
   return order
-    .map(key => {
+    .map((key) => {
       const category = CATEGORY_BY_KEY[key]
       const n = counts[key]
       return n + ' ' + (n === 1 ? category.singular : category.plural)
@@ -425,10 +599,10 @@ function searchPlaces(lat, lon, { fitBounds = true, radiusM = currentRadiusM() }
   const radiusLabel = radiusMi + (radiusMi === 1 ? ' mile' : ' miles')
 
   const categories = selectedCategories.value.slice()
-  Promise.all(categories.map(key => searchOneCategory(key, lat, lon, radiusM))).then(resultsPerCategory => {
+  Promise.all(categories.map((key) => searchOneCategory(key, lat, lon, radiusM))).then((resultsPerCategory) => {
     const failedCategories = []
     let allPlaces = []
-    resultsPerCategory.forEach(r => {
+    resultsPerCategory.forEach((r) => {
       if (r && r.failedCategory) failedCategories.push(r.failedCategory)
       else allPlaces = allPlaces.concat(r)
     })
@@ -437,15 +611,22 @@ function searchPlaces(lat, lon, { fitBounds = true, radiusM = currentRadiusM() }
 
     if (allPlaces.length === 0) {
       if (failedCategories.length === categories.length) {
-        setStatus('Couldn\'t load places from Google. Check that "Places API (New)" is enabled and billing is active for this key.', true)
+        setStatus(
+          'Couldn\'t load places from Google. Check that "Places API (New)" is enabled and billing is active for this key.',
+          true,
+        )
       } else {
-        setStatus('Nothing found within ' + radiusLabel + ' for the selected types. Try different types or search another area.')
+        setStatus(
+          'Nothing found within ' +
+            radiusLabel +
+            ' for the selected types. Try different types or search another area.',
+        )
       }
       loading.value = false
       return
     }
 
-    allPlaces.forEach(place => {
+    allPlaces.forEach((place) => {
       const category = CATEGORY_BY_KEY[place.categoryKey]
       const marker = new Marker({
         position: { lat: place.lat, lng: place.lon },
@@ -466,7 +647,12 @@ function searchPlaces(lat, lon, { fitBounds = true, radiusM = currentRadiusM() }
 
     const summary = summarizeCounts(allPlaces)
     let statusMsg =
-      allPlaces.length + (allPlaces.length === 1 ? ' place' : ' places') + ' found within ' + radiusLabel + (summary ? ' (' + summary + ')' : '') + '.'
+      allPlaces.length +
+      (allPlaces.length === 1 ? ' place' : ' places') +
+      ' found within ' +
+      radiusLabel +
+      (summary ? ' (' + summary + ')' : '') +
+      '.'
     if (failedCategories.length > 0) statusMsg += ' Some types failed to load — see console.'
     setStatus(statusMsg)
     loading.value = false
@@ -488,7 +674,7 @@ function moveMapTo(lat, lon, zoom) {
 function fitMapToResults(centerLat, centerLon, places) {
   const bounds = new google.maps.LatLngBounds()
   bounds.extend({ lat: centerLat, lng: centerLon })
-  places.forEach(p => bounds.extend({ lat: p.lat, lng: p.lon }))
+  places.forEach((p) => bounds.extend({ lat: p.lat, lng: p.lon }))
   suppressNextIdle = true
   map.fitBounds(bounds, 40)
   google.maps.event.addListenerOnce(map, 'idle', () => {
@@ -557,7 +743,12 @@ watch(radiusMiles, () => {
 })
 
 function onDocumentClick(e) {
-  if (typeMenuOpen.value && typeMenuEl.value && !typeMenuEl.value.contains(e.target) && !e.target.closest('.type-select-btn')) {
+  if (
+    typeMenuOpen.value &&
+    typeMenuEl.value &&
+    !typeMenuEl.value.contains(e.target) &&
+    !e.target.closest('.type-select-btn')
+  ) {
     typeMenuOpen.value = false
   }
 }
@@ -592,14 +783,18 @@ function useMyLocation() {
   }
   setStatus('Getting your location…')
   navigator.geolocation.getCurrentPosition(
-    pos => {
+    (pos) => {
       const lat = pos.coords.latitude
       const lon = pos.coords.longitude
       placeUserMarker(lat, lon)
       moveMapTo(lat, lon, 13)
       searchPlaces(lat, lon)
     },
-    () => setStatus("Couldn't get your location. Check your browser's location permission, or search a city instead.", true),
+    () =>
+      setStatus(
+        "Couldn't get your location. Check your browser's location permission, or search a city instead.",
+        true,
+      ),
     { enableHighAccuracy: true, timeout: 10000 },
   )
 }
@@ -614,7 +809,7 @@ function locateOnLoad() {
     return
   }
   navigator.geolocation.getCurrentPosition(
-    pos => {
+    (pos) => {
       const lat = pos.coords.latitude
       const lon = pos.coords.longitude
       placeUserMarker(lat, lon)
@@ -634,7 +829,7 @@ function runSearchQuery() {
   setStatus('Looking up "' + q + '"…')
   geocoder
     .geocode({ address: q })
-    .then(res => {
+    .then((res) => {
       const results = res.results
       if (!results || results.length === 0) {
         setStatus('No location found for "' + q + '". Try a different search.', true)
@@ -685,7 +880,10 @@ async function initMap() {
     locateOnLoad()
   } catch (err) {
     console.error('Google Maps failed to initialize:', err)
-    setStatus('Google Maps failed to load. Check that the Maps JavaScript API is enabled and billing is active for this key.', true)
+    setStatus(
+      'Google Maps failed to load. Check that the Maps JavaScript API is enabled and billing is active for this key.',
+      true,
+    )
   }
 }
 
@@ -905,7 +1103,13 @@ h1 {
   appearance: none;
   height: 5px;
   border-radius: 3px;
-  background: linear-gradient(to right, var(--ac) 0%, var(--ac) var(--fill-pct), var(--track) var(--fill-pct), var(--track) 100%);
+  background: linear-gradient(
+    to right,
+    var(--ac) 0%,
+    var(--ac) var(--fill-pct),
+    var(--track) var(--fill-pct),
+    var(--track) 100%
+  );
   cursor: pointer;
 }
 .radius-slider::-webkit-slider-thumb {

@@ -4,8 +4,9 @@
       <div class="head-text">
         <h2>Fuel economy over time</h2>
         <p class="desc">
-          MPG per fill-up with a 7-fill-up rolling average.<template v-if="showMaintenance"> Vertical markers are
-          maintenance events over $10k.</template>
+          MPG per fill-up with a 7-fill-up rolling average.<template v-if="showMaintenance">
+            Vertical markers are maintenance events over $10k.</template
+          >
         </p>
       </div>
     </div>
@@ -40,12 +41,7 @@
           />
         </svg>
 
-        <div
-          v-for="p in dots"
-          :key="p.x"
-          class="dot"
-          :style="{ left: p.xPct + '%', top: p.yPct + '%' }"
-        />
+        <div v-for="p in dots" :key="p.x" class="dot" :style="{ left: p.xPct + '%', top: p.yPct + '%' }" />
       </div>
       <div class="x-axis">
         <span v-for="y in xTickYears" :key="y.year" class="mono" :style="{ left: y.xPct + '%' }">{{ y.year }}</span>
@@ -114,7 +110,6 @@ const xTickYears = computed(() => {
   }
   return years
 })
-
 </script>
 
 <style scoped>

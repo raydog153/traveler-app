@@ -74,9 +74,7 @@ def seed(db: Session, force: bool = False) -> None:
     for row in maint_rows:
         city, state = split_city_state(row["place"])
         referenced_locations.setdefault(location_id(city, state), (city, state))
-    unmatched = {
-        loc_id: cs for loc_id, cs in referenced_locations.items() if loc_id not in fixture_location_ids
-    }
+    unmatched = {loc_id: cs for loc_id, cs in referenced_locations.items() if loc_id not in fixture_location_ids}
     print(
         f"lat/lng backfill via locations.json: {len(referenced_locations) - len(unmatched)}/"
         f"{len(referenced_locations)} locations matched, {len(unmatched)} unmatched"

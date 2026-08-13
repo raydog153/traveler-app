@@ -7,7 +7,7 @@
       </div>
       <div class="header-actions">
         <label class="maint-toggle">
-          <input type="checkbox" v-model="showMaintenance" />
+          <input v-model="showMaintenance" type="checkbox" />
           <span class="switch-track"><span class="switch-thumb" /></span>
           Show maintenance
         </label>

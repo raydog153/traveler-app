@@ -275,9 +275,7 @@ class TestFixtureRegression:
             make_fillup(i, r["date"], r["odometer_miles"], r["gallons"], r["price"], r["notes"])
             for i, r in enumerate(gas_raw, start=1)
         ]
-        records = [
-            make_record(i, r["date"], r["cost"], r["expense"]) for i, r in enumerate(maint_raw, start=1)
-        ]
+        records = [make_record(i, r["date"], r["cost"], r["expense"]) for i, r in enumerate(maint_raw, start=1)]
         return fillups, records, gas_raw, maint_raw
 
     def test_row_counts(self, fixtures):

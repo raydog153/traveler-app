@@ -98,7 +98,9 @@ const pendingDelete = ref(null)
 const deleting = ref(false)
 const deleteError = ref('')
 
-const searchPlaceholder = computed(() => (tab.value === 'gas' ? 'Search city, note or date…' : 'Search expense, place or vendor…'))
+const searchPlaceholder = computed(() =>
+  tab.value === 'gas' ? 'Search city, note or date…' : 'Search expense, place or vendor…',
+)
 
 function matchesSearch(row, fields) {
   const q = search.value.trim().toLowerCase()
@@ -228,9 +230,20 @@ const gasColumns = [
 const maintColumns = [
   { key: 'date', label: 'Date', width: '104px', mono: true },
   { key: 'expense', label: 'Expense', width: '1fr' },
-  { key: 'is_major', label: '', width: '64px', badge: (row) => (row.is_major ? { text: 'major', cls: 'major' } : null) },
+  {
+    key: 'is_major',
+    label: '',
+    width: '64px',
+    badge: (row) => (row.is_major ? { text: 'major', cls: 'major' } : null),
+  },
   { key: 'place', label: 'Place', width: '168px' },
-  { key: 'odometer_miles', label: 'Odometer', width: '96px', num: true, fmt: (v) => (v != null ? formatMiles(v) : '—') },
+  {
+    key: 'odometer_miles',
+    label: 'Odometer',
+    width: '96px',
+    num: true,
+    fmt: (v) => (v != null ? formatMiles(v) : '—'),
+  },
   { key: 'vendor', label: 'Vendor', width: '148px' },
   { key: 'cost', label: 'Cost', width: '104px', kind: 'costBar' },
 ]

@@ -24,7 +24,12 @@
           vector-effect="non-scaling-stroke"
         />
       </svg>
-      <div v-for="(m, i) in milesDots" :key="'md-' + i" class="miles-dot" :style="{ left: m.xPct + '%', top: m.yPct + '%' }">
+      <div
+        v-for="(m, i) in milesDots"
+        :key="'md-' + i"
+        class="miles-dot"
+        :style="{ left: m.xPct + '%', top: m.yPct + '%' }"
+      >
         <span class="miles-chip mono">{{ formatMilesShort(m.value) }}</span>
       </div>
 

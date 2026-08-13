@@ -7,9 +7,7 @@ from app.schemas import ChartPoint, DashboardSummary
 from app.services import analytics
 
 
-def build_dashboard_summary(
-    fillups: list[GasFillup], records: list[MaintenanceRecord]
-) -> DashboardSummary:
+def build_dashboard_summary(fillups: list[GasFillup], records: list[MaintenanceRecord]) -> DashboardSummary:
     computed = analytics.compute_fillups(fillups)
 
     price_series = [ChartPoint(x=c.fillup.date, y=c.cost_per_gal) for c in computed]

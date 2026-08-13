@@ -9,8 +9,9 @@ geocoded (null lat/lng), is simply omitted until a later edit fills it in.
 """
 
 from collections import defaultdict
+from collections.abc import Callable
 from math import atan2, cos, radians, sin, sqrt
-from typing import Callable, Literal, TypeVar
+from typing import Literal, TypeVar
 
 from app.models import GasFillup, Location, MaintenanceRecord
 from app.schemas import RouteData, RouteLocation, RouteYear, TripStats
@@ -160,8 +161,7 @@ def build_route_data(fillups: list[GasFillup], maintenance_records: list[Mainten
         by_year[p.date.year].append(p)
 
     years = [
-        RouteYear(year=str(year), locations=sorted(by_year[year], key=_route_sort_key))
-        for year in sorted(by_year)
+        RouteYear(year=str(year), locations=sorted(by_year[year], key=_route_sort_key)) for year in sorted(by_year)
     ]
 
     return RouteData(

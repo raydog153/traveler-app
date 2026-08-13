@@ -20,8 +20,7 @@ export const api = {
   deleteFillup: (id) => request(`/gas/fillups/${id}`, { method: 'DELETE' }),
 
   listMaintenance: () => request('/maintenance/records'),
-  createMaintenance: (payload) =>
-    request('/maintenance/records', { method: 'POST', body: JSON.stringify(payload) }),
+  createMaintenance: (payload) => request('/maintenance/records', { method: 'POST', body: JSON.stringify(payload) }),
   updateMaintenance: (id, payload) =>
     request(`/maintenance/records/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteMaintenance: (id) => request(`/maintenance/records/${id}`, { method: 'DELETE' }),

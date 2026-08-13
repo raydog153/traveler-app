@@ -29,11 +29,13 @@
     <div class="legend">
       <span class="legend-item">
         <span class="swatch gas" />
-        Gas — {{ Math.round(data.gas_gallons).toLocaleString() }} gal at {{ formatCurrency(data.gas_avg_cost_per_gal) }} avg
+        Gas — {{ Math.round(data.gas_gallons).toLocaleString() }} gal at
+        {{ formatCurrency(data.gas_avg_cost_per_gal) }} avg
       </span>
       <span v-if="showMaintenance" class="legend-item">
         <span class="swatch maint" />
-        Maintenance — {{ data.maintenance_visits }} visits, {{ formatCurrency(data.maintenance_cost_per_mile) }} per mile
+        Maintenance — {{ data.maintenance_visits }} visits, {{ formatCurrency(data.maintenance_cost_per_mile) }} per
+        mile
       </span>
     </div>
   </div>

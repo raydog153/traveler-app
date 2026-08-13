@@ -21,9 +21,7 @@ def _get_record_or_404(db: Session, record_id: int) -> MaintenanceRecord:
 def list_records(db: Session = Depends(get_db)) -> list[MaintenanceRecordOut]:
     records = (
         db.execute(
-            select(MaintenanceRecord)
-            .options(joinedload(MaintenanceRecord.location))
-            .order_by(MaintenanceRecord.date)
+            select(MaintenanceRecord).options(joinedload(MaintenanceRecord.location)).order_by(MaintenanceRecord.date)
         )
         .scalars()
         .all()

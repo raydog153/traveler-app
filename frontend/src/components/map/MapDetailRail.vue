@@ -61,15 +61,21 @@
       </div>
       <div class="stat-row">
         <span>Longest leg</span>
-        <span class="mono">{{ tripStats.longest_leg_miles != null ? Math.round(tripStats.longest_leg_miles) + ' mi' : '—' }}</span>
+        <span class="mono">{{
+          tripStats.longest_leg_miles != null ? Math.round(tripStats.longest_leg_miles) + ' mi' : '—'
+        }}</span>
       </div>
       <div class="stat-row">
         <span>Longest stay</span>
-        <span class="mono">{{ tripStats.longest_stay_days != null ? tripStats.longest_stay_days + ' days' : '—' }}</span>
+        <span class="mono">{{
+          tripStats.longest_stay_days != null ? tripStats.longest_stay_days + ' days' : '—'
+        }}</span>
       </div>
       <div class="stat-row">
         <span>Avg between fill-ups</span>
-        <span class="mono">{{ tripStats.avg_miles_between_fillups != null ? Math.round(tripStats.avg_miles_between_fillups) + ' mi' : '—' }}</span>
+        <span class="mono">{{
+          tripStats.avg_miles_between_fillups != null ? Math.round(tripStats.avg_miles_between_fillups) + ' mi' : '—'
+        }}</span>
       </div>
       <div class="stat-row">
         <span>Maintenance stops</span>

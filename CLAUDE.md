@@ -17,14 +17,21 @@ maintenance events, route map data) is now computed on read from two tables.
 cp .env.example .env            # edit NOMINATIM_CONTACT_EMAIL at minimum; set GOOGLE_MAPS_API_KEY for the Guide tab
 docker compose up --build       # frontend :5173, backend :8000 (docs at /docs)
 
-docker compose run --rm backend pytest                       # run backend tests
-docker compose run --rm backend pytest tests/test_analytics.py::TestIsClean  # single test
-docker compose run --rm backend python -m seed.seed          # load historical data (idempotent)
-docker compose run --rm backend python -m seed.seed --force  # wipe + reseed
+docker compose run --rm backend pytest                                  # run backend tests
+docker compose run --rm backend pytest tests/test_analytics.py::TestYearlySummary  # single test class
+docker compose run --rm backend python -m seed.seed                     # load historical data (idempotent)
+docker compose run --rm backend python -m seed.seed --force             # wipe + reseed
 
 # schema changes go through Alembic (backend/alembic/) -- after editing app/models.py:
 docker compose run --rm backend alembic revision --autogenerate -m "describe the change"
 docker compose run --rm backend alembic upgrade head          # applied automatically on container start too
+
+docker compose run --rm backend ruff check .    # backend lint (config: backend/pyproject.toml)
+docker compose run --rm backend ruff format .   # backend format
+
+cd frontend && npm run lint            # frontend lint (config: frontend/eslint.config.js)
+cd frontend && npm run format          # frontend format, writes in place (config: frontend/.prettierrc.json)
+cd frontend && npm run format:check    # frontend format, check only
 ```
 
 The database starts empty; seeding pulls from `backend/seed/fixtures/*.json`
@@ -34,8 +41,12 @@ historical source but a snapshot of the `locations` table itself (including
 manual state corrections) -- if you edit that table directly, re-export it
 back to the fixture or a reseed will lose the edit.
 
-There is no lint/format tooling configured in this repo (no ruff/eslint
-config) — don't assume one and don't add one unless asked.
+`backend/alembic/versions/` is excluded from ruff (`extend-exclude` in
+`pyproject.toml`) -- those files are historical migration snapshots, not
+hand-maintained code, and reformatting them on a whim isn't worth the diff
+noise. The verbatim Google Maps JS bootstrap snippet in `GuideView.vue` is
+wrapped in `eslint-disable`/`prettier-ignore` for the same reason: it's
+copied as-is from Google's docs so it stays diffable against the source.
 
 The frontend has no test suite; `docker compose run --rm backend pytest` is
 the only automated test command.

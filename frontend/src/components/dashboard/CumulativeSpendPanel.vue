@@ -2,7 +2,11 @@
   <div class="panel small-chart">
     <h2>{{ showMaintenance ? 'Total cost of ownership — gas vs. maintenance' : 'Cumulative gas spend' }}</h2>
     <p class="desc">
-      {{ showMaintenance ? 'Maintenance overtook gas early on and never looked back.' : 'Running total spent on gas over time.' }}
+      {{
+        showMaintenance
+          ? 'Maintenance overtook gas early on and never looked back.'
+          : 'Running total spent on gas over time.'
+      }}
     </p>
 
     <div class="plot-wrap">
@@ -56,10 +60,18 @@ const yTicks = computed(() => {
 })
 
 const allDates = computed(() => [...props.gas, ...(props.showMaintenance ? props.maintenance : [])].map((p) => p.x))
-const minDate = computed(() => (allDates.value.length ? allDates.value.reduce((a, b) => (a < b ? a : b)) : new Date().toISOString()))
-const maxDate = computed(() => (allDates.value.length ? allDates.value.reduce((a, b) => (a > b ? a : b)) : new Date().toISOString()))
+const minDate = computed(() =>
+  allDates.value.length ? allDates.value.reduce((a, b) => (a < b ? a : b)) : new Date().toISOString(),
+)
+const maxDate = computed(() =>
+  allDates.value.length ? allDates.value.reduce((a, b) => (a > b ? a : b)) : new Date().toISOString(),
+)
 const yMax = computed(() => {
-  const m = Math.max(0, ...props.gas.map((p) => p.y), ...(props.showMaintenance ? props.maintenance.map((p) => p.y) : []))
+  const m = Math.max(
+    0,
+    ...props.gas.map((p) => p.y),
+    ...(props.showMaintenance ? props.maintenance.map((p) => p.y) : []),
+  )
   return m > 0 ? m * 1.08 : 100
 })
 

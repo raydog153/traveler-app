@@ -6,7 +6,9 @@ from app.models import GasFillup, Location, MaintenanceRecord
 from app.services import mapping
 
 
-def make_location(id: str, city: str, state: str = "MS", lat: float | None = 30.0, long: float | None = -89.0) -> Location:
+def make_location(
+    id: str, city: str, state: str = "MS", lat: float | None = 30.0, long: float | None = -89.0
+) -> Location:
     return Location(id=id, city=city, state=state, lat=lat, long=long)
 
 

@@ -1,0 +1,15 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "B008",  # FastAPI's Depends(...) default-argument pattern is idiomatic, not a bug
+    "B905",  # zip() is used here to pair consecutive elements (a, a[1:]), so lengths intentionally differ
+    "UP047", # PEP 695 generic syntax -- not worth the churn on a handful of TypeVar-based functions
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]

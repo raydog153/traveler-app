@@ -39,9 +39,7 @@ class GasFillup(Base):
     price: Mapped[float] = mapped_column(Numeric(8, 2), nullable=False)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
     location_id: Mapped[str] = mapped_column(Text, ForeignKey("locations.id"), nullable=False)
-    created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     location: Mapped["Location"] = relationship()
 
@@ -57,9 +55,7 @@ class Location(Base):
     state: Mapped[str] = mapped_column(Text, nullable=False, default="")
     lat: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     long: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
-    created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
 
 class MaintenanceRecord(Base):
@@ -75,8 +71,6 @@ class MaintenanceRecord(Base):
     odometer_miles: Mapped[float | None] = mapped_column(Numeric(10, 1), nullable=True)
     vendor: Mapped[str] = mapped_column(Text, nullable=False, default="")
     cost: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
-    created_at: Mapped[dt.datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     location: Mapped["Location"] = relationship()
