@@ -17,8 +17,9 @@ maintenance events, route map data) is now computed on read from two tables.
 cp .env.example .env            # edit NOMINATIM_CONTACT_EMAIL at minimum; set GOOGLE_MAPS_API_KEY for the Guide tab
 docker compose up --build       # frontend :5173, backend :8000 (docs at /docs)
 
-docker compose run --rm backend pytest                                  # run backend tests
+docker compose run --rm backend pytest                                  # run backend tests (prints coverage summary; config in backend/pyproject.toml)
 docker compose run --rm backend pytest tests/test_analytics.py::TestYearlySummary  # single test class
+docker compose run --rm backend pytest --cov-report=html                # also write backend/htmlcov/ for a browsable report
 docker compose run --rm backend python -m seed.seed                     # load historical data (idempotent)
 docker compose run --rm backend python -m seed.seed --force             # wipe + reseed
 
@@ -87,10 +88,13 @@ at request time in `app/services/`:
 - **`dashboard_summary.py`** — assembles the full `/api/dashboard/summary`
   payload from `analytics.py` + `narrative.py`. Deliberately sits above both
   so neither has to import the other.
-- **`mapping.py`** — builds route/map data from `gas_fillups`: one point per
-  unique location (its earliest visit), grouped by year. Locations not yet
-  geocoded (`latitude`/`longitude` null) are simply omitted until a later
-  fill-up there gets geocoded.
+- **`mapping.py`** — builds route/map data by merging `gas_fillups` and
+  `maintenance_records` into one chronological list of stops: every record
+  with a geocoded location becomes its own point, grouped by year -- repeat
+  visits to the same location each plot separately (actual travel history,
+  not a deduped summary). A record with no location, or one not yet
+  geocoded (`latitude`/`longitude` null), is simply omitted until a later
+  edit fills it in.
 - **`geocoding.py`** — on fill-up creation, `get_or_create_location` looks up
   the `Location` row by its natural key first (no per-fill-up scan needed,
   since `locations` is already the deduped store) before calling OpenStreetMap
