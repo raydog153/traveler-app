@@ -73,6 +73,27 @@ const markersByStopId = {}
 const visible = reactive({})
 const selectedStop = shallowRef(null)
 
+const VISIBLE_YEARS_STORAGE_KEY = 'travelerApp.mapVisibleYears'
+
+function loadVisibilityPrefs() {
+  try {
+    const raw = localStorage.getItem(VISIBLE_YEARS_STORAGE_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    // localStorage unavailable (private browsing, quota, etc.) -- fall back
+    // to the default (everything visible) rather than blocking the map.
+    return {}
+  }
+}
+
+function saveVisibilityPrefs() {
+  try {
+    localStorage.setItem(VISIBLE_YEARS_STORAGE_KEY, JSON.stringify(visible))
+  } catch {
+    // Same as above -- persistence is best-effort, never blocks toggling.
+  }
+}
+
 function colorFor(year) {
   const yearList = store.routeData?.years.map((y) => y.year) || []
   return yearColor(yearList.indexOf(year))
@@ -171,6 +192,8 @@ function catmullRomPoint(p0, p1, p2, p3, t) {
 function buildMap() {
   if (!store.routeData || map || !mapEl.value) return
 
+  const savedVisibility = loadVisibilityPrefs()
+
   map = L.map(mapEl.value, { zoomControl: false }).setView([39, -98], 4)
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
@@ -179,11 +202,16 @@ function buildMap() {
   }).addTo(map)
 
   const allBounds = []
+  const visibleBounds = []
   store.routeData.years.forEach((y) => {
     const color = colorFor(y.year)
     const layerGroup = L.layerGroup()
     const latlngs = y.locations.map((loc) => [loc.latitude, loc.longitude])
     L.polyline(smoothLatLngs(latlngs), { color, weight: 2, opacity: 0.45 }).addTo(layerGroup)
+
+    // A year with no saved preference defaults to visible (first-ever visit,
+    // or a year added to the data since the prefs were last saved).
+    const isVisible = savedVisibility[y.year] ?? true
 
     y.locations.forEach((loc) => {
       const icon = iconFor(loc.type, color)
@@ -192,20 +220,26 @@ function buildMap() {
       marker.addTo(layerGroup)
       markersByStopId[loc.id] = marker
       allBounds.push([loc.latitude, loc.longitude])
+      if (isVisible) visibleBounds.push([loc.latitude, loc.longitude])
     })
 
-    layerGroup.addTo(map)
     yearLayers[y.year] = layerGroup
-    visible[y.year] = true
+    visible[y.year] = isVisible
+    if (isVisible) layerGroup.addTo(map)
   })
 
-  if (allBounds.length) map.fitBounds(allBounds, { padding: [30, 30] })
+  // Fit to whatever's actually shown -- if only some years are visible, zoom
+  // to their extent rather than the full multi-year bounds (falls back to
+  // every point if every year happens to be hidden).
+  const boundsToFit = visibleBounds.length ? visibleBounds : allBounds
+  if (boundsToFit.length) map.fitBounds(boundsToFit, { padding: [30, 30] })
 }
 
 function toggleYear(year) {
   if (!map || !yearLayers[year]) return
   if (visible[year]) yearLayers[year].addTo(map)
   else map.removeLayer(yearLayers[year])
+  saveVisibilityPrefs()
 }
 
 function showAll() {
