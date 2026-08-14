@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.models import TravelEntryType
+
 
 class GasFillupIn(BaseModel):
     date: dt.date
@@ -165,13 +167,14 @@ class RouteLocation(BaseModel):
     latitude: float
     longitude: float
     date: dt.date
-    type: Literal["gas", "maintenance"]
+    type: Literal["gas", "maintenance", "grocery_pickup"]
     detail: str | None = None
     amount: float | None = None
     gallons: float | None = None
     mpg: float | None = None
     odometer_miles: float | None = None
     since_service_miles: float | None = None
+    is_estimated_location: bool = False
 
 
 class RouteYear(BaseModel):
@@ -183,3 +186,17 @@ class RouteData(BaseModel):
     total_stops: int
     years: list[RouteYear]
     trip_stats: TripStats
+
+
+class TravelDataOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    date: dt.date
+    time: dt.time | None
+    latitude: float | None
+    longitude: float | None
+    address: str
+    entry_type: TravelEntryType
+    details: dict | None
+    is_estimated_location: bool

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import dashboard, gas, maintenance
+from app.routers import dashboard, gas, maintenance, travel_data
 from app.routers import map as map_router
 
 app = FastAPI(title="Traveler App API")
@@ -10,6 +10,7 @@ app.include_router(gas.router)
 app.include_router(maintenance.router)
 app.include_router(dashboard.router)
 app.include_router(map_router.router)
+app.include_router(travel_data.router)
 
 if settings.cors_origin_list:
     app.add_middleware(

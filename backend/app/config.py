@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     nominatim_contact_email: str = ""
     cors_origins: str = ""
     google_ai_api_key: str = ""
+    google_maps_api_key: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:

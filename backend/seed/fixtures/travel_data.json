@@ -1,0 +1,102 @@
+[
+  {
+    "date": "2026-08-13",
+    "time": "14:00",
+    "latitude": 42.458358,
+    "longitude": -92.330483,
+    "address": "Walmart Waterloo Store #1496, 1334 Flammang Dr, Waterloo, IA 50702",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Waterloo", "store_number": "1496" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-08-07",
+    "time": "18:00",
+    "latitude": 42.013,
+    "longitude": -87.71949,
+    "address": "Walmart Skokie Store #1998, 3626 Touhy Ave, Skokie, IL 60076",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Skokie", "store_number": "1998" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-08-01",
+    "time": "11:00",
+    "latitude": 45.022761,
+    "longitude": -84.689889,
+    "address": "Walmart Gaylord Store #1542, 950 Edelweiss Parkway, Gaylord, MI 49735",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Gaylord", "store_number": "1542" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-07-29",
+    "time": "13:00",
+    "latitude": 44.296448,
+    "longitude": -84.679726,
+    "address": "Walmart Houghton Lake Store #2014, 2129 W Houghton Lake Dr, Houghton Lake, MI 48629",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Houghton Lake", "store_number": "2014" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-07-22",
+    "time": "11:00",
+    "latitude": 41.374682,
+    "longitude": -83.119317,
+    "address": "Walmart Fremont Store #1429, 2052 N State Route 53, Fremont, OH 43420",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Fremont", "store_number": "1429" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-07-09",
+    "time": "14:00",
+    "latitude": 43.021599,
+    "longitude": -74.99795,
+    "address": "Walmart Herkimer Store #2285, 103 N Caroline St, Herkimer, NY 13350",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Herkimer", "store_number": "2285" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-06-15",
+    "time": "13:00",
+    "latitude": 42.491756,
+    "longitude": -71.729614,
+    "address": "Walmart Leominster Store #2964, 11 Jungle Rd, Leominster, MA 01453",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Leominster", "store_number": "2964" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-04-23",
+    "time": "10:00",
+    "latitude": 40.167194,
+    "longitude": -76.152825,
+    "address": "Walmart Ephrata Store #2340, 890 E Main St, Ephrata, PA 17522",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Ephrata", "store_number": "2340" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-04-21",
+    "time": "18:00",
+    "latitude": 39.658145,
+    "longitude": -77.749112,
+    "address": "Walmart Hagerstown Store #1674, 17850 Garland Groh Blvd, Hagerstown, MD 21740",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Hagerstown", "store_number": "1674" },
+    "is_estimated_location": false
+  },
+  {
+    "date": "2026-04-17",
+    "time": "14:00",
+    "latitude": 38.371748,
+    "longitude": -77.767995,
+    "address": "Walmart Locust Grove Store #5731, 2533 Germanna Hwy, Locust Grove, VA 22508",
+    "entry_type": "grocery_pickup",
+    "details": { "store_name": "Walmart Locust Grove", "store_number": "5731" },
+    "is_estimated_location": false
+  }
+]

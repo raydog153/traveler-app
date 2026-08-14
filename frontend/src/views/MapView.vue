@@ -34,6 +34,7 @@
           <div class="type-legend">
             <span class="type-item"><span class="legend-dot gas" />Gas fill-up</span>
             <span class="type-item"><span class="legend-diamond" />Maintenance</span>
+            <span class="type-item"><span class="legend-square" />Grocery pickup</span>
           </div>
         </div>
       </div>
@@ -129,6 +130,19 @@ function maintIcon(color) {
     iconAnchor: [4.5, 4.5],
   })
 }
+function groceryIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<span style="display:block;width:8px;height:8px;background:${color};box-shadow:0 0 0 1.5px #fff, 0 1px 4px oklch(0.3 0.03 255 / .22);"></span>`,
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+  })
+}
+function iconFor(type, color) {
+  if (type === 'gas') return gasIcon(color)
+  if (type === 'grocery_pickup') return groceryIcon(color)
+  return maintIcon(color)
+}
 
 function smoothLatLngs(points, numOfSegments = 6) {
   if (points.length < 3) return points
@@ -172,7 +186,7 @@ function buildMap() {
     L.polyline(smoothLatLngs(latlngs), { color, weight: 2, opacity: 0.45 }).addTo(layerGroup)
 
     y.locations.forEach((loc) => {
-      const icon = loc.type === 'gas' ? gasIcon(color) : maintIcon(color)
+      const icon = iconFor(loc.type, color)
       const marker = L.marker([loc.latitude, loc.longitude], { icon })
       marker.on('click', () => selectStop(loc))
       marker.addTo(layerGroup)
@@ -346,6 +360,11 @@ onBeforeUnmount(() => {
   background: #fff;
   border: 2px solid var(--rust);
   transform: rotate(45deg);
+}
+.legend-square {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
 }
 .zoom-control {
   position: absolute;

@@ -1,5 +1,5 @@
-"""Builds the route/map payload by merging gas_fillups and
-maintenance_records into a single chronological list of stops: every record
+"""Builds the route/map payload by merging gas_fillups, maintenance_records,
+and travel_data into a single chronological list of stops: every record
 with a geocoded location becomes its own point -- repeat visits to the same
 location plot multiple times, since that's the actual travel history, not
 just the first arrival. Marker color (set on the frontend) distinguishes
@@ -13,7 +13,7 @@ from collections.abc import Callable
 from math import atan2, cos, radians, sin, sqrt
 from typing import Literal, TypeVar
 
-from app.models import GasFillup, Location, MaintenanceRecord
+from app.models import GasFillup, Location, MaintenanceRecord, TravelData, TravelEntryType
 from app.schemas import RouteData, RouteLocation, RouteYear, TripStats
 from app.services import analytics
 from app.services.analytics import ComputedFillup, display_city
@@ -71,6 +71,41 @@ def _points_from(
                 mpg=mpg_of(r),
                 odometer_miles=odometer_of(r),
                 since_service_miles=since_service_of(r),
+            )
+        )
+    return points
+
+
+_MAP_SUPPORTED_TRAVEL_TYPES = {TravelEntryType.GROCERY_PICKUP}
+
+
+def _points_from_travel_data(rows: list[TravelData]) -> list[RouteLocation]:
+    """TravelData rows carry their own lat/long directly (no Location join,
+    see TravelData's docstring), so this doesn't fit _points_from's generic
+    location_of-callback shape -- kept as its own small function instead.
+
+    entry_type values other than grocery_pickup (gas_fillup, overnight_stay,
+    maintenance_event) aren't renderable on the map yet -- RouteLocation.type
+    doesn't cover them and the frontend has no icon/label for them -- so
+    those rows are skipped for now, same as an ungeocoded row below, rather
+    than raising or rendering something misleading."""
+    points = []
+    for r in rows:
+        if r.latitude is None or r.longitude is None:
+            continue
+        if r.entry_type not in _MAP_SUPPORTED_TRAVEL_TYPES:
+            continue
+        name = (r.details or {}).get("store_name") or r.address
+        points.append(
+            RouteLocation(
+                id=f"{r.entry_type.value}-{r.id}",
+                name=name,
+                latitude=float(r.latitude),
+                longitude=float(r.longitude),
+                date=r.date,
+                type=r.entry_type.value,
+                detail=r.address,
+                is_estimated_location=r.is_estimated_location,
             )
         )
     return points
@@ -146,12 +181,28 @@ def _fillup_location(f: GasFillup) -> Location | None:
     return f.location
 
 
-def build_route_data(fillups: list[GasFillup], maintenance_records: list[MaintenanceRecord]) -> RouteData:
+def _group_by_year(points: list[RouteLocation]) -> list[RouteYear]:
+    by_year: dict[int, list[RouteLocation]] = defaultdict(list)
+    for p in points:
+        by_year[p.date.year].append(p)
+    return [RouteYear(year=str(year), locations=sorted(by_year[year], key=_route_sort_key)) for year in sorted(by_year)]
+
+
+def build_route_data(
+    fillups: list[GasFillup],
+    maintenance_records: list[MaintenanceRecord],
+    travel_data_rows: list[TravelData] = (),
+) -> RouteData:
     computed = analytics.compute_fillups(fillups)
     computed_by_id = {c.fillup.id: c for c in computed}
     since_service = _since_service_miles(maintenance_records)
 
-    points = _points_from(
+    # trip_stats' longest_leg/longest_stay are meant to characterize the
+    # actual road trip between real destinations -- computed from gas_maint_points
+    # only, before travel_data (e.g. frequent local grocery runs) is folded
+    # in below, so those don't chop a single long stay/leg into several
+    # short ones.
+    gas_maint_points = _points_from(
         fillups,
         _fillup_location,
         "gas",
@@ -161,7 +212,7 @@ def build_route_data(fillups: list[GasFillup], maintenance_records: list[Mainten
         mpg_of=lambda f: computed_by_id[f.id].mpg,
         odometer_of=lambda f: float(f.odometer_miles),
     )
-    points += _points_from(
+    gas_maint_points += _points_from(
         maintenance_records,
         lambda m: m.location,
         "maintenance",
@@ -170,17 +221,10 @@ def build_route_data(fillups: list[GasFillup], maintenance_records: list[Mainten
         odometer_of=lambda m: float(m.odometer_miles) if m.odometer_miles is not None else None,
         since_service_of=lambda m: since_service.get(m.id),
     )
-
-    by_year: dict[int, list[RouteLocation]] = defaultdict(list)
-    for p in points:
-        by_year[p.date.year].append(p)
-
-    years = [
-        RouteYear(year=str(year), locations=sorted(by_year[year], key=_route_sort_key)) for year in sorted(by_year)
-    ]
+    points = gas_maint_points + _points_from_travel_data(travel_data_rows)
 
     return RouteData(
         total_stops=len(points),
-        years=years,
-        trip_stats=trip_stats(computed, fillups, maintenance_records, years),
+        years=_group_by_year(points),
+        trip_stats=trip_stats(computed, fillups, maintenance_records, _group_by_year(gas_maint_points)),
     )

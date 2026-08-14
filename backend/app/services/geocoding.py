@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"
+GOOGLE_PLACES_SEARCH_TEXT_URL = "https://places.googleapis.com/v1/places:searchText"
 MIN_REQUEST_INTERVAL_SECONDS = 1.0
 REQUEST_TIMEOUT_SECONDS = 10.0
 
@@ -114,6 +115,55 @@ def reverse_geocode_via_nominatim(lat: float, lon: float) -> tuple[str, str] | N
         return None
 
     return city, address.get("state", "")
+
+
+def geocode_address_via_google_places(address: str) -> tuple[float, float] | None:
+    """Best-effort address -> (lat, lng) for travel_data rows, via the
+    Places API (New) Text Search endpoint -- unlike the city/state-only
+    Nominatim lookup above, this handles addresses that name a specific
+    place ("Walmart Waterloo Store #1496, 1334 Flammang Dr, ..."), which a
+    plain address geocoder would ignore. Same never-raise contract as
+    `_geocode_via_nominatim`: any failure logs a warning and returns None,
+    it's on the caller to flag the row (e.g. is_estimated_location) rather
+    than block. No rate limiting -- Places API is a paid, non-courtesy
+    service, unlike Nominatim.
+
+    Not currently called by any endpoint -- travel_data.json's seed fixture
+    stores pre-resolved lat/long rather than geocoding at load time (see
+    seed/seed.py), so this was used once to populate that fixture. Kept
+    here for the next thing that needs it: geocoding a newly-added
+    travel_data row (e.g. a future create endpoint/form) or regenerating
+    the fixture after editing it.
+    """
+    if not settings.google_maps_api_key:
+        logger.warning("geocoding via Google Places skipped for address=%r: no API key configured", address)
+        return None
+
+    headers = {
+        "X-Goog-Api-Key": settings.google_maps_api_key,
+        "X-Goog-FieldMask": "places.location",
+        "Content-Type": "application/json",
+    }
+
+    try:
+        resp = httpx.post(
+            GOOGLE_PLACES_SEARCH_TEXT_URL,
+            json={"textQuery": address},
+            headers=headers,
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        resp.raise_for_status()
+        payload = resp.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        logger.warning("Google Places geocoding request failed for address=%r: %s", address, exc)
+        return None
+
+    try:
+        location = payload["places"][0]["location"]
+        return float(location["latitude"]), float(location["longitude"])
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
+        logger.warning("Google Places geocoding returned an unexpected payload for address=%r: %s", address, exc)
+        return None
 
 
 def get_or_create_location(db: Session, city: str, state: str) -> Location:

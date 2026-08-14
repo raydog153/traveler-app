@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
-from app.models import GasFillup, MaintenanceRecord
+from app.models import GasFillup, MaintenanceRecord, TravelData
 from app.schemas import RouteData
 from app.services import mapping
 
@@ -16,4 +16,5 @@ def get_routes(db: Session = Depends(get_db)) -> RouteData:
     maintenance_records = (
         db.execute(select(MaintenanceRecord).options(joinedload(MaintenanceRecord.location))).scalars().all()
     )
-    return mapping.build_route_data(list(fillups), list(maintenance_records))
+    travel_data_rows = db.execute(select(TravelData)).scalars().all()
+    return mapping.build_route_data(list(fillups), list(maintenance_records), list(travel_data_rows))

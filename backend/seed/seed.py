@@ -1,5 +1,14 @@
 """Idempotent loader: reads the committed fixtures (gas_raw.json,
-maint_raw.json, locations.json) and inserts them into Postgres.
+maint_raw.json, locations.json, travel_data.json) and inserts them into
+Postgres.
+
+Like locations.json, travel_data.json is a pre-resolved snapshot, not a raw
+source geocoded at load time: latitude/longitude/is_estimated_location are
+baked into the fixture (from a one-time Google Places API lookup per
+address, see app.services.geocoding) rather than re-fetched on every seed
+run. A new row added to travel_data.json needs its lat/long filled in the
+same way before committing it -- there's no seed-time fallback to geocode
+one that's missing.
 
 locations.json is a snapshot of the `locations` table (city, state, lat,
 long), not a raw historical source like the other two fixtures. The
@@ -21,7 +30,7 @@ city.
 
 Usage:
     python -m seed.seed             # skips if gas_fillups is already populated
-    python -m seed.seed --force     # truncates both tables first, then reloads
+    python -m seed.seed --force     # truncates all seeded tables first, then reloads
 
 Assumes the schema already exists (`alembic upgrade head` -- run automatically
 on backend container startup, see Dockerfile).
@@ -36,7 +45,15 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
-from app.models import GasFillup, Location, MaintenanceRecord, location_id, split_city_state
+from app.models import (
+    GasFillup,
+    Location,
+    MaintenanceRecord,
+    TravelData,
+    TravelEntryType,
+    location_id,
+    split_city_state,
+)
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -55,11 +72,13 @@ def seed(db: Session, force: bool = False) -> None:
         db.execute(delete(GasFillup))
         db.execute(delete(MaintenanceRecord))
         db.execute(delete(Location))
+        db.execute(delete(TravelData))
         db.commit()
 
     gas_rows = _load_fixture("gas_raw.json")
     maint_rows = _load_fixture("maint_raw.json")
     location_rows = _load_fixture("locations.json")
+    travel_data_rows = _load_fixture("travel_data.json")
 
     fixture_location_ids = {location_id(row["city"], row["state"]) for row in location_rows}
 
@@ -120,10 +139,24 @@ def seed(db: Session, force: bool = False) -> None:
             )
         )
 
+    for row in travel_data_rows:
+        db.add(
+            TravelData(
+                date=datetime.date.fromisoformat(row["date"]),
+                time=datetime.time.fromisoformat(row["time"]) if row.get("time") else None,
+                latitude=row.get("latitude"),
+                longitude=row.get("longitude"),
+                address=row["address"],
+                entry_type=TravelEntryType(row["entry_type"]),
+                details=row.get("details"),
+                is_estimated_location=row.get("is_estimated_location", False),
+            )
+        )
+
     db.commit()
     print(
         f"seeded {len(gas_rows)} gas fill-ups, {len(maint_rows)} maintenance records, "
-        f"and {len(location_rows) + len(unmatched)} locations"
+        f"{len(location_rows) + len(unmatched)} locations, and {len(travel_data_rows)} travel_data rows"
     )
 
 

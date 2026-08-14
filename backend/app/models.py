@@ -1,7 +1,22 @@
 import datetime as dt
+import enum
 import re
 
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, Text, UniqueConstraint, func
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    CheckConstraint,
+    Date,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Index,
+    Numeric,
+    Text,
+    Time,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -85,3 +100,43 @@ class MaintenanceRecord(Base):
     created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     location: Mapped["Location"] = relationship()
+
+
+class TravelEntryType(enum.StrEnum):
+    """gas_fillup and maintenance_event are defined for a future migration of
+    GasFillup/MaintenanceRecord into this table -- not populated yet."""
+
+    GAS_FILLUP = "gas_fillup"
+    GROCERY_PICKUP = "grocery_pickup"
+    OVERNIGHT_STAY = "overnight_stay"
+    MAINTENANCE_EVENT = "maintenance_event"
+
+
+class TravelData(Base):
+    """A general-purpose, dated + located event log -- unlike GasFillup and
+    MaintenanceRecord, not FK'd to the deduped `locations` table: each row
+    is a one-off visit (e.g. a single grocery pickup), not a place that's
+    revisited and worth deduping, so address and lat/long are stored
+    directly on the row."""
+
+    __tablename__ = "travel_data"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[dt.date] = mapped_column(Date, nullable=False)
+    time: Mapped[dt.time | None] = mapped_column(Time, nullable=True)
+    latitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    address: Mapped[str] = mapped_column(Text, nullable=False)
+    entry_type: Mapped[TravelEntryType] = mapped_column(
+        Enum(TravelEntryType, name="travel_entry_type", values_callable=lambda enum_cls: [e.value for e in enum_cls]),
+        nullable=False,
+    )
+    # Misc per-entry-type data, e.g. {"store_name": ..., "store_number": ...}
+    # for a grocery_pickup -- deliberately unstructured since each entry_type
+    # has its own shape.
+    details: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    # True when geocoding the address failed (or the location was hand-
+    # corrected afterward) -- latitude/longitude are a best guess, not
+    # confirmed against the address.
+    is_estimated_location: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)

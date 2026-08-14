@@ -3,7 +3,7 @@
     <div v-if="stop" class="detail-block">
       <div class="detail-top">
         <span class="detail-date mono">{{ stop.date }}</span>
-        <span class="kind-badge" :class="stop.type">{{ stop.type === 'gas' ? 'Gas fill-up' : 'Maintenance' }}</span>
+        <span class="kind-badge" :class="stop.type">{{ kindLabel(stop.type) }}</span>
       </div>
       <div class="detail-city">{{ stop.name }}</div>
 
@@ -24,6 +24,12 @@
           <div class="fact-tile">
             <div class="fact-label">Economy</div>
             <div class="fact-value">{{ stop.mpg != null ? stop.mpg.toFixed(1) + ' mpg' : '—' }}</div>
+          </div>
+        </template>
+        <template v-else-if="stop.type === 'grocery_pickup'">
+          <div class="fact-tile fact-tile--wide">
+            <div class="fact-label">Address{{ stop.is_estimated_location ? ' (approximate)' : '' }}</div>
+            <div class="fact-value truncate">{{ stop.detail || '—' }}</div>
           </div>
         </template>
         <template v-else>
@@ -114,6 +120,11 @@ defineProps({
   visibleStopCount: { type: Number, required: true },
 })
 defineEmits(['select'])
+
+const KIND_LABELS = { gas: 'Gas fill-up', grocery_pickup: 'Grocery pickup' }
+function kindLabel(type) {
+  return KIND_LABELS[type] || 'Maintenance'
+}
 </script>
 
 <style scoped>
@@ -160,6 +171,10 @@ defineEmits(['select'])
   color: var(--rust);
   background: var(--rust-tint);
 }
+.kind-badge.grocery_pickup {
+  color: var(--green-text);
+  background: var(--green-tint);
+}
 .detail-city {
   font-size: 17px;
   font-weight: 600;
@@ -174,6 +189,9 @@ defineEmits(['select'])
   background: var(--fill-subtle);
   border-radius: 10px;
   padding: 11px 12px;
+}
+.fact-tile--wide {
+  grid-column: 1 / -1;
 }
 .fact-label {
   font-size: 11px;
@@ -260,6 +278,10 @@ defineEmits(['select'])
   background: var(--rust);
   border-radius: 2px;
   transform: rotate(45deg);
+}
+.kind-dot.grocery_pickup {
+  background: var(--green);
+  border-radius: 2px;
 }
 .stop-date {
   width: 40px;
