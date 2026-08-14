@@ -33,8 +33,13 @@
         <span class="miles-chip mono">{{ formatMilesShort(m.value) }}</span>
       </div>
 
-      <div class="bars">
-        <div v-for="y in yearly" :key="y.year" class="bar-col">
+      <div class="bars" ref="barsEl">
+        <div
+          v-for="(y, i) in yearly"
+          :key="y.year"
+          class="bar-col"
+          :ref="(el) => setBarColEl(el, i)"
+        >
           <div class="total-label">{{ formatShort(totalFor(y)) }}</div>
           <div class="bar-stack" :style="{ height: barHeightPx(y) + 'px' }">
             <div v-if="showMaintenance" class="seg maint" :style="{ flexGrow: y.maintenance_cost || 0.0001 }" />
@@ -48,7 +53,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   yearly: { type: Array, required: true },
@@ -78,10 +83,45 @@ function formatMilesShort(v) {
 
 const n = computed(() => props.yearly.length)
 
+// The bar columns are laid out by flexbox (equal flex:1 columns, a fixed px
+// gap, and a max-width cap on the bar itself), so their on-screen centers
+// aren't evenly spaced from 2% to 98% -- they have to be measured from the
+// actual DOM rather than derived from index/count alone, or the miles line
+// drifts out of alignment with the bars it's meant to track.
+const barsEl = ref(null)
+let barColEls = []
+function setBarColEl(el, i) {
+  barColEls[i] = el
+}
+
+const colCentersPct = ref([])
+
+function measureColCenters() {
+  if (!barsEl.value) return
+  const containerRect = barsEl.value.getBoundingClientRect()
+  if (containerRect.width === 0) return
+  colCentersPct.value = barColEls.filter(Boolean).map((el) => {
+    const r = el.getBoundingClientRect()
+    return ((r.left + r.width / 2 - containerRect.left) / containerRect.width) * 100
+  })
+}
+
+let resizeObserver
+onMounted(() => {
+  resizeObserver = new ResizeObserver(() => measureColCenters())
+  if (barsEl.value) resizeObserver.observe(barsEl.value)
+  nextTick(measureColCenters)
+})
+onBeforeUnmount(() => resizeObserver?.disconnect())
+watch(
+  () => props.yearly,
+  () => nextTick(measureColCenters),
+)
+
 const milesDots = computed(() =>
   props.yearly.map((y, i) => ({
     value: y.miles,
-    xPct: n.value > 1 ? (i / (n.value - 1)) * 96 + 2 : 50,
+    xPct: colCentersPct.value[i] ?? (n.value > 1 ? (i / (n.value - 1)) * 96 + 2 : 50),
     yPct: 8 + (100 - (y.miles / maxMiles.value) * 100) * 0.82,
   })),
 )
