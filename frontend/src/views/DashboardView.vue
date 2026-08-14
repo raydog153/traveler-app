@@ -11,7 +11,6 @@
           <span class="switch-track"><span class="switch-thumb" /></span>
           Show maintenance
         </label>
-        <button type="button" class="btn secondary">Export CSV</button>
         <RouterLink to="/log" class="btn add-btn">+ Add fill-up</RouterLink>
       </div>
     </div>

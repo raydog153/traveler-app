@@ -17,6 +17,7 @@
       </div>
 
       <span class="row-count">{{ rowCountText }}</span>
+      <button type="button" class="btn secondary" @click="exportCsv">Export CSV</button>
     </div>
 
     <DataTable
@@ -81,6 +82,7 @@ import NewMaintenanceForm from '../components/NewMaintenanceForm.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import { formatCurrency, formatMiles, formatMpg } from '../utils/format'
 import { median } from '../utils/stats'
+import { rowsToCsv, downloadCsv } from '../utils/csv'
 
 const route = useRoute()
 const gasStore = useGasStore()
@@ -258,6 +260,43 @@ const maintColumns = [
   { key: 'vendor', label: 'Vendor', width: '148px' },
   { key: 'cost', label: 'Cost', width: '104px', kind: 'costBar' },
 ]
+
+const gasExportColumns = [
+  { key: 'date', label: 'Date' },
+  { key: 'city', label: 'City' },
+  { key: 'odometer_miles', label: 'Odometer (mi)', value: (row) => Math.round(row.odometer_miles) },
+  { key: 'gallons', label: 'Gallons', value: (row) => row.gallons.toFixed(2) },
+  { key: 'price', label: 'Price ($)', value: (row) => row.price.toFixed(2) },
+  { key: 'cost_per_gal', label: '$/gal', value: (row) => row.cost_per_gal.toFixed(2) },
+  { key: 'driven', label: 'Miles since last', value: (row) => (row.driven != null ? Math.round(row.driven) : '') },
+  { key: 'mpg', label: 'MPG', value: (row) => (row.mpg != null ? row.mpg.toFixed(1) : '') },
+  { key: 'notes', label: 'Notes' },
+]
+
+const maintExportColumns = [
+  { key: 'date', label: 'Date' },
+  { key: 'expense', label: 'Expense' },
+  { key: 'is_major', label: 'Major', value: (row) => (row.is_major ? 'Yes' : 'No') },
+  { key: 'place', label: 'Place' },
+  {
+    key: 'odometer_miles',
+    label: 'Odometer (mi)',
+    value: (row) => (row.odometer_miles != null ? Math.round(row.odometer_miles) : ''),
+  },
+  { key: 'vendor', label: 'Vendor' },
+  { key: 'cost', label: 'Cost ($)', value: (row) => row.cost.toFixed(2) },
+]
+
+// Exports whatever the active tab's search filter currently shows, matching
+// what's on screen rather than always dumping the full unfiltered dataset.
+function exportCsv() {
+  const isGas = tab.value === 'gas'
+  const columns = isGas ? gasExportColumns : maintExportColumns
+  const rows = isGas ? searchedFillups.value : searchedRecords.value
+  const csv = rowsToCsv(columns, rows)
+  const datestamp = new Date().toISOString().slice(0, 10)
+  downloadCsv(`${isGas ? 'gas-fillups' : 'maintenance-log'}-${datestamp}.csv`, csv)
+}
 </script>
 
 <style scoped>

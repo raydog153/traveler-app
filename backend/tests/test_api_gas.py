@@ -79,6 +79,12 @@ class TestCreateFillup:
         assert body["latitude"] == 41.8781
         assert body["longitude"] == -87.6298
 
+    def test_duplicate_odometer_reading_rejected_with_409(self, client: TestClient):
+        client.post("/api/gas/fillups", json=make_payload())
+        resp = client.post("/api/gas/fillups", json=make_payload(date="2021-01-02"))
+        assert resp.status_code == 409
+        assert "odometer" in resp.json()["detail"].lower()
+
 
 class TestListFillups:
     def test_empty_when_no_fillups(self, client: TestClient):
@@ -126,6 +132,13 @@ class TestUpdateFillup:
         created = client.post("/api/gas/fillups", json=make_payload()).json()
         resp = client.put(f"/api/gas/fillups/{created['id']}", json=make_payload(gallons=0))
         assert resp.status_code == 422
+
+    def test_update_to_another_rows_odometer_reading_returns_409(self, client: TestClient):
+        client.post("/api/gas/fillups", json=make_payload())
+        second = client.post("/api/gas/fillups", json=make_payload(date="2021-01-08", odometer_miles=100300)).json()
+        resp = client.put(f"/api/gas/fillups/{second['id']}", json=make_payload(odometer_miles=100000))
+        assert resp.status_code == 409
+        assert "odometer" in resp.json()["detail"].lower()
 
 
 class TestDeleteFillup:

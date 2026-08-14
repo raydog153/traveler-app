@@ -72,18 +72,38 @@ async def scan_odometer(photo: UploadFile = File(...)) -> OdometerScanResult:
     )
 
 
+def _is_odometer_uniqueness_violation(exc: IntegrityError) -> bool:
+    """True only for the uq_gas_fillups_odometer_miles violation, not any
+    other IntegrityError (e.g. a Location primary-key race in
+    geocoding.get_or_create_location). Postgres exposes the constraint name
+    directly via psycopg's diagnostics; SQLite (used in tests) doesn't, so
+    fall back to matching the column name in its error message."""
+    constraint = getattr(getattr(exc.orig, "diag", None), "constraint_name", None)
+    if constraint is not None:
+        return constraint == "uq_gas_fillups_odometer_miles"
+    return "odometer_miles" in str(exc.orig)
+
+
 def _commit_or_409_on_duplicate_odometer(db: Session) -> None:
     """gas_fillups.odometer_miles is unique (uq_gas_fillups_odometer_miles) --
-    every fill-up should have a distinct reading. Translate the DB-level
-    IntegrityError into a clean 409 instead of letting it surface as a raw
-    500, since (unlike gallons/price) uniqueness can't be checked by pydantic
-    alone."""
+    every fill-up should have a distinct reading. Translate that specific
+    DB-level IntegrityError into a clean 409 instead of letting it surface as
+    a raw 500, since (unlike gallons/price) uniqueness can't be checked by
+    pydantic alone. Any other IntegrityError is re-raised as-is rather than
+    being mislabeled as a duplicate odometer reading."""
     try:
         db.commit()
     except IntegrityError as exc:
         db.rollback()
+        if not _is_odometer_uniqueness_violation(exc):
+            raise
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="A fill-up with this odometer reading already exists"
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "A fill-up with this odometer reading already exists. If this is a genuine "
+                "second fill-up at the same stop (e.g. auto-shutoff cut the first one short), "
+                "nudge the odometer reading by 0.1 mi to record it separately."
+            ),
         ) from exc
 
 
