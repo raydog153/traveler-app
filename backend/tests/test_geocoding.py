@@ -76,6 +76,45 @@ def test_geocode_malformed_payload_does_not_raise(monkeypatch):
     assert (location.lat, location.long) == (None, None)
 
 
+def test_reverse_geocode_success(monkeypatch):
+    monkeypatch.setattr(
+        geocoding.httpx, "get", lambda *a, **k: FakeResponse({"address": {"city": "Chicago", "state": "Illinois"}})
+    )
+
+    result = geocoding.reverse_geocode_via_nominatim(41.8781, -87.6298)
+    assert result == ("Chicago", "Illinois")
+
+
+def test_reverse_geocode_falls_back_through_town_village_hamlet(monkeypatch):
+    monkeypatch.setattr(
+        geocoding.httpx, "get", lambda *a, **k: FakeResponse({"address": {"town": "Lancaster", "state": "MA"}})
+    )
+
+    result = geocoding.reverse_geocode_via_nominatim(42.0, -71.0)
+    assert result == ("Lancaster", "MA")
+
+
+def test_reverse_geocode_no_address_in_response_returns_none(monkeypatch):
+    monkeypatch.setattr(geocoding.httpx, "get", lambda *a, **k: FakeResponse({}))
+
+    assert geocoding.reverse_geocode_via_nominatim(0.0, 0.0) is None
+
+
+def test_reverse_geocode_no_usable_city_returns_none(monkeypatch):
+    monkeypatch.setattr(geocoding.httpx, "get", lambda *a, **k: FakeResponse({"address": {"country": "USA"}}))
+
+    assert geocoding.reverse_geocode_via_nominatim(0.0, 0.0) is None
+
+
+def test_reverse_geocode_request_error_does_not_raise(monkeypatch):
+    def raise_error(*_args, **_kwargs):
+        raise httpx.ConnectError("boom")
+
+    monkeypatch.setattr(geocoding.httpx, "get", raise_error)
+
+    assert geocoding.reverse_geocode_via_nominatim(0.0, 0.0) is None
+
+
 def test_reuse_from_db_skips_external_call(monkeypatch):
     def fail_if_called(*_args, **_kwargs):
         raise AssertionError("should not call Nominatim when DB has a match")

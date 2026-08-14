@@ -131,6 +131,21 @@ def trip_stats(
     )
 
 
+def _fillup_location(f: GasFillup) -> Location | None:
+    """A fill-up photo's exact GPS, when captured, overrides the location's
+    coarser city-level geocode -- resolved here at read time (mirrors
+    analytics.to_gas_out) rather than denormalized onto the row. Returns a
+    transient, never-persisted Location standing in for f.location so
+    _points_from's generic Location-shaped contract doesn't need to change;
+    maintenance records (the other caller of _points_from) never have this
+    override and keep using their location unmodified."""
+    if f.gps_latitude is not None and f.gps_longitude is not None:
+        return Location(
+            id=f.location_id, city=f.location.city, state=f.location.state, lat=f.gps_latitude, long=f.gps_longitude
+        )
+    return f.location
+
+
 def build_route_data(fillups: list[GasFillup], maintenance_records: list[MaintenanceRecord]) -> RouteData:
     computed = analytics.compute_fillups(fillups)
     computed_by_id = {c.fillup.id: c for c in computed}
@@ -138,7 +153,7 @@ def build_route_data(fillups: list[GasFillup], maintenance_records: list[Mainten
 
     points = _points_from(
         fillups,
-        lambda f: f.location,
+        _fillup_location,
         "gas",
         lambda f: f.notes or None,
         amount_of=lambda f: float(f.price),

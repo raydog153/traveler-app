@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from io import BytesIO
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from PIL import Image
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
 from app.models import GasFillup, split_city_state
-from app.schemas import GasFillupIn, GasFillupOut
-from app.services import analytics, geocoding
+from app.schemas import GasFillupIn, GasFillupOut, OdometerScanResult
+from app.services import analytics, exif_extract, geocoding, vision
 
 router = APIRouter(prefix="/api/gas", tags=["gas"])
 
@@ -22,6 +25,50 @@ def list_fillups(db: Session = Depends(get_db)) -> list[GasFillupOut]:
     fillups = db.execute(select(GasFillup).options(joinedload(GasFillup.location))).scalars().all()
     computed = analytics.compute_fillups(list(fillups))
     return [analytics.to_gas_out(c) for c in computed]
+
+
+@router.post("/fillups/scan-odometer", response_model=OdometerScanResult)
+async def scan_odometer(photo: UploadFile = File(...)) -> OdometerScanResult:
+    """Best-effort extraction from an odometer photo, for prefilling the
+    add-fillup form -- odometer reading via Gemini vision, GPS/date via EXIF,
+    city/state via reverse-geocoding the GPS. Pure inference: no DB session,
+    no Location/GasFillup row created, since the user may edit or cancel
+    before actually saving. The photo bytes are read into memory and never
+    stored."""
+    image_bytes = await photo.read()
+
+    odometer_miles, warnings = vision.scan_odometer_photo(image_bytes)
+
+    date_, latitude, longitude = None, None, None
+    try:
+        image = Image.open(BytesIO(image_bytes))
+        gps = exif_extract.extract_gps(image)
+        date_ = exif_extract.extract_capture_date(image)
+        if gps is not None:
+            latitude, longitude = gps
+    except Exception:
+        pass  # not a decodable image -- odometer_miles from Gemini may still be usable
+
+    if latitude is None:
+        warnings.append("No location found in photo")
+    if date_ is None:
+        warnings.append("No date found in photo")
+
+    city, state = None, None
+    if latitude is not None:
+        reverse = geocoding.reverse_geocode_via_nominatim(latitude, longitude)
+        if reverse is not None:
+            city, state = reverse
+
+    return OdometerScanResult(
+        odometer_miles=odometer_miles,
+        date=date_,
+        latitude=latitude,
+        longitude=longitude,
+        city=city,
+        state=state,
+        warnings=warnings,
+    )
 
 
 def _find_previous_fillup(db: Session, fillup: GasFillup) -> GasFillup | None:
@@ -51,6 +98,8 @@ def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFil
         price=payload.price,
         notes=payload.notes,
         location=location,
+        gps_latitude=payload.gps_latitude,
+        gps_longitude=payload.gps_longitude,
     )
     db.add(fillup)
     db.commit()
@@ -78,6 +127,8 @@ def update_fillup(fillup_id: int, payload: GasFillupIn, db: Session = Depends(ge
     fillup.price = payload.price
     fillup.notes = payload.notes
     fillup.location = location
+    fillup.gps_latitude = payload.gps_latitude
+    fillup.gps_longitude = payload.gps_longitude
     db.commit()
     db.refresh(fillup)
 

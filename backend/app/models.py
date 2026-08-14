@@ -39,6 +39,16 @@ class GasFillup(Base):
     price: Mapped[float] = mapped_column(Numeric(8, 2), nullable=False)
     notes: Mapped[str] = mapped_column(Text, nullable=False, default="")
     location_id: Mapped[str] = mapped_column(Text, ForeignKey("locations.id"), nullable=False)
+    # Exact GPS coordinates from the fill-up photo's EXIF data, when a photo
+    # was used to create this row -- an optional per-fillup override of the
+    # coarser location.lat/long, resolved at read time (analytics.to_gas_out,
+    # mapping.build_route_data) rather than copied/denormalized. Named
+    # gps_latitude/gps_longitude, not latitude/longitude, because this table
+    # already had (and dropped, in b624a2cb494e) columns by that name that
+    # were always a stale copy of the location's coordinates -- these are a
+    # genuinely independent value instead.
+    gps_latitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
+    gps_longitude: Mapped[float | None] = mapped_column(Numeric(9, 6), nullable=True)
     created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     location: Mapped["Location"] = relationship()

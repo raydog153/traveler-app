@@ -21,6 +21,7 @@ services:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       NOMINATIM_CONTACT_EMAIL: ${NOMINATIM_CONTACT_EMAIL}
       CORS_ORIGINS: ${CORS_ORIGINS}
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     volumes:

@@ -117,6 +117,41 @@ class TestBuildRouteData:
         assert second.mpg == pytest.approx(10.0)
         assert second.odometer_miles == pytest.approx(100200)
 
+    def test_fillup_gps_override_takes_precedence_over_location(self):
+        loc = make_location("gulfport_ms", "Gulfport", lat=30.0, long=-89.0)
+        fillup = make_fillup(1, "2022-01-01", loc)
+        fillup.gps_latitude = 31.5
+        fillup.gps_longitude = -90.5
+
+        data = mapping.build_route_data([fillup], [])
+
+        [year] = data.years
+        [point] = year.locations
+        assert point.latitude == pytest.approx(31.5)
+        assert point.longitude == pytest.approx(-90.5)
+
+    def test_fillup_without_gps_override_uses_location_coords(self):
+        loc = make_location("gulfport_ms", "Gulfport", lat=30.0, long=-89.0)
+        fillup = make_fillup(1, "2022-01-01", loc)
+
+        data = mapping.build_route_data([fillup], [])
+
+        [year] = data.years
+        [point] = year.locations
+        assert point.latitude == pytest.approx(30.0)
+        assert point.longitude == pytest.approx(-89.0)
+
+    def test_maintenance_records_are_unaffected_by_gps_override_helper(self):
+        loc = make_location("gulfport_ms", "Gulfport", lat=30.0, long=-89.0)
+        records = [make_record(1, "2022-01-01", loc)]
+
+        data = mapping.build_route_data([], records)
+
+        [year] = data.years
+        [point] = year.locations
+        assert point.latitude == pytest.approx(30.0)
+        assert point.longitude == pytest.approx(-89.0)
+
     def test_maintenance_point_carries_amount_and_since_service(self):
         loc = make_location("gulfport_ms", "Gulfport")
         records = [

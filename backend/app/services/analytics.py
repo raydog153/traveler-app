@@ -86,6 +86,10 @@ def display_city(location: Location) -> str:
 
 def to_gas_out(c: ComputedFillup) -> GasFillupOut:
     f = c.fillup
+    gps_lat = float(f.gps_latitude) if f.gps_latitude is not None else None
+    gps_long = float(f.gps_longitude) if f.gps_longitude is not None else None
+    location_lat = float(f.location.lat) if f.location.lat is not None else None
+    location_long = float(f.location.long) if f.location.long is not None else None
     return GasFillupOut(
         id=f.id,
         date=f.date,
@@ -94,8 +98,13 @@ def to_gas_out(c: ComputedFillup) -> GasFillupOut:
         price=float(f.price),
         notes=f.notes,
         city=display_city(f.location),
-        latitude=float(f.location.lat) if f.location.lat is not None else None,
-        longitude=float(f.location.long) if f.location.long is not None else None,
+        # A photo's exact GPS (when captured) overrides the location's
+        # coarser city-level geocode -- resolved here at read time, not
+        # denormalized onto the row.
+        latitude=gps_lat if gps_lat is not None else location_lat,
+        longitude=gps_long if gps_long is not None else location_long,
+        gps_latitude=gps_lat,
+        gps_longitude=gps_long,
         cost_per_gal=c.cost_per_gal,
         driven=c.driven,
         mpg=c.mpg,

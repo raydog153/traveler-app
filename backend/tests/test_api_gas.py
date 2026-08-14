@@ -1,4 +1,11 @@
+import datetime
+import io
+
+import pytest
 from fastapi.testclient import TestClient
+from PIL import Image
+
+from app.routers import gas
 
 
 def make_payload(**overrides) -> dict:
@@ -53,6 +60,24 @@ class TestCreateFillup:
     def test_blank_city_rejected(self, client: TestClient):
         resp = client.post("/api/gas/fillups", json=make_payload(city=""))
         assert resp.status_code == 422
+
+    def test_gps_override_round_trips_and_takes_precedence_over_location(self, client: TestClient):
+        resp = client.post("/api/gas/fillups", json=make_payload(gps_latitude=41.0, gps_longitude=-88.0))
+        body = resp.json()
+        assert body["gps_latitude"] == 41.0
+        assert body["gps_longitude"] == -88.0
+        # location's geocoded coords (from the stubbed 41.8781/-87.6298) are
+        # overridden by the photo GPS in the fallback-resolved fields.
+        assert body["latitude"] == 41.0
+        assert body["longitude"] == -88.0
+
+    def test_no_gps_override_falls_back_to_location_coords(self, client: TestClient):
+        resp = client.post("/api/gas/fillups", json=make_payload())
+        body = resp.json()
+        assert body["gps_latitude"] is None
+        assert body["gps_longitude"] is None
+        assert body["latitude"] == 41.8781
+        assert body["longitude"] == -87.6298
 
 
 class TestListFillups:
@@ -113,3 +138,79 @@ class TestDeleteFillup:
     def test_delete_missing_fillup_returns_404(self, client: TestClient):
         resp = client.delete("/api/gas/fillups/999")
         assert resp.status_code == 404
+
+
+def _tiny_jpeg_bytes() -> bytes:
+    buf = io.BytesIO()
+    Image.new("RGB", (10, 10), color="white").save(buf, format="JPEG")
+    return buf.getvalue()
+
+
+def _post_photo(client: TestClient):
+    return client.post(
+        "/api/gas/fillups/scan-odometer",
+        files={"photo": ("odo.jpg", _tiny_jpeg_bytes(), "image/jpeg")},
+    )
+
+
+class TestScanOdometer:
+    def test_full_extraction_returns_all_fields_and_no_warnings(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ):
+        monkeypatch.setattr(gas.vision, "scan_odometer_photo", lambda _bytes: (123456.0, []))
+        monkeypatch.setattr(gas.exif_extract, "extract_gps", lambda _img: (41.0, -87.0))
+        monkeypatch.setattr(gas.exif_extract, "extract_capture_date", lambda _img: datetime.date(2021, 1, 1))
+        monkeypatch.setattr(gas.geocoding, "reverse_geocode_via_nominatim", lambda _lat, _lon: ("Chicago", "IL"))
+
+        resp = _post_photo(client)
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["odometer_miles"] == 123456.0
+        assert body["date"] == "2021-01-01"
+        assert body["latitude"] == 41.0
+        assert body["longitude"] == -87.0
+        assert body["city"] == "Chicago"
+        assert body["state"] == "IL"
+        assert body["warnings"] == []
+
+    def test_partial_extraction_reports_warnings_without_erroring(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ):
+        monkeypatch.setattr(
+            gas.vision, "scan_odometer_photo", lambda _bytes: (None, ["Could not read odometer from photo"])
+        )
+        monkeypatch.setattr(gas.exif_extract, "extract_gps", lambda _img: None)
+        monkeypatch.setattr(gas.exif_extract, "extract_capture_date", lambda _img: None)
+
+        resp = _post_photo(client)
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["odometer_miles"] is None
+        assert body["date"] is None
+        assert body["latitude"] is None
+        assert body["city"] is None
+        assert "Could not read odometer from photo" in body["warnings"]
+        assert "No location found in photo" in body["warnings"]
+        assert "No date found in photo" in body["warnings"]
+
+    def test_does_not_create_any_db_rows(self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.setattr(gas.vision, "scan_odometer_photo", lambda _bytes: (123456.0, []))
+        monkeypatch.setattr(gas.exif_extract, "extract_gps", lambda _img: (41.0, -87.0))
+        monkeypatch.setattr(gas.exif_extract, "extract_capture_date", lambda _img: datetime.date(2021, 1, 1))
+        monkeypatch.setattr(gas.geocoding, "reverse_geocode_via_nominatim", lambda _lat, _lon: ("Chicago", "IL"))
+
+        _post_photo(client)
+
+        assert client.get("/api/gas/fillups").json() == []
+
+    def test_no_gps_skips_reverse_geocoding(self, client: TestClient, monkeypatch: pytest.MonkeyPatch):
+        def fail_if_called(*_args, **_kwargs):
+            raise AssertionError("should not reverse-geocode without GPS coordinates")
+
+        monkeypatch.setattr(gas.vision, "scan_odometer_photo", lambda _bytes: (None, []))
+        monkeypatch.setattr(gas.exif_extract, "extract_gps", lambda _img: None)
+        monkeypatch.setattr(gas.exif_extract, "extract_capture_date", lambda _img: None)
+        monkeypatch.setattr(gas.geocoding, "reverse_geocode_via_nominatim", fail_if_called)
+
+        resp = _post_photo(client)
+        assert resp.status_code == 200

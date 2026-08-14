@@ -11,6 +11,11 @@ class GasFillupIn(BaseModel):
     price: float = Field(ge=0)
     notes: str = ""
     city: str = Field(min_length=1)
+    # Exact GPS from a fill-up photo's EXIF, if one was used -- see
+    # GasFillup.gps_latitude/gps_longitude. None on every save that didn't
+    # come from (or preserve) a photo scan.
+    gps_latitude: float | None = None
+    gps_longitude: float | None = None
 
 
 class GasFillupOut(BaseModel):
@@ -25,9 +30,30 @@ class GasFillupOut(BaseModel):
     city: str
     latitude: float | None
     longitude: float | None
+    # Raw (un-fallback'd) photo GPS override, distinct from latitude/longitude
+    # above -- exposed so the edit form can round-trip a previously-captured
+    # value without re-scanning a photo. latitude/longitude remain the
+    # fallback-resolved values used everywhere else (map, dashboard).
+    gps_latitude: float | None
+    gps_longitude: float | None
     cost_per_gal: float
     driven: float | None
     mpg: float | None
+
+
+class OdometerScanResult(BaseModel):
+    """Response from POST /api/gas/fillups/scan-odometer. Every field is
+    best-effort and may be None -- `warnings` explains which pieces of the
+    photo couldn't be read, but a partial result is never an error; the
+    add-fillup form just leaves those fields for the user to fill in."""
+
+    odometer_miles: float | None = None
+    date: dt.date | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    city: str | None = None
+    state: str | None = None
+    warnings: list[str] = []
 
 
 class MaintenanceRecordIn(BaseModel):

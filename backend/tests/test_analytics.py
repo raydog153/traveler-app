@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from app.models import GasFillup, MaintenanceRecord
+from app.models import GasFillup, Location, MaintenanceRecord
 from app.services import analytics
 from app.services.dashboard_summary import build_dashboard_summary
 
@@ -64,6 +64,44 @@ class TestComputeFillups:
         computed = analytics.compute_fillups(fillups)
         assert computed[1].driven is None
         assert computed[1].mpg is None
+
+
+class TestToGasOut:
+    def test_gps_override_takes_precedence_over_location_coords(self):
+        fillup = make_fillup(1, "2021-01-01", 100000, 20, 60)
+        fillup.location = Location(id="x", city="X", state="Y", lat=10.0, long=20.0)
+        fillup.gps_latitude = 11.0
+        fillup.gps_longitude = 21.0
+        [computed] = analytics.compute_fillups([fillup])
+
+        out = analytics.to_gas_out(computed)
+
+        assert out.latitude == pytest.approx(11.0)
+        assert out.longitude == pytest.approx(21.0)
+        assert out.gps_latitude == pytest.approx(11.0)
+        assert out.gps_longitude == pytest.approx(21.0)
+
+    def test_falls_back_to_location_coords_when_no_gps_override(self):
+        fillup = make_fillup(1, "2021-01-01", 100000, 20, 60)
+        fillup.location = Location(id="x", city="X", state="Y", lat=10.0, long=20.0)
+        [computed] = analytics.compute_fillups([fillup])
+
+        out = analytics.to_gas_out(computed)
+
+        assert out.latitude == pytest.approx(10.0)
+        assert out.longitude == pytest.approx(20.0)
+        assert out.gps_latitude is None
+        assert out.gps_longitude is None
+
+    def test_null_location_coords_and_no_gps_override_yield_none(self):
+        fillup = make_fillup(1, "2021-01-01", 100000, 20, 60)
+        fillup.location = Location(id="x", city="X", state="Y", lat=None, long=None)
+        [computed] = analytics.compute_fillups([fillup])
+
+        out = analytics.to_gas_out(computed)
+
+        assert out.latitude is None
+        assert out.longitude is None
 
 
 class TestYearlySummary:

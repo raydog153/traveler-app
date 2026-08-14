@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://traveler:changeme@localhost:5432/traveler"
     nominatim_contact_email: str = ""
     cors_origins: str = ""
+    google_ai_api_key: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:

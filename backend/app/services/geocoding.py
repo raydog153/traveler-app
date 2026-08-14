@@ -13,6 +13,11 @@ Order of operations when a fill-up is created:
      warning and create the Location with null coordinates. Geocoding never
      blocks or fails a fill-up create -- the row just saves with null
      coordinates and won't appear on the map until it's backfilled.
+
+Also provides `reverse_geocode_via_nominatim`, the inverse direction: given
+a lat/long (e.g. from a fill-up photo's EXIF GPS), best-effort resolve a
+city/state to prefill the add-fillup form's City field. Same never-blocks
+contract as forward geocoding.
 """
 
 import logging
@@ -28,6 +33,7 @@ from app.models import Location, location_id
 logger = logging.getLogger(__name__)
 
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"
 MIN_REQUEST_INTERVAL_SECONDS = 1.0
 REQUEST_TIMEOUT_SECONDS = 10.0
 
@@ -71,6 +77,43 @@ def _geocode_via_nominatim(query: str) -> tuple[float, float] | None:
     except (KeyError, TypeError, ValueError) as exc:
         logger.warning("geocoding returned an unexpected payload for query=%r: %s", query, exc)
         return None
+
+
+def reverse_geocode_via_nominatim(lat: float, lon: float) -> tuple[str, str] | None:
+    """Best-effort city/state lookup for a raw lat/long (e.g. a fill-up
+    photo's EXIF GPS), used only to prefill the add-fillup form's City field
+    -- never blocks, and the result is always user-editable before save.
+    Same rate-limiting/User-Agent/never-raise contract as
+    `_geocode_via_nominatim` above."""
+    _rate_limit()
+    contact = settings.nominatim_contact_email or "no-contact-configured"
+    headers = {"User-Agent": f"traveler-app ({contact})"}
+
+    try:
+        resp = httpx.get(
+            NOMINATIM_REVERSE_URL,
+            params={"lat": lat, "lon": lon, "format": "json", "addressdetails": 1},
+            headers=headers,
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        resp.raise_for_status()
+        result = resp.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        logger.warning("reverse geocoding request failed for (%s, %s): %s", lat, lon, exc)
+        return None
+
+    try:
+        address = result["address"]
+    except (KeyError, TypeError) as exc:
+        logger.warning("reverse geocoding returned an unexpected payload for (%s, %s): %s", lat, lon, exc)
+        return None
+
+    city = address.get("city") or address.get("town") or address.get("village") or address.get("hamlet")
+    if not city:
+        logger.warning("reverse geocoding returned no usable city for (%s, %s)", lat, lon)
+        return None
+
+    return city, address.get("state", "")
 
 
 def get_or_create_location(db: Session, city: str, state: str) -> Location:
