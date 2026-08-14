@@ -152,6 +152,15 @@ class TestMajorEvents:
         assert events[0].cost == 2500
 
 
+class TestAllMaintenanceEvents:
+    def test_includes_every_record_flagged_by_threshold(self):
+        records = [make_record(1, "2021-02-01", 2500), make_record(2, "2021-01-01", 500)]
+        events = analytics.all_maintenance_events(records)
+
+        assert [e.cost for e in events] == [500, 2500]
+        assert [e.is_major for e in events] == [False, True]
+
+
 class TestIsServiceRecord:
     def test_matches_oil_change(self):
         assert analytics.is_service_record("Glow PLugs, oil change") is True

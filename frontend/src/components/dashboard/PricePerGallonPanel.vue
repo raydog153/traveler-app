@@ -29,16 +29,34 @@
             stroke-linejoin="round"
           />
         </svg>
-        <div v-for="p in dots" :key="p.x" class="dot" :style="{ left: p.xPct + '%', top: p.yPct + '%' }" />
+        <div
+          v-for="p in dots"
+          :key="p.x"
+          class="dot"
+          :style="{ left: p.xPct + '%', top: p.yPct + '%' }"
+          @mouseenter="onDotEnter($event, p)"
+          @mouseleave="onLeave"
+          @click="onDotClick($event, p)"
+        />
       </div>
+    </div>
+
+    <div
+      v-if="tooltip"
+      class="chart-tooltip"
+      :class="{ pinned: tooltip.pinned }"
+      :style="{ left: tooltip.x + 'px', top: tooltip.y + 'px' }"
+    >
+      <div class="tooltip-title">{{ tooltip.title }}</div>
+      <div class="tooltip-subtitle">{{ tooltip.subtitle }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { dateToPercent, valueToPercent } from '../../utils/chartScale'
-import { formatCurrency } from '../../utils/format'
+import { formatCurrency, formatDate, formatGallons } from '../../utils/format'
 
 const props = defineProps({
   series: { type: Array, required: true },
@@ -70,6 +88,8 @@ const avgPrice = computed(() => {
 function toPlotPoint(p) {
   return {
     x: p.x,
+    y: p.y,
+    gallons: p.gallons,
     xPct: dateToPercent(p.x, minDate.value, maxDate.value),
     yPct: valueToPercent(p.y, Y_MIN, Y_MAX, true),
   }
@@ -93,6 +113,60 @@ const smoothedPoints = computed(() => {
       return `${pt.xPct},${pt.yPct}`
     })
     .join(' ')
+})
+
+// See MpgCentrepiece.vue for why this is a custom hover/click tooltip rather
+// than a native `title` attribute.
+const tooltip = ref(null)
+
+function anchorPosition(el) {
+  const rect = el.getBoundingClientRect()
+  return { x: rect.left + rect.width / 2, y: rect.top }
+}
+
+function pointTooltip(p) {
+  return {
+    key: `pt-${p.x}`,
+    title: formatDate(p.x),
+    subtitle: `${formatCurrency(p.y)}/gal — ${formatGallons(p.gallons)} gal`,
+  }
+}
+
+function onDotEnter(e, p) {
+  if (tooltip.value?.pinned) return
+  tooltip.value = { ...anchorPosition(e.currentTarget), ...pointTooltip(p), pinned: false }
+}
+
+function onLeave() {
+  if (!tooltip.value?.pinned) tooltip.value = null
+}
+
+function onDotClick(e, p) {
+  const data = pointTooltip(p)
+  if (tooltip.value?.pinned && tooltip.value.key === data.key) {
+    tooltip.value = null
+    return
+  }
+  tooltip.value = { ...anchorPosition(e.currentTarget), ...data, pinned: true }
+}
+
+function closeTooltip() {
+  tooltip.value = null
+}
+
+function onDocumentPointerDown(e) {
+  if (tooltip.value?.pinned && !e.target.closest('.dot, .chart-tooltip')) closeTooltip()
+}
+
+onMounted(() => {
+  document.addEventListener('pointerdown', onDocumentPointerDown)
+  window.addEventListener('scroll', closeTooltip, true)
+  window.addEventListener('resize', closeTooltip)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', onDocumentPointerDown)
+  window.removeEventListener('scroll', closeTooltip, true)
+  window.removeEventListener('resize', closeTooltip)
 })
 </script>
 
@@ -172,5 +246,47 @@ h2 {
   background: oklch(0.75 0.06 35);
   opacity: 0.7;
   transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+.dot:hover {
+  opacity: 1;
+  width: 6px;
+  height: 6px;
+}
+.chart-tooltip {
+  position: fixed;
+  z-index: 50;
+  transform: translate(-50%, calc(-100% - 10px));
+  pointer-events: none;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-overlay);
+  padding: 7px 10px;
+  max-width: 220px;
+}
+.chart-tooltip.pinned {
+  pointer-events: auto;
+}
+.chart-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--surface);
+  filter: drop-shadow(0 1px 0 var(--card-border));
+}
+.tooltip-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.tooltip-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
 }
 </style>

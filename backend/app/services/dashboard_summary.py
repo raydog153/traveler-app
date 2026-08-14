@@ -3,14 +3,16 @@ analytics primitives in analytics.py.
 """
 
 from app.models import GasFillup, MaintenanceRecord
-from app.schemas import ChartPoint, DashboardSummary
+from app.schemas import ChartPoint, DashboardSummary, GasPricePoint
 from app.services import analytics
 
 
 def build_dashboard_summary(fillups: list[GasFillup], records: list[MaintenanceRecord]) -> DashboardSummary:
     computed = analytics.compute_fillups(fillups)
 
-    price_series = [ChartPoint(x=c.fillup.date, y=c.cost_per_gal) for c in computed]
+    price_series = [
+        GasPricePoint(x=c.fillup.date, y=c.cost_per_gal, gallons=float(c.fillup.gallons)) for c in computed
+    ]
     mpg_pts = [ChartPoint(x=c.fillup.date, y=c.mpg) for c in analytics.mpg_fillups(computed)]
 
     subhead = ""
@@ -29,6 +31,7 @@ def build_dashboard_summary(fillups: list[GasFillup], records: list[MaintenanceR
         yearly=analytics.yearly_summary(computed, records),
         major_events=major_events,
         major_events_by_cost=sorted(major_events, key=lambda e: -e.cost),
+        maintenance_events=analytics.all_maintenance_events(records),
         service_alert=analytics.service_status(computed, records),
         price_per_gallon_series=price_series,
         mpg_points=mpg_pts,

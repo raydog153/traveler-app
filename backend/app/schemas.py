@@ -97,6 +97,7 @@ class MajorEvent(BaseModel):
     date: dt.date
     cost: float
     label: str
+    is_major: bool
 
 
 class ServiceAlert(BaseModel):
@@ -113,6 +114,12 @@ class ServiceAlert(BaseModel):
 class ChartPoint(BaseModel):
     x: dt.date
     y: float
+
+
+class GasPricePoint(BaseModel):
+    x: dt.date
+    y: float
+    gallons: float
 
 
 class CostOfOwnership(BaseModel):
@@ -142,8 +149,9 @@ class DashboardSummary(BaseModel):
     yearly: list[YearlySummary]
     major_events: list[MajorEvent]
     major_events_by_cost: list[MajorEvent]
+    maintenance_events: list[MajorEvent]
     service_alert: ServiceAlert | None
-    price_per_gallon_series: list[ChartPoint]
+    price_per_gallon_series: list[GasPricePoint]
     mpg_points: list[ChartPoint]
     mpg_rolling_avg: list[ChartPoint]
     cumulative_gas: list[ChartPoint]

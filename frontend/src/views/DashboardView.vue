@@ -27,7 +27,7 @@
       <MpgCentrepiece
         :points="summary.mpg_points"
         :rolling-avg="summary.mpg_rolling_avg"
-        :major-events="summary.major_events"
+        :maintenance-events="summary.maintenance_events"
         :show-maintenance="showMaintenance"
       />
 
@@ -70,7 +70,7 @@ const showMaintenance = ref(localStorage.getItem(SHOW_MAINTENANCE_KEY) === 'true
 watch(showMaintenance, (v) => localStorage.setItem(SHOW_MAINTENANCE_KEY, String(v)))
 
 function goLog() {
-  router.push('/log')
+  router.push({ path: '/log', query: { tab: 'maint', add: '1' } })
 }
 
 onMounted(() => store.fetchAll())

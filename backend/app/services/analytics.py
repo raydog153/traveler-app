@@ -158,7 +158,19 @@ def yearly_summary(computed: list[ComputedFillup], records: list[MaintenanceReco
 def major_events(records: list[MaintenanceRecord]) -> list[MajorEvent]:
     events = [r for r in records if float(r.cost) >= MAJOR_EVENT_THRESHOLD]
     events.sort(key=lambda r: r.date)
-    return [MajorEvent(date=r.date, cost=float(r.cost), label=r.expense) for r in events]
+    return [MajorEvent(date=r.date, cost=float(r.cost), label=r.expense, is_major=True) for r in events]
+
+
+def all_maintenance_events(records: list[MaintenanceRecord]) -> list[MajorEvent]:
+    """Every maintenance record (not just those over MAJOR_EVENT_THRESHOLD),
+    chronological, each flagged with whether it clears the threshold -- feeds
+    the fuel-economy chart's maintenance markers, which color by that flag
+    rather than dropping the smaller events entirely."""
+    events = sorted(records, key=lambda r: r.date)
+    return [
+        MajorEvent(date=r.date, cost=float(r.cost), label=r.expense, is_major=float(r.cost) >= MAJOR_EVENT_THRESHOLD)
+        for r in events
+    ]
 
 
 def is_service_record(expense: str) -> bool:

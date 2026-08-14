@@ -52,12 +52,12 @@
             v-model.number="radiusMiles"
             type="range"
             min="5"
-            max="50"
+            max="31"
             step="1"
             class="radius-slider"
             :style="{ '--fill-pct': radiusFillPct + '%' }"
           />
-          <span class="radius-max">50 mi</span>
+          <span class="radius-max">31 mi</span>
         </div>
 
         <div class="list-header">
@@ -428,7 +428,7 @@ let radiusDebounceTimer = null
 // lastSearchCenter until that caller updates it.
 let suppressCategoryWatch = false
 
-const radiusFillPct = computed(() => ((radiusMiles.value - 5) / (50 - 5)) * 100)
+const radiusFillPct = computed(() => ((radiusMiles.value - 5) / (31 - 5)) * 100)
 
 const typeSelectLabel = computed(() => {
   if (selectedCategories.value.length === 0) return 'Select place types…'

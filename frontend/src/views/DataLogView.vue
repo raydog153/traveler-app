@@ -67,6 +67,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useGasStore } from '../stores/gasStore'
 import { useMaintenanceStore } from '../stores/maintenanceStore'
 import { useDashboardStore } from '../stores/dashboardStore'
@@ -79,6 +80,7 @@ import ConfirmDialog from '../components/ConfirmDialog.vue'
 import { formatCurrency, formatMiles, formatMpg } from '../utils/format'
 import { median } from '../utils/stats'
 
+const route = useRoute()
 const gasStore = useGasStore()
 const maintenanceStore = useMaintenanceStore()
 const dashboardStore = useDashboardStore()
@@ -143,6 +145,13 @@ function flagOf(row) {
 onMounted(() => {
   gasStore.fetchAll()
   maintenanceStore.fetchAll()
+
+  if (route.query.tab === 'maint') {
+    tab.value = 'maint'
+  }
+  if (route.query.add) {
+    openAddForm()
+  }
 })
 
 const subhead = computed(() => {
