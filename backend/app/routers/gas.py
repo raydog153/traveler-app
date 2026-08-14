@@ -3,6 +3,7 @@ from io import BytesIO
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from PIL import Image
 from sqlalchemy import and_, or_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
 from app.db import get_db
@@ -71,6 +72,21 @@ async def scan_odometer(photo: UploadFile = File(...)) -> OdometerScanResult:
     )
 
 
+def _commit_or_409_on_duplicate_odometer(db: Session) -> None:
+    """gas_fillups.odometer_miles is unique (uq_gas_fillups_odometer_miles) --
+    every fill-up should have a distinct reading. Translate the DB-level
+    IntegrityError into a clean 409 instead of letting it surface as a raw
+    500, since (unlike gallons/price) uniqueness can't be checked by pydantic
+    alone."""
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="A fill-up with this odometer reading already exists"
+        ) from exc
+
+
 def _find_previous_fillup(db: Session, fillup: GasFillup) -> GasFillup | None:
     """The fill-up immediately before this one in (date, id) order -- the
     only row its own driven/mpg computation depends on."""
@@ -102,7 +118,7 @@ def create_fillup(payload: GasFillupIn, db: Session = Depends(get_db)) -> GasFil
         gps_longitude=payload.gps_longitude,
     )
     db.add(fillup)
-    db.commit()
+    _commit_or_409_on_duplicate_odometer(db)
     db.refresh(fillup)
 
     # Only the immediately preceding fill-up affects this row's own
@@ -129,7 +145,7 @@ def update_fillup(fillup_id: int, payload: GasFillupIn, db: Session = Depends(ge
     fillup.location = location
     fillup.gps_latitude = payload.gps_latitude
     fillup.gps_longitude = payload.gps_longitude
-    db.commit()
+    _commit_or_409_on_duplicate_odometer(db)
     db.refresh(fillup)
 
     # Same reasoning as create: only the immediately preceding fill-up is

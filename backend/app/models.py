@@ -1,7 +1,7 @@
 import datetime as dt
 import re
 
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, Text, func
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, Text, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -29,6 +29,7 @@ class GasFillup(Base):
     __table_args__ = (
         CheckConstraint("gallons > 0", name="ck_gas_fillups_gallons_positive"),
         CheckConstraint("price >= 0", name="ck_gas_fillups_price_nonnegative"),
+        UniqueConstraint("odometer_miles", name="uq_gas_fillups_odometer_miles"),
         Index("idx_gas_fillups_date", "date"),
     )
 
