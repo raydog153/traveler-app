@@ -20,6 +20,7 @@ from app.schemas import (
     GasFillupOut,
     MaintenanceRecordOut,
     MajorEvent,
+    MonthlySummary,
     ServiceAlert,
     StatCard,
     YearlySummary,
@@ -139,8 +140,12 @@ def yearly_summary(computed: list[ComputedFillup], records: list[MaintenanceReco
         cost = sum(float(c.fillup.price) for c in rows)
         gallons = sum(float(c.fillup.gallons) for c in rows)
         miles = sum(c.driven for c in rows if c.driven)
-        mpgs = [c.mpg for c in mpg_fillups(rows)]
-        avg_mpg = sum(mpgs) / len(mpgs) if mpgs else None
+        # Weighted by miles/gallons (sum driven / sum gallons of the
+        # mpg-bearing rows), not a plain mean of each row's mpg ratio -- a
+        # mean-of-ratios gives a short/partial fill-up the same weight as a
+        # long full-tank one, even though it represents far fewer miles.
+        mpg_gallons = sum(float(c.fillup.gallons) for c in mpg_fillups(rows))
+        avg_mpg = miles / mpg_gallons if mpg_gallons else None
         out.append(
             YearlySummary(
                 year=str(year),
@@ -291,6 +296,50 @@ def rolling_avg(points: list[ChartPoint], window: int) -> list[ChartPoint]:
         start = max(0, i - window + 1)
         window_vals = ys[start : i + 1]
         out.append(ChartPoint(x=points[i].x, y=sum(window_vals) / len(window_vals)))
+    return out
+
+
+def rolling_weighted_mpg(computed: list[ComputedFillup], window: int) -> list[ChartPoint]:
+    """Rolling mpg over the trailing `window` mpg-bearing fill-ups, weighted
+    by miles/gallons (sum driven / sum gallons) rather than a plain mean of
+    each fill-up's own mpg ratio -- see yearly_summary for why that matters.
+    `computed` need not be pre-filtered to mpg-bearing rows."""
+    rows = mpg_fillups(computed)
+    out = []
+    for i in range(len(rows)):
+        start = max(0, i - window + 1)
+        window_rows = rows[start : i + 1]
+        driven_sum = sum(c.driven for c in window_rows)
+        gallons_sum = sum(float(c.fillup.gallons) for c in window_rows)
+        out.append(ChartPoint(x=rows[i].fillup.date, y=driven_sum / gallons_sum))
+    return out
+
+
+def monthly_summary(computed: list[ComputedFillup]) -> list[MonthlySummary]:
+    """Calendar-month aggregates, mirroring yearly_summary but bucketed by
+    month -- unlike a fill-up-count rolling window, a calendar month lines up
+    with real-world seasonal effects (e.g. diesel heater draw in winter),
+    so winter-vs-summer swings show up as their own signal instead of being
+    smeared across a window that spans a variable amount of time."""
+    by_month: dict[str, list[ComputedFillup]] = defaultdict(list)
+    for c in computed:
+        by_month[c.fillup.date.strftime("%Y-%m")].append(c)
+
+    out = []
+    for month in sorted(by_month):
+        rows = by_month[month]
+        miles = sum(c.driven for c in rows if c.driven)
+        mpg_gallons = sum(float(c.fillup.gallons) for c in mpg_fillups(rows))
+        avg_mpg = miles / mpg_gallons if mpg_gallons else None
+        out.append(
+            MonthlySummary(
+                month=month,
+                avg_mpg=avg_mpg,
+                miles=miles,
+                gallons=sum(float(c.fillup.gallons) for c in rows),
+                fillups=len(rows),
+            )
+        )
     return out
 
 

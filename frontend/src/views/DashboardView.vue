@@ -30,6 +30,8 @@
         :show-maintenance="showMaintenance"
       />
 
+      <MonthlyMpgPanel :monthly="summary.monthly_mpg" />
+
       <div class="chart-pair">
         <PricePerGallonPanel :series="summary.price_per_gallon_series" />
         <CumulativeSpendPanel
@@ -54,6 +56,7 @@ import { useDashboardStore } from '../stores/dashboardStore'
 import CostOfOwnershipCard from '../components/dashboard/CostOfOwnershipCard.vue'
 import NextServiceCard from '../components/dashboard/NextServiceCard.vue'
 import MpgCentrepiece from '../components/dashboard/MpgCentrepiece.vue'
+import MonthlyMpgPanel from '../components/dashboard/MonthlyMpgPanel.vue'
 import PricePerGallonPanel from '../components/dashboard/PricePerGallonPanel.vue'
 import CumulativeSpendPanel from '../components/dashboard/CumulativeSpendPanel.vue'
 import AnnualSnapshotPanel from '../components/dashboard/AnnualSnapshotPanel.vue'

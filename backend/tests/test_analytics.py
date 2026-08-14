@@ -118,8 +118,9 @@ class TestYearlySummary:
 
         assert summary["2021"].fillups == 3
         assert summary["2021"].miles == pytest.approx(700)
-        # avg mpg across both mpg-bearing rows: 300/10=30 and 400/20=20 -> 25
-        assert summary["2021"].avg_mpg == pytest.approx(25.0)
+        # weighted by miles/gallons, not a mean of the two mpg ratios (30 and
+        # 20): total driven 300+400=700 over total gallons 10+20=30 -> 23.33
+        assert summary["2021"].avg_mpg == pytest.approx(700 / 30)
         assert summary["2022"].fillups == 1
 
     def test_aggregates_maintenance_cost_per_year(self):
@@ -308,6 +309,52 @@ class TestRollingAvgAndCumulative:
     def test_cumulative_sums_in_date_order_regardless_of_input_order(self):
         result = analytics.cumulative([(datetime.date(2021, 1, 2), 5.0), (datetime.date(2021, 1, 1), 10.0)])
         assert [p.y for p in result] == [10.0, 15.0]
+
+
+class TestRollingWeightedMpg:
+    def test_weighted_by_miles_and_gallons_not_mean_of_ratios(self):
+        fillups = [
+            make_fillup(1, "2021-01-01", 100000, 20, 60),
+            # A tiny partial fill: driven 50 on 1 gallon -> mpg 50, which
+            # would drag a plain mean of ratios way up despite covering
+            # almost no distance.
+            make_fillup(2, "2021-01-02", 100050, 1, 3),
+            make_fillup(3, "2021-01-09", 100450, 20, 60),
+        ]
+        computed = analytics.compute_fillups(fillups)
+        result = analytics.rolling_weighted_mpg(computed, window=2)
+
+        # row 2: driven 50 / gallons 1 = 50 (only one mpg-bearing row so far)
+        assert result[0].y == pytest.approx(50.0)
+        # row 3: window is rows 2-3 -> (50+400) / (1+20) = 450/21, not the
+        # mean of 50 and 20 (=35).
+        assert result[1].y == pytest.approx(450 / 21)
+
+    def test_empty_when_no_mpg_bearing_fillups(self):
+        [c] = analytics.compute_fillups([make_fillup(1, "2021-01-01", 100000, 20, 60)])
+        assert analytics.rolling_weighted_mpg([c], window=7) == []
+
+
+class TestMonthlySummary:
+    def test_aggregates_by_calendar_month(self):
+        fillups = [
+            make_fillup(1, "2021-01-01", 100000, 20, 60),
+            make_fillup(2, "2021-01-15", 100300, 10, 30),
+            make_fillup(3, "2021-02-01", 100700, 20, 60),
+        ]
+        computed = analytics.compute_fillups(fillups)
+        by_month = {m.month: m for m in analytics.monthly_summary(computed)}
+
+        assert list(by_month) == ["2021-01", "2021-02"]
+        assert by_month["2021-01"].fillups == 2
+        assert by_month["2021-01"].miles == pytest.approx(300)
+        assert by_month["2021-01"].avg_mpg == pytest.approx(30.0)
+
+    def test_month_with_no_mpg_bearing_fillup_is_none(self):
+        [c] = analytics.compute_fillups([make_fillup(1, "2021-01-01", 100000, 20, 60)])
+        [m] = analytics.monthly_summary([c])
+        assert m.avg_mpg is None
+        assert m.fillups == 1
 
 
 class TestFixtureRegression:

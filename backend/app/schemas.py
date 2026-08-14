@@ -95,6 +95,14 @@ class YearlySummary(BaseModel):
     maintenance_cost: float
 
 
+class MonthlySummary(BaseModel):
+    month: str
+    avg_mpg: float | None
+    miles: float
+    gallons: float
+    fillups: int
+
+
 class MajorEvent(BaseModel):
     date: dt.date
     cost: float
@@ -156,6 +164,7 @@ class DashboardSummary(BaseModel):
     price_per_gallon_series: list[GasPricePoint]
     mpg_points: list[ChartPoint]
     mpg_rolling_avg: list[ChartPoint]
+    monthly_mpg: list[MonthlySummary]
     cumulative_gas: list[ChartPoint]
     cumulative_maintenance: list[ChartPoint]
     cost_of_ownership: CostOfOwnership
