@@ -25,6 +25,7 @@
       :rows="searchedFillups"
       :flag-of="flagOf"
       default-sort-key="date"
+      :default-sort-dir="-1"
       editable
       :footer-text="gasFooterText"
       @edit="editingFillup = $event"
@@ -35,6 +36,7 @@
       :columns="maintColumns"
       :rows="searchedRecords"
       default-sort-key="date"
+      :default-sort-dir="-1"
       editable
       :footer-text="maintFooterText"
       @edit="editingRecord = $event"

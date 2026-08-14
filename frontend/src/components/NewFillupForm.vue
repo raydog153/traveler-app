@@ -38,6 +38,9 @@
       <div class="field">
         <label>City</label>
         <input v-model="form.city" type="text" placeholder="e.g. Lancaster, MA" required />
+        <p v-if="form.gps_latitude != null && form.gps_longitude != null" class="gps-hint">
+          📍 GPS from photo: {{ form.gps_latitude.toFixed(5) }}, {{ form.gps_longitude.toFixed(5) }}
+        </p>
       </div>
       <div class="field">
         <label>Notes (optional)</label>
@@ -170,5 +173,10 @@ function onSubmit() {
   color: var(--amber-text);
   font-size: 12.5px;
   margin: 0 0 12px;
+}
+.gps-hint {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin: 4px 0 0;
 }
 </style>

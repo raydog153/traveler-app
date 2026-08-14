@@ -71,6 +71,7 @@ const props = defineProps({
   columns: { type: Array, required: true }, // [{ key, label, width, num, mono, fmt, badge, kind }]
   rows: { type: Array, required: true },
   defaultSortKey: { type: String, default: 'date' },
+  defaultSortDir: { type: Number, default: 1 },
   // Adds a trailing edit/delete actions column, emitting 'edit'/'delete'
   // with the row -- the caller owns what those actions actually do.
   editable: { type: Boolean, default: false },
@@ -82,7 +83,7 @@ const props = defineProps({
 defineEmits(['edit', 'delete'])
 
 const sortKey = ref(props.defaultSortKey)
-const sortDir = ref(1)
+const sortDir = ref(props.defaultSortDir)
 
 const gridTemplateColumns = computed(() => {
   const widths = props.columns.map((c) => c.width || '1fr').join(' ')
