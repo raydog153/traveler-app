@@ -130,6 +130,30 @@ function maintIcon(color) {
   })
 }
 
+function smoothLatLngs(points, numOfSegments = 6) {
+  if (points.length < 3) return points
+  const smoothed = []
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] || points[i]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = points[i + 2] || p2
+    for (let t = 0; t < numOfSegments; t++) {
+      smoothed.push(catmullRomPoint(p0, p1, p2, p3, t / numOfSegments))
+    }
+  }
+  smoothed.push(points[points.length - 1])
+  return smoothed
+}
+
+function catmullRomPoint(p0, p1, p2, p3, t) {
+  const t2 = t * t
+  const t3 = t2 * t
+  const coord = (a, b, c, d) =>
+    0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3)
+  return [coord(p0[0], p1[0], p2[0], p3[0]), coord(p0[1], p1[1], p2[1], p3[1])]
+}
+
 function buildMap() {
   if (!store.routeData || map || !mapEl.value) return
 
@@ -145,7 +169,7 @@ function buildMap() {
     const color = colorFor(y.year)
     const layerGroup = L.layerGroup()
     const latlngs = y.locations.map((loc) => [loc.latitude, loc.longitude])
-    L.polyline(latlngs, { color, weight: 2, opacity: 0.45 }).addTo(layerGroup)
+    L.polyline(smoothLatLngs(latlngs), { color, weight: 2, opacity: 0.45 }).addTo(layerGroup)
 
     y.locations.forEach((loc) => {
       const icon = loc.type === 'gas' ? gasIcon(color) : maintIcon(color)
